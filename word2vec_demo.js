@@ -1,10 +1,15 @@
 "use strict";
-let x = 3;
-let vec;
 
 function processRawVecs(text) {
+    let vecs = new Map();
     let lines = text.trim().split(/\n/);
-    return lines;
+    for (const line of lines) {
+        let entries = line.trim().split(' ');
+        vecs.set(entries[0], entries.slice(1));
+        
+    }
+
+    return vecs;
 
 }
 
