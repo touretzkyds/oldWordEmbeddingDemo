@@ -6,19 +6,18 @@ function processRawVecs(text) {
     for (const line of lines) {
         let entries = line.trim().split(' ');
         vecs.set(entries[0], entries.slice(1));
-        
     }
-
     return vecs;
-
 }
 
 
 async function main() {
-    let response = await fetch("https://raw.githubusercontent.com/jxu/Word2VecDemo/master/wordvecs_toy.txt");
+    // fetch wordvecs 
+    let response = await fetch("https://raw.githubusercontent.com/jxu/Word2VecDemo/master/wordvecs10k.txt");
     let text = await response.text();
-    //console.log(JSON.stringify(text));
     
+    document.getElementById("loading_text").innerHTML = "Model downloaded";
+
     let vecs = processRawVecs(text);
     console.log(vecs);
 }
