@@ -1,8 +1,8 @@
 #!/bin/sh
-# example of creating smaller model
+# example of creating smaller model from NLPL model release
 
-wget https://github.com/jxu/Word2VecDemo/releases/download/model/model.txt
+wget -c https://github.com/jxu/Word2VecDemo/releases/download/model/model.txt
 
-# remove first line contains vocab size and dims, then take n many words
-tail -n +2 model.txt | head -n10000 > wordvecs10k.txt
+# take n many words (defined as only alpha characters, see issue #1)
+grep -P "[[:alpha:]]+ " model.txt | head -n10000 > wordvecs10k.txt
 
