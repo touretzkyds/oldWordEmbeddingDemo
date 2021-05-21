@@ -1,5 +1,7 @@
 "use strict";
 
+let vecs;
+
 function processRawVecs(text) {
     let vecs = new Map();
     let lines = text.trim().split(/\n/);
@@ -10,6 +12,29 @@ function processRawVecs(text) {
     return vecs;
 }
 
+function getTopDim() {
+    const dim = document.getElementById("dim_display").value;
+
+    // TODO only get to run when vecs is actually loaded
+    // turns Map into sorted Object by specified dim
+    const sortedVecs = [...vecs.entries()].sort((a,b) => b[1][dim] - a[1][dim]);
+    //console.log(sortedVecs);
+    let topWords = "";
+
+    
+
+    for (let i=0; i<10; i++) {
+        topWords += `${i} ${sortedVecs[i][0]} ${sortedVecs[i][1][dim]}<br>`;
+    }
+    
+    // similar for bottom words
+    
+    for (let i=vecs.size-10; i<vecs.size; i++) {
+        topWords += `${i} ${sortedVecs[i][0]} ${sortedVecs[i][1][dim]}<br>`;
+    }
+ 
+    document.getElementById("top_dim_list").innerHTML = topWords;
+}
 
 async function main() {
     // fetch wordvecs 
@@ -18,8 +43,8 @@ async function main() {
     
     document.getElementById("loading_text").innerHTML = "Model downloaded";
 
-    let vecs = processRawVecs(text);
-    console.log(vecs);
+    vecs = processRawVecs(text);
+    //console.log(vecs);
 }
 
 main();
