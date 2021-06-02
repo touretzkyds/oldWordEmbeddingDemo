@@ -1,3 +1,5 @@
+// noinspection JSUnresolvedVariable
+
 "use strict";
 
 let scatter_words = ["man", "woman", "chair"];
@@ -11,6 +13,23 @@ let GENDER_PAIRS =
 
 // global word to vector map
 let vecs;
+
+// simple implementation of basic vector functions to Array
+// (for learning purposes, probably cleaner to use library)
+Array.prototype.add = function(b) {
+    return this.map((e,i) => e + b[i]);
+};
+
+Array.prototype.sum = function() {
+    return this.reduce((a,b) => a+b);
+};
+
+
+Array.prototype.scale = function(s) {
+  return this.map((e) => s*e);
+};
+
+
 
 function processRawVecs(text) {
     let vecs = new Map();
@@ -56,27 +75,38 @@ function plot_scatter(vecs, words) {
         x: x,
         y: y,
         z: z,
+        mode: "markers",
         type: "scatter3d"
-    }
+    };
 
     let data = [trace];
+    let layout = {
+        margin: {
+            l: 0,
+            r: 0,
+            b: 0,
+            t: 0
+        }};
 
-    Plotly.newPlot("plotly_scatter", data)
-
+    Plotly.newPlot("plotly_scatter", data, layout);
 
 }
 
 async function main() {
-    // fetch wordvecs 
+    // fetch wordvecs (no error handling)
     let response = await fetch("https://raw.githubusercontent.com/jxu/Word2VecDemo/master/wordvecs_toy.txt");
     let text = await response.text();
-    
+
     document.getElementById("loading_text").innerHTML = "Model downloaded";
 
     vecs = processRawVecs(text);
+
+    // vector calculations and plotting
+
    
     plot_scatter(vecs, scatter_words);
     
 }
 
-main();
+// Main function runs as promise
+main().catch(e => console.error(e));
