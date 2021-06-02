@@ -1,5 +1,15 @@
 "use strict";
 
+let scatter_words = ["man", "woman", "chair"];
+
+let GENDER_PAIRS = 
+    [
+        ["man", "woman"], 
+        ["king", "queen"],
+        ["prince", "princess"],
+    ];
+
+// global word to vector map
 let vecs;
 
 function processRawVecs(text) {
@@ -36,15 +46,37 @@ function getTopDim() {
     document.getElementById("top_dim_list").innerHTML = topWords;
 }
 
+function plot_scatter(vecs, words) {
+    // plotly test
+    let x = [1, 2, 3];
+    let y = [2, 3, 4];
+    let z = [4, 5, 6];
+
+    let trace = {
+        x: x,
+        y: y,
+        z: z,
+        type: "scatter3d"
+    }
+
+    let data = [trace];
+
+    Plotly.newPlot("plotly_scatter", data)
+
+
+}
+
 async function main() {
     // fetch wordvecs 
-    let response = await fetch("https://raw.githubusercontent.com/jxu/Word2VecDemo/master/wordvecs10k.txt");
+    let response = await fetch("https://raw.githubusercontent.com/jxu/Word2VecDemo/master/wordvecs_toy.txt");
     let text = await response.text();
     
     document.getElementById("loading_text").innerHTML = "Model downloaded";
 
     vecs = processRawVecs(text);
-    //console.log(vecs);
+   
+    plot_scatter(vecs, scatter_words);
+    
 }
 
 main();
