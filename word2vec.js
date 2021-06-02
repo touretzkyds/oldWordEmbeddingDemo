@@ -14,8 +14,14 @@ let GENDER_PAIRS =
 // global word to vector map
 let vecs;
 
-// simple implementation of basic vector functions to Array
+// simple implementation of basic vector functions for Array
 // (for learning purposes, probably cleaner to use library)
+class Vector extends Array {
+    add(other) {
+        return this.map((e,i) => e + other[i]);
+    }
+}
+
 Array.prototype.add = function(b) {
     return this.map((e,i) => e + b[i]);
 };
