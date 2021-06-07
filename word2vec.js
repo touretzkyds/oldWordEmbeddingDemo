@@ -69,27 +69,31 @@ function getTopDim() {
 }
 
 // plot each word projected onto gender feature, age feature
-function plotScatter(vecs, words, xVec, yVec) {
+function plotScatter(vecs, words, genderFeature, ageFeature) {
 
     let trace = {
-        x: words.map(word => vecs.get(word).dot(xVec)),
-        y: words.map(word => vecs.get(word).dot(yVec)),
+        x: words.map(word => vecs.get(word).dot(genderFeature)),
+        y: words.map(word => vecs.get(word).dot(ageFeature)),
         mode: "markers",
         type: "scatter",
         marker: {
             size: 4,
             opacity: 0.8
-        }
+        },
+        text: words
     };
 
     let data = [trace];
     let layout = {
-        margin: {
-            l: 0,
-            r: 0,
-            b: 0,
-            t: 0
-        }};
+        xaxis: {
+            title: "Gender"
+        },
+
+        yaxis: {
+            title: "Age"
+        }
+
+    };
 
     Plotly.newPlot("plotly_scatter", data, layout);
 
@@ -109,12 +113,10 @@ async function main() {
     const genderFeature = createFeature(vecs, GENDERPAIRS);
     const ageFeature = createFeature(vecs, AGEPAIRS);
 
-
     const residualFeature = genderFeature;
 
-
    
-    plotScatter(vecs, scatterWords, genderFeature, ageFeature, residualFeature);
+    plotScatter(vecs, scatterWords, genderFeature, ageFeature);
     
 }
 
