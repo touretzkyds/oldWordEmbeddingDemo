@@ -1,12 +1,23 @@
 "use strict";
 
-let scatter_words = ["man", "woman", "chair"];
+// array of words plotted on scatter plot
+// changes from original demo: replace refrigerator with chair
+let scatterWords = ['man', 'woman', 'boy', 'girl', 'king', 'queen', 'prince', 'princess', 'nephew', 'niece', 'chair',
+    'uncle', 'aunt', 'father', 'mother', 'son', 'daughter', 'husband', 'wife'];
 
-let GENDER_PAIRS = 
+// TODO: finish filling in pairs
+const GENDERPAIRS =
     [
         ["man", "woman"], 
         ["king", "queen"],
         ["prince", "princess"],
+    ];
+
+const AGEPAIRS =
+    [
+        ["man", "boy"],
+        ["woman", "girl"],
+        ["king", "prince"],
     ];
 
 // global (bad?) word to vector map
@@ -25,7 +36,7 @@ function processRawVecs(text) {
     return vecs;
 }
 
-function createFeatures(vecs, wordPairs) {
+function createFeature(vecs, wordPairs) {
     // for each word pair, subtract vectors
     const subVecs = wordPairs.map(pair => vecs.get(pair[0]).sub(vecs.get(pair[1])));
     // average subtracted vectors into one unit feature vector
@@ -57,20 +68,18 @@ function getTopDim() {
     document.getElementById("top_dim_list").innerHTML = topWords;
 }
 
-// plot each word projected onto axes
-function plot_scatter(vecs, words, xVec, yVec, zVec) {
-
-    // plotly test
-    let x = words.map(word => vecs.get(word).dot(xVec));
-    let y = words.map(word => vecs.get(word).dot(yVec));
-    let z = words.map(word => vecs.get(word).dot(zVec));
+// plot each word projected onto gender feature, age feature
+function plotScatter(vecs, words, xVec, yVec) {
 
     let trace = {
-        x: x,
-        y: y,
-        z: z,
+        x: words.map(word => vecs.get(word).dot(xVec)),
+        y: words.map(word => vecs.get(word).dot(yVec)),
         mode: "markers",
-        type: "scatter3d"
+        type: "scatter",
+        marker: {
+            size: 4,
+            opacity: 0.8
+        }
     };
 
     let data = [trace];
@@ -94,15 +103,18 @@ async function main() {
     document.getElementById("loading_text").innerHTML = "Model downloaded";
 
     vecs = processRawVecs(text);
+    const dims = vecs.get("man").length;
 
     // vector calculations and plotting
-    const genderFeature = createFeatures(vecs, GENDER_PAIRS);
-    const ageFeature = genderFeature;
+    const genderFeature = createFeature(vecs, GENDERPAIRS);
+    const ageFeature = createFeature(vecs, AGEPAIRS);
+
+
     const residualFeature = genderFeature;
-    console.log(genderFeature);
+
 
    
-    plot_scatter(vecs, scatter_words, genderFeature, ageFeature, residualFeature);
+    plotScatter(vecs, scatterWords, genderFeature, ageFeature, residualFeature);
     
 }
 
