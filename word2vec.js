@@ -1,16 +1,23 @@
 "use strict";
 
 // array of words plotted on scatter plot
-// changes from original demo: replace refrigerator with chair
-let scatterWords = ['man', 'woman', 'boy', 'girl', 'king', 'queen', 'prince', 'princess', 'nephew', 'niece', 'chair',
-    'uncle', 'aunt', 'father', 'mother', 'son', 'daughter', 'husband', 'wife'];
+// changes from original demo: replace "refrigerator" with "chair" and "computer"
+let scatterWords = ['man', 'woman', 'boy', 'girl', 'king', 'queen', 'prince', 'princess', 'nephew', 'niece',
+    'uncle', 'aunt', 'father', 'mother', 'son', 'daughter', 'husband', 'wife', 'chair', 'computer'];
 
-// TODO: finish filling in pairs
+// Word pairs used to compute features
 const GENDERPAIRS =
     [
         ["man", "woman"], 
         ["king", "queen"],
         ["prince", "princess"],
+        ["husband", "wife"],
+        ["father", "mother"],
+        ["son", "daughter"],
+        ["uncle", "aunt"],
+        ["nephew", "niece"],
+        ["boy", "girl"],
+        ["male", "female"]
     ];
 
 const AGEPAIRS =
@@ -18,7 +25,15 @@ const AGEPAIRS =
         ["man", "boy"],
         ["woman", "girl"],
         ["king", "prince"],
+        ["queen", "princess"],
+        ["father", "son"],
+        ["mother", "daughter"],
+        ["uncle", "nephew"],
+        ["aunt", "niece"]
     ];
+
+// Residual words made up from words in gender and age pairs
+const RESIDUALWORDS = [...new Set(GENDERPAIRS.flat().concat(AGEPAIRS.flat()))];
 
 // global (bad?) word to vector map
 let vecs;
