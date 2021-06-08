@@ -40,8 +40,7 @@ function createFeature(vecs, wordPairs) {
     // for each word pair, subtract vectors
     const subVecs = wordPairs.map(pair => vecs.get(pair[0]).sub(vecs.get(pair[1])));
     // average subtracted vectors into one unit feature vector
-    const featureVec = subVecs.reduce((a,b) => a.add(b)).unit();
-    return featureVec;
+    return subVecs.reduce((a,b) => a.add(b)).unit();
 }
 
 function getTopDim() {
@@ -68,14 +67,27 @@ function getTopDim() {
     document.getElementById("top_dim_list").innerHTML = topWords;
 }
 
-// plot each word projected onto gender feature, age feature
-function plotScatter(vecs, words, genderFeature, ageFeature) {
+// plot each word projected onto gender, age, residual features
+function plotScatter(vecs, words, genderVec, ageVec) {
+    // x and y are simply projections onto gender and age features
+    let x = words.map(word => vecs.get(word).dot(genderVec));
+    let y = words.map(word => vecs.get(word).dot(ageVec));
+
+    // z is projection onto word vector subtracting out vector projections onto age and gender
+    let z = words.map(word => {
+        const wordVec = vecs.get(word);
+        const wordVecNoGender = wordVec.sub(genderVec.scale(wordVec.dot(genderVec)));
+        const wordVecResidual = wordVecNoGender.sub(ageVec.scale(wordVecNoGender.dot(ageVec))).unit();
+        return wordVec.dot(wordVecResidual);
+    });
+
 
     let trace = {
-        x: words.map(word => vecs.get(word).dot(genderFeature)),
-        y: words.map(word => vecs.get(word).dot(ageFeature)),
-        mode: "markers",
-        type: "scatter",
+        x: x,
+        y: y,
+        z: z,
+        mode: "markers+text",
+        type: "scatter3d",
         marker: {
             size: 4,
             opacity: 0.8
@@ -85,14 +97,11 @@ function plotScatter(vecs, words, genderFeature, ageFeature) {
 
     let data = [trace];
     let layout = {
-        xaxis: {
-            title: "Gender"
-        },
-
-        yaxis: {
-            title: "Age"
+        scene: {
+            xaxis: {title: "Gender"},
+            yaxis: {title: "Age"},
+            zaxis: {title: "Genderless Ageless"}
         }
-
     };
 
     Plotly.newPlot("plotly_scatter", data, layout);
@@ -107,15 +116,12 @@ async function main() {
     document.getElementById("loading_text").innerHTML = "Model downloaded";
 
     vecs = processRawVecs(text);
-    const dims = vecs.get("man").length;
 
     // vector calculations and plotting
     const genderFeature = createFeature(vecs, GENDERPAIRS);
     const ageFeature = createFeature(vecs, AGEPAIRS);
 
-    const residualFeature = genderFeature;
 
-   
     plotScatter(vecs, scatterWords, genderFeature, ageFeature);
     
 }
