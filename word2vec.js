@@ -45,7 +45,7 @@ function processRawVecs(text) {
     for (const line of lines) {
         const entries = line.trim().split(' ');
         const word = entries[0];
-        const vec = new Vector(entries.slice(1).map(Number));
+        const vec = new Vector(entries.slice(1).map(Number)).unit();  // normalize word vectors?
         vecs.set(word, vec);
     }
     return vecs;
@@ -57,6 +57,7 @@ function createFeature(vecs, wordPairs) {
     // average subtracted vectors into one unit feature vector
     return subVecs.reduce((a,b) => a.add(b)).unit();
 }
+
 
 function getTopDim() {
     const dim = document.getElementById("dim_display").value;
@@ -83,20 +84,7 @@ function getTopDim() {
 }
 
 // plot each word projected onto gender, age, residual features
-function plotScatter(vecs, words, genderVec, ageVec) {
-    // x and y are simply projections onto gender and age features
-    let x = words.map(word => vecs.get(word).dot(genderVec));
-    let y = words.map(word => vecs.get(word).dot(ageVec));
-
-    // z is projection onto word vector subtracting out vector projections onto age and gender
-    let z = words.map(word => {
-        const wordVec = vecs.get(word);
-        const wordVecNoGender = wordVec.sub(genderVec.scale(wordVec.dot(genderVec)));
-        const wordVecResidual = wordVecNoGender.sub(ageVec.scale(wordVecNoGender.dot(ageVec))).unit();
-        return wordVec.dot(wordVecResidual);
-    });
-
-
+function plotScatter(words, x, y, z) {
     let trace = {
         x: x,
         y: y,
@@ -115,7 +103,7 @@ function plotScatter(vecs, words, genderVec, ageVec) {
         scene: {
             xaxis: {title: "Gender"},
             yaxis: {title: "Age"},
-            zaxis: {title: "Genderless Ageless"}
+            zaxis: {title: "Residual"}
         }
     };
 
@@ -135,9 +123,21 @@ async function main() {
     // vector calculations and plotting
     const genderFeature = createFeature(vecs, GENDERPAIRS);
     const ageFeature = createFeature(vecs, AGEPAIRS);
+    // compute residual (issue #3)
+    const residualFeature = RESIDUALWORDS.map(word => {
+            const wordVec = vecs.get(word);
+            const wordNoGender = wordVec.sub(genderFeature.scale(wordVec.dot(genderFeature)));
+            const wordResidual = wordNoGender.sub(ageFeature.scale(wordNoGender.dot(ageFeature)));
+            return wordResidual;
+        }
+    ).reduce((a,b) => a.add(b)).unit(); // average over residual words
 
+    // x, y, z are simply projections onto features
+    let x = scatterWords.map(word => vecs.get(word).dot(genderFeature));
+    let y = scatterWords.map(word => vecs.get(word).dot(ageFeature));
+    let z = scatterWords.map(word => vecs.get(word).dot(residualFeature));
 
-    plotScatter(vecs, scatterWords, genderFeature, ageFeature);
+    plotScatter(scatterWords, x, y, z);
     
 }
 
