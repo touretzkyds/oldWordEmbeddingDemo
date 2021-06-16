@@ -1,6 +1,6 @@
 "use strict";
 
-// array of words plotted on scatter plot
+// global array of words plotted on scatter plot
 // changes from original demo: replace "refrigerator" with "chair" and "computer"
 let scatterWords = ['man', 'woman', 'boy', 'girl', 'king', 'queen', 'prince', 'princess', 'nephew', 'niece',
     'uncle', 'aunt', 'father', 'mother', 'son', 'daughter', 'husband', 'wife', 'chair', 'computer'];
@@ -38,6 +38,8 @@ const RESIDUALWORDS = [...new Set(GENDERPAIRS.flat().concat(AGEPAIRS.flat()))];
 // global (bad?) word to vector map
 let vecs;
 
+// global feature vectors for use in replotting
+let ageFeature, genderFeature, residualFeature;
 
 function processRawVecs(text) {
     let vecs = new Map();
@@ -45,7 +47,7 @@ function processRawVecs(text) {
     for (const line of lines) {
         const entries = line.trim().split(' ');
         const word = entries[0];
-        const vec = new Vector(entries.slice(1).map(Number)).unit();  // normalize word vectors?
+        const vec = new Vector(entries.slice(1).map(Number)).unit();  // normalize word vectors
         vecs.set(word, vec);
     }
     return vecs;
@@ -84,7 +86,12 @@ function getTopDim() {
 }
 
 // plot each word projected onto gender, age, residual features
-function plotScatter(words, x, y, z) {
+function plotScatter() {
+    // x, y, z are simply projections onto features
+    const x = scatterWords.map(word => vecs.get(word).dot(genderFeature));
+    const y = scatterWords.map(word => vecs.get(word).dot(ageFeature));
+    const z = scatterWords.map(word => vecs.get(word).dot(residualFeature));
+
     let trace = {
         x: x,
         y: y,
@@ -95,7 +102,7 @@ function plotScatter(words, x, y, z) {
             size: 4,
             opacity: 0.8
         },
-        text: words
+        text: scatterWords
     };
 
     let data = [trace];
@@ -111,6 +118,27 @@ function plotScatter(words, x, y, z) {
 
 }
 
+function addRemoveWord() {
+    const word = document.getElementById("addRemoveWordInput").value;
+
+    if (scatterWords.includes(word)) {  // remove word
+        console.log("Remove " + word);
+        scatterWords = scatterWords.filter(item => item !== word);
+    }
+    else { // add word if in wordvecs
+        if (vecs.has(word)) {
+            console.log("Add " + word);
+            scatterWords.push(word);
+        }
+        else { // word not found
+            console.log("Not found " + word);
+        }
+    }
+
+    plotScatter();  // replot (new plot, not Plotly.react)
+}
+
+
 async function main() {
     // fetch wordvecs (no error handling)
     let response = await fetch("https://raw.githubusercontent.com/jxu/Word2VecDemo/master/wordvecs10k.txt");
@@ -121,10 +149,10 @@ async function main() {
     vecs = processRawVecs(text);
 
     // vector calculations and plotting
-    const genderFeature = createFeature(vecs, GENDERPAIRS);
-    const ageFeature = createFeature(vecs, AGEPAIRS);
+    genderFeature = createFeature(vecs, GENDERPAIRS);
+    ageFeature = createFeature(vecs, AGEPAIRS);
     // compute residual (issue #3)
-    const residualFeature = RESIDUALWORDS.map(word => {
+    residualFeature = RESIDUALWORDS.map(word => {
             const wordVec = vecs.get(word);
             const wordNoGender = wordVec.sub(genderFeature.scale(wordVec.dot(genderFeature)));
             const wordResidual = wordNoGender.sub(ageFeature.scale(wordNoGender.dot(ageFeature)));
@@ -132,13 +160,7 @@ async function main() {
         }
     ).reduce((a,b) => a.add(b)).unit(); // average over residual words
 
-    // x, y, z are simply projections onto features
-    let x = scatterWords.map(word => vecs.get(word).dot(genderFeature));
-    let y = scatterWords.map(word => vecs.get(word).dot(ageFeature));
-    let z = scatterWords.map(word => vecs.get(word).dot(residualFeature));
-
-    plotScatter(scatterWords, x, y, z);
-    
+    plotScatter();
 }
 
 // Main function runs as promise
