@@ -34,9 +34,11 @@ for i in range(N):
         sim = vecs[i,].dot(vecs[j,])
         pair = (sim, j)  # sort by sim as kv pair
 
-        heappush(sims, pair)
-        if len(sims) > K:
-            heappop(sims)
+        if len(sims) < K:  # heap isn't full yet
+            heappush(sims, pair)
+        elif pair > sims[0]:
+            heapreplace(sims, pair)
+
 
     nearest_words = [pair[1] for pair in nlargest(K, sims)]  # by index
     print(" ".join(map(str, nearest_words)))
