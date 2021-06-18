@@ -109,9 +109,9 @@ function plotScatter() {
     let data = [trace];
     let layout = {
         scene: {
-            xaxis: {title: "Residual"},
-            yaxis: {title: "Gender"},
-            zaxis: {title: "Age"}
+            xaxis: {title: "Residual", dtick: 0.1},
+            yaxis: {title: "Gender", dtick: 0.1},
+            zaxis: {title: "Age", dtick: 0.1}
         }
     };
 
