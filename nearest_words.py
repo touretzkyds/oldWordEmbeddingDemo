@@ -1,4 +1,5 @@
 import numpy as np
+from heapq import *
 
 DIM = 300  # vector dim
 N = 10000  # number of words
@@ -18,18 +19,25 @@ for i in range(N):
     line = model_lines[i].strip().split()
     words[i] = line[0]
     assert len(line[1:]) == DIM
-    v = np.array(line[1:], dtype=np.float32)
+    v = np.array(line[1:], dtype=np.float)
     vecs[i,] = v / np.linalg.norm(v)  # normalize vecs
 
 # too much memory to store all vector distances, so compute on-the-fly
 
 for i in range(N):
-    dists = []  # (index, dist) pairs
+    # maintain top-k largest similarities using a *min* heap
+    # continuously remove min element, at the end we have all the max elements
+    sims = []
+
     for j in range(N):
         if j == i: continue
-        dist = np.linalg.norm(vecs[i,] - vecs[j,])
-        dists.append((j, dist))
+        sim = vecs[i,].dot(vecs[j,])
+        pair = (sim, j)  # sort by sim as kv pair
 
-    dists.sort(key = lambda pair: pair[1])
-    nearest_words = [pair[0] for pair in dists[:K]]  # by index
+        heappush(sims, pair)
+        if len(sims) > K:
+            heappop(sims)
+
+    nearest_words = [pair[1] for pair in nlargest(K, sims)]  # by index
     print(" ".join(map(str, nearest_words)))
+
