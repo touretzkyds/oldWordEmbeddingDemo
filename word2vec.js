@@ -88,9 +88,10 @@ function getTopDim() {
 // plot each word projected onto gender, age, residual features
 function plotScatter() {
     // x, y, z are simply projections onto features
-    const x = scatterWords.map(word => vecs.get(word).dot(genderFeature));
-    const y = scatterWords.map(word => vecs.get(word).dot(ageFeature));
-    const z = scatterWords.map(word => vecs.get(word).dot(residualFeature));
+    // use 1 - residual for graphical convention (#3)
+    const x = scatterWords.map(word => 1 - vecs.get(word).dot(residualFeature));
+    const y = scatterWords.map(word => vecs.get(word).dot(genderFeature));
+    const z = scatterWords.map(word => vecs.get(word).dot(ageFeature));
 
     let trace = {
         x: x,
@@ -108,9 +109,9 @@ function plotScatter() {
     let data = [trace];
     let layout = {
         scene: {
-            xaxis: {title: "Gender"},
-            yaxis: {title: "Age"},
-            zaxis: {title: "Residual"}
+            xaxis: {title: "Residual"},
+            yaxis: {title: "Gender"},
+            zaxis: {title: "Age"}
         }
     };
 
