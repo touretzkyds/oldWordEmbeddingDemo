@@ -124,20 +124,21 @@ function addRemoveWord() {
     const word = document.getElementById("addRemoveWordInput").value;
 
     if (scatterWords.includes(word)) {  // remove word
-        console.log("Remove " + word);
         scatterWords = scatterWords.filter(item => item !== word);
+        document.getElementById("addRemoveMessage").innerText = "Word removed";
+        plotScatter();  // replot (new plot, not Plotly.react)
     }
     else { // add word if in wordvecs
         if (vecs.has(word)) {
             console.log("Add " + word);
             scatterWords.push(word);
+            document.getElementById("addRemoveMessage").innerText = "Word added";
+            plotScatter();
         }
         else { // word not found
-            console.log("Not found " + word);
+            document.getElementById("addRemoveMessage").innerText = "Word not found!";
         }
     }
-
-    plotScatter();  // replot (new plot, not Plotly.react)
 }
 
 
