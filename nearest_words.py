@@ -25,21 +25,21 @@ for i in range(N):
 # too much memory to store all vector distances, so compute on-the-fly
 
 for i in range(N):
+    # compute all dot products (cos similarities) for word i vs all other words
+    sims = vecs @ vecs[i,]
+
+    # create (sim, index) key-value pairs, excluding word i itself
+    pairs = [(sims[j], j) for j in range(N) if j != i]
+
     # maintain top-k largest similarities using a *min* heap
     # continuously remove min element, at the end we have all the max elements
-    sims = []
+    top_pairs = []
+    for pair in pairs:
+        if len(top_pairs) < K:  # heap isn't full yet
+            heappush(top_pairs, pair)
+        elif pair > top_pairs[0]:
+            heapreplace(top_pairs, pair)
 
-    for j in range(N):
-        if j == i: continue
-        sim = vecs[i,].dot(vecs[j,])
-        pair = (sim, j)  # sort by sim as kv pair
-
-        if len(sims) < K:  # heap isn't full yet
-            heappush(sims, pair)
-        elif pair > sims[0]:
-            heapreplace(sims, pair)
-
-
-    nearest_words = [words[pair[1]] for pair in nlargest(K, sims)]  # by index
+    nearest_words = [words[pair[1]] for pair in nlargest(K, top_pairs)]
     print(words[i], " ".join(map(str, nearest_words)))
 
