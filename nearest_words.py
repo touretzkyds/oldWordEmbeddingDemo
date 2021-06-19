@@ -40,6 +40,6 @@ for i in range(N):
             heapreplace(sims, pair)
 
 
-    nearest_words = [pair[1] for pair in nlargest(K, sims)]  # by index
-    print(" ".join(map(str, nearest_words)))
+    nearest_words = [words[pair[1]] for pair in nlargest(K, sims)]  # by index
+    print(words[i], " ".join(map(str, nearest_words)))
 
