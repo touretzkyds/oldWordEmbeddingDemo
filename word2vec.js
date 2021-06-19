@@ -145,8 +145,9 @@ function addRemoveWord() {
 
 
 async function main() {
-    // fetch wordvecs (no error handling)
-    let response = await fetch("https://raw.githubusercontent.com/jxu/Word2VecDemo/master/wordvecs10k.txt");
+    // fetch wordvecs locally (no error handling)
+    // note python's http.server does not support response compression Content-Encoding
+    let response = await fetch("wordvecs10k.txt");
     let text = await response.text();
 
     document.getElementById("loading_text").innerHTML = "Model downloaded";
