@@ -86,7 +86,7 @@ function getTopDim() {
 }
 
 // plot each word projected onto gender, age, residual features
-function plotScatter() {
+function plotScatter(newPlot=false) {
     // x, y, z are simply projections onto features
     // use 1 - residual for graphical convention (#3)
     const x = scatterWords.map(word => 1 - vecs.get(word).dot(residualFeature));
@@ -108,6 +108,7 @@ function plotScatter() {
 
     let data = [trace];
     let layout = {
+        uirevision: "true",
         scene: {
             xaxis: {title: "Residual", dtick: 0.1},
             yaxis: {title: "Gender", dtick: 0.1},
@@ -116,7 +117,8 @@ function plotScatter() {
         }
     };
 
-    Plotly.newPlot("plotly_scatter", data, layout);
+    if (newPlot) Plotly.newPlot("plotly_scatter", data, layout);
+    else Plotly.react("plotly_scatter", data, layout);
 
 }
 
@@ -163,7 +165,7 @@ async function main() {
         }
     ).reduce((a,b) => a.add(b)).unit(); // average over residual words
 
-    plotScatter();
+    plotScatter(true);
 }
 
 // Main function runs as promise
