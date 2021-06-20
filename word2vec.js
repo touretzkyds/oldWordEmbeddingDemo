@@ -51,6 +51,18 @@ function processRawVecs(text) {
     return vecs;
 }
 
+function processNearestWords(text) {
+    let nearestWords = new Map();
+    const lines = text.trim().split(/\n/);
+    for (const line of lines) {
+        const entries = line.trim().split(' ');
+        const target = entries[0];
+        const words = entries.slice(1);
+        nearestWords.set(target, words);
+    }
+    return nearestWords;
+}
+
 function createFeature(vecs, wordPairs) {
     // for each word pair, subtract vectors
     const subVecs = wordPairs.map(pair => vecs.get(pair[0]).sub(vecs.get(pair[1])));
@@ -156,7 +168,7 @@ async function main() {
     // fetch nearest words list
     const nearestWordsResponse = await fetch("nearest_words.txt");
     const nearestWordsText = await nearestWordsResponse.text();
-    console.log(nearestWordsText);
+    nearestWords = processNearestWords(nearestWordsText);
 
     // vector calculations and plotting, including residual (issue #3)
     genderFeature = createFeature(vecs, GENDERPAIRS);
