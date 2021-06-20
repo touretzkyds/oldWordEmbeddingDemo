@@ -35,11 +35,9 @@ const AGEPAIRS =
 // Residual words made up from words in gender and age pairs
 const RESIDUALWORDS = [...new Set(GENDERPAIRS.flat().concat(AGEPAIRS.flat()))];
 
-// global (bad?) word to vector map
-let vecs;
-
-// global feature vectors for use in replotting
-let ageFeature, genderFeature, residualFeature;
+let vecs; // global word to vector Map
+let nearestWords; // global nearest words Map
+let ageFeature, genderFeature, residualFeature; // global feature vectors for use in replotting
 
 function processRawVecs(text) {
     let vecs = new Map();
@@ -145,26 +143,31 @@ function addRemoveWord() {
 
 
 async function main() {
-    // fetch wordvecs locally (no error handling)
+    // fetch wordvecs locally (no error handling) and process
     // note python's http.server does not support response compression Content-Encoding
-    let response = await fetch("wordvecs10k.txt");
-    let text = await response.text();
+    const vecsResponse = await fetch("wordvecs10k.txt");
+    const vecsText = await vecsResponse.text();
 
-    document.getElementById("loading_text").innerHTML = "Model downloaded";
+    // lo-tech progress indication
+    document.getElementById("loading_text").innerText = "Model downloaded";
 
-    vecs = processRawVecs(text);
+    vecs = processRawVecs(vecsText);
 
-    // vector calculations and plotting
+    // fetch nearest words list
+    const nearestWordsResponse = await fetch("nearest_words.txt");
+    const nearestWordsText = await nearestWordsResponse.text();
+    console.log(nearestWordsText);
+
+    // vector calculations and plotting, including residual (issue #3)
     genderFeature = createFeature(vecs, GENDERPAIRS);
     ageFeature = createFeature(vecs, AGEPAIRS);
-    // compute residual (issue #3)
     residualFeature = RESIDUALWORDS.map(word => {
             const wordVec = vecs.get(word);
             const wordNoGender = wordVec.sub(genderFeature.scale(wordVec.dot(genderFeature)));
             const wordResidual = wordNoGender.sub(ageFeature.scale(wordNoGender.dot(ageFeature)));
             return wordResidual;
         }
-    ).reduce((a,b) => a.add(b)).unit(); // average over residual words
+    ).reduce((a,b) => a.add(b)).unit(); // average over residual words and normalize
 
     plotScatter(true);
 }
