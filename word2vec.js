@@ -129,7 +129,7 @@ function plotScatter(newPlot=false) {
             xaxis: {title: "Residual", dtick: 0.1},
             yaxis: {title: "Gender", dtick: 0.1},
             zaxis: {title: "Age", dtick: 0.1},
-            camera: {eye: {x: -2.5, y: -0.75, z: 1.5}}
+            camera: {eye: {x: -2.5, y: -0.75, z: 0.5}}
         }
     };
 
