@@ -103,6 +103,10 @@ function plotScatter(newPlot=false) {
     const y = scatterWords.map(word => vecs.get(word).dot(genderFeature));
     const z = scatterWords.map(word => vecs.get(word).dot(ageFeature));
 
+    const hovertext = scatterWords.map(target =>
+        "Nearest words:<br>" + nearestWords.get(target).join("<br>")
+    );
+
     let trace = {
         x: x,
         y: y,
@@ -113,7 +117,9 @@ function plotScatter(newPlot=false) {
             size: 4,
             opacity: 0.8
         },
-        text: scatterWords
+        text: scatterWords,
+        hoverinfo: "text",
+        hovertext: hovertext
     };
 
     let data = [trace];
@@ -142,7 +148,6 @@ function addRemoveWord() {
     }
     else { // add word if in wordvecs
         if (vecs.has(word)) {
-            console.log("Add " + word);
             scatterWords.push(word);
             document.getElementById("addRemoveMessage").innerText = "Word added";
             plotScatter();
