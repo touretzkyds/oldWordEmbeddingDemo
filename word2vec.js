@@ -122,6 +122,7 @@ function plotScatter(newPlot=false) {
         hovertext: hovertext
     };
 
+    const ZOOM = 0.8;
     let data = [trace];
     let layout = {
         uirevision: "true",
@@ -129,8 +130,9 @@ function plotScatter(newPlot=false) {
             xaxis: {title: "Residual", dtick: 0.1},
             yaxis: {title: "Gender", dtick: 0.1},
             zaxis: {title: "Age", dtick: 0.1},
-            camera: {eye: {x: -2.5, y: -0.75, z: 0.5}}
-        }
+            camera: {eye: {x: -2.5*ZOOM, y: -0.75*ZOOM, z: 0.5*ZOOM}}
+        },
+        margin: {l:0, r:0, t:0, b:0}
     };
 
     if (newPlot) Plotly.newPlot("plotly_scatter", data, layout);

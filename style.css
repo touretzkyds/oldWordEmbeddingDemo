@@ -1,6 +1,4 @@
 #plotly_scatter{
-    width: 50%;
-    height: 600px;
-    float: left;
-    /* block-size: 720px; */
+    width: 100vw;
+    height: 80vh;
 }
