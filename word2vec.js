@@ -5,6 +5,9 @@
 let scatterWords = ['man', 'woman', 'boy', 'girl', 'king', 'queen', 'prince', 'princess', 'nephew', 'niece',
     'uncle', 'aunt', 'father', 'mother', 'son', 'daughter', 'husband', 'wife', 'chair', 'computer'];
 
+// global array for words to show in vector display
+let vectorWords = ["queen", "king", "girl", "boy", "woman", "man"];
+
 // Word pairs used to compute features
 const GENDERPAIRS =
     [
@@ -107,23 +110,24 @@ function plotScatter(newPlot=false) {
         "Nearest words:<br>" + nearestWords.get(target).join("<br>")
     );
 
-    let trace = {
-        x: x,
-        y: y,
-        z: z,
-        mode: "markers+text",
-        type: "scatter3d",
-        marker: {
-            size: 4,
-            opacity: 0.8
-        },
-        text: scatterWords,
-        hoverinfo: "text",
-        hovertext: hovertext
-    };
+    let data = [
+        {
+            x: x,
+            y: y,
+            z: z,
+            mode: "markers+text",
+            type: "scatter3d",
+            marker: {
+                size: 4,
+                opacity: 0.8
+            },
+            text: scatterWords,
+            hoverinfo: "text",
+            hovertext: hovertext
+        }
+    ];
 
     const ZOOM = 0.8;
-    let data = [trace];
     let layout = {
         uirevision: "true",
         scene: {
@@ -138,6 +142,20 @@ function plotScatter(newPlot=false) {
     if (newPlot) Plotly.newPlot("plotly_scatter", data, layout);
     else Plotly.react("plotly_scatter", data, layout);
 
+}
+
+function plotVector() {
+    // heatmap plots matrix of values in z
+    const z = vectorWords.map(word => vecs.get(word));
+
+    const data = [
+        {
+            z: z,
+            type: 'heatmap'
+        }
+    ];
+
+    Plotly.newPlot("plotly_vector", data);
 }
 
 function addRemoveWord() {
@@ -189,6 +207,7 @@ async function main() {
     ).reduce((a,b) => a.add(b)).unit(); // average over residual words and normalize
 
     plotScatter(true);
+    plotVector();
 }
 
 // Main function runs as promise

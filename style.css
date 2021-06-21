@@ -1,4 +1,11 @@
 #plotly_scatter{
-    width: 100vw;
+    width: 49vw;
     height: 80vh;
+    float: left
+}
+
+#plotly_vector{
+    width: 49vw;
+    height: 80vh;
+    float: right
 }
