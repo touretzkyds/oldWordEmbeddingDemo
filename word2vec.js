@@ -106,8 +106,13 @@ function plotScatter(newPlot=false) {
     const y = scatterWords.map(word => vecs.get(word).dot(genderFeature));
     const z = scatterWords.map(word => vecs.get(word).dot(ageFeature));
 
+    // For each point, include numbered list of nearest words in hovertext
     const hovertext = scatterWords.map(target =>
-        "Nearest words:<br>" + nearestWords.get(target).join("<br>")
+        `Reference word:<br>${target}<br>` +
+        "Nearest words:<br>" +
+        nearestWords.get(target)
+            .map((word, i) => `${i+1}. ${word}`)
+            .join("<br>")
     );
 
     let data = [
@@ -136,8 +141,10 @@ function plotScatter(newPlot=false) {
             zaxis: {title: "Age", dtick: 0.1},
             camera: {eye: {x: -2.5*ZOOM, y: -0.75*ZOOM, z: 0.5*ZOOM}}
         },
-        margin: {l:0, r:0, t:0, b:0}
+        margin: {l:0, r:0, t:0, b:0},
+        font: {size: 12}
     };
+
 
     if (newPlot) Plotly.newPlot("plotly_scatter", data, layout);
     else Plotly.react("plotly_scatter", data, layout);
