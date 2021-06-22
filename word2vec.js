@@ -157,6 +157,7 @@ function plotVector() {
 
     const data = [
         {
+            y: vectorWords,
             z: z,
             type: "heatmap",
             ygap: 5
@@ -164,7 +165,8 @@ function plotVector() {
     ];
 
     const layout = {
-
+        xaxis: {title: "Vector dimension", dtick: 10},
+        yaxis: {title: "Words"}
     };
 
     Plotly.newPlot("plotly_vector", data, layout);
