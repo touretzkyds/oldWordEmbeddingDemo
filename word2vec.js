@@ -177,17 +177,17 @@ function addRemoveWord() {
 
     if (scatterWords.includes(word)) {  // remove word
         scatterWords = scatterWords.filter(item => item !== word);
-        document.getElementById("addRemoveMessage").innerText = "Word removed";
+        document.getElementById("addRemoveMessage").innerText = `"${word}" removed`;
         plotScatter();  // replot (new plot, not Plotly.react)
     }
     else { // add word if in wordvecs
         if (vecs.has(word)) {
             scatterWords.push(word);
-            document.getElementById("addRemoveMessage").innerText = "Word added";
+            document.getElementById("addRemoveMessage").innerText = `"${word}" added`;
             plotScatter();
         }
         else { // word not found
-            document.getElementById("addRemoveMessage").innerText = "Word not found!";
+            document.getElementById("addRemoveMessage").innerText = `"${word}" not found`;
         }
     }
 }
