@@ -115,7 +115,7 @@ function plotScatter(newPlot=false) {
             .join("<br>")
     );
 
-    let data = [
+    const data = [
         {
             x: x,
             y: y,
@@ -133,7 +133,7 @@ function plotScatter(newPlot=false) {
     ];
 
     const ZOOM = 0.8;
-    let layout = {
+    const layout = {
         uirevision: "true",
         scene: {
             xaxis: {title: "Residual", dtick: 0.1},
@@ -158,11 +158,16 @@ function plotVector() {
     const data = [
         {
             z: z,
-            type: 'heatmap'
+            type: "heatmap",
+            ygap: 5
         }
     ];
 
-    Plotly.newPlot("plotly_vector", data);
+    const layout = {
+
+    };
+
+    Plotly.newPlot("plotly_vector", data, layout);
 }
 
 function addRemoveWord() {
