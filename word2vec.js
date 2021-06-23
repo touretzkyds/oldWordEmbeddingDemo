@@ -8,6 +8,10 @@ let scatterWords = ['man', 'woman', 'boy', 'girl', 'king', 'queen', 'prince', 'p
 // global array for words to show in vector display
 let vectorWords = ["queen", "king", "girl", "boy", "woman", "man"];
 
+// global word in scatterplot to be selected
+// empty string represents nothing selected
+let selectedWord = "";
+
 // Word pairs used to compute features
 const GENDERPAIRS =
     [
@@ -106,6 +110,8 @@ function plotScatter(newPlot=false) {
     const y = scatterWords.map(word => vecs.get(word).dot(genderFeature));
     const z = scatterWords.map(word => vecs.get(word).dot(ageFeature));
 
+    const color = scatterWords.map(word => (word === selectedWord) ? "#FF0000" : "#000000");
+
     // For each point, include numbered list of nearest words in hovertext
     const hovertext = scatterWords.map(target =>
         `Reference word:<br>${target}<br>` +
@@ -124,7 +130,8 @@ function plotScatter(newPlot=false) {
             type: "scatter3d",
             marker: {
                 size: 4,
-                opacity: 0.8
+                opacity: 0.8,
+                color: color
             },
             text: scatterWords,
             hoverinfo: "text",
@@ -148,7 +155,6 @@ function plotScatter(newPlot=false) {
 
     if (newPlot) Plotly.newPlot("plotly_scatter", data, layout);
     else Plotly.react("plotly_scatter", data, layout);
-
 }
 
 function plotVector() {
@@ -222,6 +228,18 @@ async function main() {
 
     plotScatter(true);
     plotVector();
+
+    // bind scatter click event
+    let plot = document.getElementById("plotly_scatter");
+
+    plot.on("plotly_click", (data) => {
+        let ptNum = data.points[0].pointNumber;
+        selectedWord = scatterWords[ptNum];
+
+        // replot point color
+        // timeout hack is needed due to https://github.com/plotly/plotly.js/issues/1025
+        setTimeout(() => plotScatter(), 100);
+    });
 }
 
 // Main function runs as promise
