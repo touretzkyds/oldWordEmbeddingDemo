@@ -196,7 +196,7 @@ function addRemoveWord() {
 async function main() {
     // fetch wordvecs locally (no error handling) and process
     // note python's http.server does not support response compression Content-Encoding
-    const vecsResponse = await fetch("wordvecs10k.txt");
+    const vecsResponse = await fetch("wordvecs50k.vec");
     const vecsText = await vecsResponse.text();
 
     // lo-tech progress indication
