@@ -1,3 +1,4 @@
 *.pdf
 model.txt
 *.vec
+wordvecs50k.txt

@@ -148,7 +148,7 @@ function plotScatter(newPlot=false) {
             zaxis: {title: "Age", dtick: 0.1},
             camera: {eye: {x: -2.5*ZOOM, y: -0.75*ZOOM, z: 0.5*ZOOM}}
         },
-        margin: {l:0, r:0, t:0, b:0},
+        margin: {l:0, r:0, t:0, b:0}, // maximize viewing area
         font: {size: 12}
     };
 
@@ -184,16 +184,19 @@ function addRemoveWord() {
     if (scatterWords.includes(word)) {  // remove word
         scatterWords = scatterWords.filter(item => item !== word);
         document.getElementById("addRemoveMessage").innerText = `"${word}" removed`;
+        selectedWord = ""; // remove selected word
         plotScatter();  // replot (new plot, not Plotly.react)
     }
     else { // add word if in wordvecs
         if (vecs.has(word)) {
             scatterWords.push(word);
             document.getElementById("addRemoveMessage").innerText = `"${word}" added`;
-            plotScatter();
+            selectedWord = word; // make added word selected word
+            plotScatter(); // replot
         }
         else { // word not found
             document.getElementById("addRemoveMessage").innerText = `"${word}" not found`;
+            // no replot or change to selected word
         }
     }
 }
@@ -202,7 +205,7 @@ function addRemoveWord() {
 async function main() {
     // fetch wordvecs locally (no error handling) and process
     // note python's http.server does not support response compression Content-Encoding
-    const vecsResponse = await fetch("wordvecs50k.vec");
+    const vecsResponse = await fetch("wordvecs50k.txt");
     const vecsText = await vecsResponse.text();
 
     // lo-tech progress indication
