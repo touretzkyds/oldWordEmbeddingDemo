@@ -2,13 +2,13 @@ import numpy as np
 from heapq import *
 
 DIM = 300  # vector dim
-N = 10000  # number of words
+N = 50000  # number of words
 K = 10  # top-k words
 words = [""] * N  # word index
 vecs = np.empty((N, DIM))  # words indexed by row
 
 # ensure model stays up to date with website!
-MODEL_PATH = "wordvecs10k.txt"
+MODEL_PATH = "wordvecs50k.txt"
 
 with open(MODEL_PATH) as f:
     model_lines = f.readlines()
