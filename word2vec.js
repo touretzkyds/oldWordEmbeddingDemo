@@ -78,30 +78,6 @@ function createFeature(vecs, wordPairs) {
 }
 
 
-function getTopDim() {
-    const dim = document.getElementById("dim_display").value;
-
-    // TODO only get to run when vecs is actually loaded
-    // turns Map into sorted Object by specified dim
-    const sortedVecs = [...vecs.entries()].sort((a,b) => b[1][dim] - a[1][dim]);
-    //console.log(sortedVecs);
-    let topWords = "";
-
-    
-
-    for (let i=0; i<10; i++) {
-        topWords += `${i} ${sortedVecs[i][0]} ${sortedVecs[i][1][dim]}<br>`;
-    }
-    
-    // similar for bottom words
-    
-    for (let i=vecs.size-10; i<vecs.size; i++) {
-        topWords += `${i} ${sortedVecs[i][0]} ${sortedVecs[i][1][dim]}<br>`;
-    }
- 
-    document.getElementById("top_dim_list").innerHTML = topWords;
-}
-
 // plot each word projected onto gender, age, residual features
 function plotScatter(newPlot=false) {
     // x, y, z are simply projections onto features
