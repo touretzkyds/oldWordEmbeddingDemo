@@ -163,7 +163,7 @@ function plotVector(newPlot=false) {
 
     const data = [
         {
-            y: vectorWords,
+            // can't use y: vectorWords since the heatmap won't display duplicate words
             z: z,
             type: "heatmap",
             ygap: 5
@@ -172,7 +172,11 @@ function plotVector(newPlot=false) {
 
     const layout = {
         xaxis: {title: "Vector dimension", dtick: 10},
-        yaxis: {title: "Words"}
+        yaxis: {
+            title: "Words",
+            tickvals: Plotly.d3.range(vectorWords.length),
+            ticktext: vectorWords
+        }
     };
 
     if (newPlot) Plotly.newPlot("plotly_vector", data, layout);
