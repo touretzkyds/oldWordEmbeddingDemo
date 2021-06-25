@@ -157,7 +157,7 @@ function plotScatter(newPlot=false) {
     else Plotly.react("plotly_scatter", data, layout);
 }
 
-function plotVector() {
+function plotVector(newPlot=false) {
     // heatmap plots matrix of values in z
     const z = vectorWords.map(word => vecs.get(word));
 
@@ -175,7 +175,8 @@ function plotVector() {
         yaxis: {title: "Words"}
     };
 
-    Plotly.newPlot("plotly_vector", data, layout);
+    if (newPlot) Plotly.newPlot("plotly_vector", data, layout);
+    else Plotly.react("plotly_vector", data, layout);
 }
 
 function addRemoveWord() {
@@ -230,12 +231,13 @@ async function main() {
     ).reduce((a,b) => a.add(b)).unit(); // average over residual words and normalize
 
     plotScatter(true);
-    plotVector();
+    plotVector(true);
 
     // bind scatter click event
-    let plot = document.getElementById("plotly_scatter");
+    let plotly_scatter = document.getElementById("plotly_scatter");
+    let plotly_vector = document.getElementById("plotly_vector");
 
-    plot.on("plotly_click", (data) => {
+    plotly_scatter.on("plotly_click", (data) => {
         let ptNum = data.points[0].pointNumber;
         selectedWord = scatterWords[ptNum];
 
@@ -243,6 +245,19 @@ async function main() {
         // timeout hack is needed due to https://github.com/plotly/plotly.js/issues/1025
         setTimeout(() => plotScatter(), 100);
     });
+
+    // bind axis click to replace word in vector display
+    // https://stackoverflow.com/a/47400462
+    plotly_vector.on("plotly_afterplot", () => {
+       Plotly.d3.selectAll(".yaxislayer-above").selectAll("text") // d3 not exported in plotly 2.0
+           .on("click", (d) => {
+               if (selectedWord) {
+                   vectorWords[d.x] = selectedWord;
+                   plotVector();
+               }
+           });
+    });
+
 }
 
 // Main function runs as promise

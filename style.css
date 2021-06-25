@@ -9,3 +9,9 @@
     height: 80vh;
     float: right
 }
+
+/* bind vector axis click */
+.yaxislayer-above {
+    cursor: pointer;
+    pointer-events: all;
+}
