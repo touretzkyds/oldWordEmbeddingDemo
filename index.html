@@ -20,13 +20,15 @@
     <div id="plotly_vector"> </div>
 </div>
 
-<!-- TODO: cleanup CSS -->
-<p id="loading_text">Downloading model...</p>
+<div class="status-bar">
+    <span id="loading_text">Downloading model...</span>
 
-<input type="text" id="addRemoveWordInput">
-<button onclick="addRemoveWord();">Add/Remove Word</button>
-<p id="addRemoveMessage"></p>
-
+    <div class="word-entry">
+        <input id="addRemoveWordInput" type="text">
+        <button onclick="addRemoveWord();">Add/Remove Word</button>
+    </div>
+    <span id="addRemoveMessage"></span>
+</div>
 
 
 </body>

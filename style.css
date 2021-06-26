@@ -1,10 +1,22 @@
-.plotly-wrapper{
+h1 {
+    text-align: center;
+}
+
+.plotly-wrapper {
     /* default width 100% */
     height: 80vh;
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
 
+.status-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+#addRemoveWordInput {
+    width: 50%
+}
 
 /* bind vector axis click */
 .yaxislayer-above {
