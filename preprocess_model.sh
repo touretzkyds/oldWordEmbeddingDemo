@@ -3,10 +3,12 @@
 
 # from issue #1: words to be used defined as only alpha characters
 # since words are sorted by frequency, only keep most common casing of a word
+# from #2: make all words lowercase
 # take first n many words, skipping first line of fasttext format
 tail -n +2 wiki-news-300d-1M.vec |
 grep -P "^[a-zA-Z]+ " |
 awk '!a[tolower($1)]++' |
+tr '[:upper:]' '[:lower:]' | # could do lowercasing earlier
 head -n50000 > wordvecs50k.txt
 
 # for manual analysis, get list of included words
