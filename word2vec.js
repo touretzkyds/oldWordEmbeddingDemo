@@ -55,6 +55,11 @@ function processRawVecs(text) {
         const vec = new Vector(entries.slice(1).map(Number)).unit();  // normalize word vectors
         vecs.set(word, vec);
     }
+
+    // sanity check for debugging input data
+    RESIDUALWORDS.forEach(word => console.assert(vecs.has(word),
+        word + " not in vecs"));
+
     return vecs;
 }
 
