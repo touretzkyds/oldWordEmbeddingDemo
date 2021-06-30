@@ -196,11 +196,14 @@ async function main() {
     const vecsResponse = await fetch("wordvecs50k.vec.gz");
     const vecsBlob = await vecsResponse.blob();
     const vecsBuf = await vecsBlob.arrayBuffer();
-    // freezes browser, see https://github.com/nodeca/pako/issues/228
-    const vecsText = pako.inflate(vecsBuf, {to: "string"});
 
     // lo-tech progress indication
     document.getElementById("loading_text").innerText = "Model downloaded";
+
+    // inflate option to:"string" freezes browser, see https://github.com/nodeca/pako/issues/228
+    // TextDecoder may hang browser but seems much faster
+    const vecsUint8 = pako.inflate(vecsBuf);
+    const vecsText = new TextDecoder().decode(vecsUint8);
 
     vecs = processRawVecs(vecsText);
 
