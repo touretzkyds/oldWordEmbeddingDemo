@@ -9,10 +9,13 @@ tail -n +2 wiki-news-300d-1M.vec |
 grep -P "^[a-zA-Z]+ " |
 awk '!a[tolower($1)]++' |
 tr '[:upper:]' '[:lower:]' | # could do lowercasing earlier
-head -n50000 > wordvecs50k.txt
+head -n50000 > wordvecs50k.vec
+
+# compress for github
+gzip -c wordvecs50k.vec > wordvecs50k.vec.gz
 
 # for manual analysis, get list of included words
-cut -d' ' -f1 wordvecs50k.txt > words50k.txt
+cut -d' ' -f1 wordvecs50k.vec > words50k.txt
 
 # run nearest neighbors precomputation (#4) (and time for fun)
-time python3 nearest_words.py wordvecs50k.txt > nearest_words.txt
+time python3 nearest_words.py wordvecs50k.vec > nearest_words.txt

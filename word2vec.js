@@ -191,8 +191,13 @@ function addRemoveWord() {
 async function main() {
     // fetch wordvecs locally (no error handling) and process
     // note python's http.server does not support response compression Content-Encoding
-    const vecsResponse = await fetch("wordvecs50k.txt");
-    const vecsText = await vecsResponse.text();
+    // browsers and servers support content-encoding, but manually compress to fit on github (#1)
+
+    const vecsResponse = await fetch("wordvecs50k.vec.gz");
+    const vecsBlob = await vecsResponse.blob();
+    const vecsBuf = await vecsBlob.arrayBuffer();
+    // freezes browser, see https://github.com/nodeca/pako/issues/228
+    const vecsText = pako.inflate(vecsBuf, {to: "string"});
 
     // lo-tech progress indication
     document.getElementById("loading_text").innerText = "Model downloaded";
@@ -202,6 +207,7 @@ async function main() {
     // fetch nearest words list
     const nearestWordsResponse = await fetch("nearest_words.txt");
     const nearestWordsText = await nearestWordsResponse.text();
+
     nearestWords = processNearestWords(nearestWordsText);
 
     // vector calculations and plotting, including residual (issue #3)
