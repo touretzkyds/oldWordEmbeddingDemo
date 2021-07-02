@@ -12,6 +12,8 @@ let vectorWords = ["queen", "king", "girl", "boy", "woman", "man"];
 // empty string represents nothing selected
 let selectedWord = "";
 
+const MAGNIFY_WINDOW = 5; // range for magnified view
+
 // Word pairs used to compute features
 const GENDERPAIRS =
     [
@@ -43,6 +45,7 @@ const AGEPAIRS =
 const RESIDUALWORDS = [...new Set(GENDERPAIRS.flat().concat(AGEPAIRS.flat()))];
 
 let vecs; // global word to vector Map
+let vecsDim; // word vector dim
 let nearestWords; // global nearest words Map
 let ageFeature, genderFeature, residualFeature; // global feature vectors for use in replotting
 
@@ -51,6 +54,7 @@ function processRawVecs(text) {
     const lines = text.trim().split(/\n/);
     for (const line of lines) {
         const entries = line.trim().split(' ');
+        vecsDim = entries.length - 1;
         const word = entries[0];
         const vec = new Vector(entries.slice(1).map(Number)).unit();  // normalize word vectors
         vecs.set(word, vec);
@@ -164,6 +168,36 @@ function plotVector(newPlot=false) {
     else Plotly.react("plotly_vector", data, layout);
 }
 
+function plotMagnify(hoverX, newPlot=false) {
+    // ensure hoverX will produce proper plot
+    if (!(0 <= hoverX - MAGNIFY_WINDOW && hoverX + MAGNIFY_WINDOW <= vecsDim))
+        return;
+
+    // heatmap with subset of z
+    const z = vectorWords.map(word =>
+        vecs.get(word).slice(hoverX - MAGNIFY_WINDOW, hoverX + MAGNIFY_WINDOW + 1));
+
+    const data = [
+        {
+            z: z,
+            type: "heatmap",
+            ygap: 5
+        }
+    ];
+
+    const layout = {
+        xaxis: {title: "Vector dimension"},
+        yaxis: {
+            title: "Words",
+            tickvals: Plotly.d3.range(vectorWords.length),
+            ticktext: vectorWords
+        }
+    };
+
+    if (newPlot) Plotly.newPlot("plotly_magnify", data, layout);
+    else Plotly.react("plotly_magnify", data, layout);
+}
+
 function addRemoveWord() {
     const word = document.getElementById("addRemoveWordInput").value;
 
@@ -224,8 +258,10 @@ async function main() {
         }
     ).reduce((a,b) => a.add(b)).unit(); // average over residual words and normalize
 
+    // plot new plots for the first time
     plotScatter(true);
     plotVector(true);
+    plotMagnify(MAGNIFY_WINDOW, true);
 
     // bind scatter click event
     let plotly_scatter = document.getElementById("plotly_scatter");
@@ -235,6 +271,7 @@ async function main() {
         let ptNum = data.points[0].pointNumber;
         selectedWord = scatterWords[ptNum];
 
+        console.log("Selected", selectedWord);
         // replot point color
         // timeout hack is needed due to https://github.com/plotly/plotly.js/issues/1025
         setTimeout(() => plotScatter(), 100);
@@ -245,12 +282,20 @@ async function main() {
     plotly_vector.on("plotly_afterplot", () => {
        Plotly.d3.selectAll(".yaxislayer-above").selectAll("text") // d3 not exported in plotly 2.0
            .on("click", (d) => {
+               console.log("Clicked on", d.x);
                if (selectedWord) {
                    vectorWords[d.x] = selectedWord;
                    plotVector();
                }
            });
     });
+
+    plotly_vector.on("plotly_hover", data => {
+        const hoverX = data.points[0].x;
+        console.log("Hover " + hoverX);
+        plotMagnify(hoverX, false);
+    });
+
 
 }
 
