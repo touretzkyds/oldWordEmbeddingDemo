@@ -296,18 +296,22 @@ async function main() {
     // note python's http.server does not support response compression Content-Encoding
     // browsers and servers support content-encoding, but manually compress to fit on github (#1)
 
+    // lo-tech progress indication
+    const loadingText = document.getElementById("loading_text");
+    loadingText.innerText = "Downloading model...";
+
     const vecsResponse = await fetch("wordvecs50k.vec.gz");
     const vecsBlob = await vecsResponse.blob();
     const vecsBuf = await vecsBlob.arrayBuffer();
 
-    // lo-tech progress indication
-    document.getElementById("loading_text").innerText = "Model downloaded";
 
     // inflate option to:"string" freezes browser, see https://github.com/nodeca/pako/issues/228
     // TextDecoder may hang browser but seems much faster
+    loadingText.innerText = "Unpacking model...";
     const vecsUint8 = pako.inflate(vecsBuf);
     const vecsText = new TextDecoder().decode(vecsUint8);
 
+    loadingText.innerText = "Processing vectors...";
     vecs = processRawVecs(vecsText);
 
     // fetch nearest words list
@@ -327,6 +331,8 @@ async function main() {
         }
     ).reduce((a,b) => a.add(b)).unit(); // average over residual words and normalize
 
+    loadingText.innerText = "Model processing done";
+
     // plot new plots for the first time
     plotScatter(true);
     plotVector(true);
@@ -334,5 +340,7 @@ async function main() {
 
 }
 
-// Main function runs as promise
-main().catch(e => console.error(e));
+// Main function runs as promise after DOM has loaded
+document.addEventListener("DOMContentLoaded", () => {
+    main().catch(e => console.error(e));
+});
