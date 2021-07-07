@@ -1,18 +1,8 @@
 "use strict";
 
-// global array of words plotted on scatter plot
-// changes from original demo: replace "refrigerator" with "chair" and "computer"
-let scatterWords = ['man', 'woman', 'boy', 'girl', 'king', 'queen', 'prince', 'princess', 'nephew', 'niece',
-    'uncle', 'aunt', 'father', 'mother', 'son', 'daughter', 'husband', 'wife', 'chair', 'computer'];
-
-// global array for words to show in vector display
-let vectorWords = ["queen", "king", "girl", "boy", "woman", "man"];
-
-// global word in scatterplot to be selected
-// empty string represents nothing selected
-let selectedWord = "";
-
 const MAGNIFY_WINDOW = 5; // range for magnified view
+const HEATMAPMIN = -0.2;  // min and max for heatmap colorscale
+const HEATMAPMAX = 0.2;
 
 // Word pairs used to compute features
 const GENDERPAIRS =
@@ -44,10 +34,25 @@ const AGEPAIRS =
 // Residual words made up from words in gender and age pairs
 const RESIDUALWORDS = [...new Set(GENDERPAIRS.flat().concat(AGEPAIRS.flat()))];
 
+// global array of words plotted on scatter plot
+// changes from original demo: replace "refrigerator" with "chair" and "computer"
+let scatterWords = ['man', 'woman', 'boy', 'girl', 'king', 'queen', 'prince', 'princess', 'nephew', 'niece',
+    'uncle', 'aunt', 'father', 'mother', 'son', 'daughter', 'husband', 'wife', 'chair', 'computer'];
+
+// global array for words to show in vector display
+let vectorWords = ["queen", "king", "girl", "boy", "woman", "man"];
+
+// global word in scatterplot to be selected
+// empty string represents nothing selected
+let selectedWord = "";
+
+
 let vecs; // global word to vector Map
 let vecsDim; // word vector dim
 let nearestWords; // global nearest words Map
 let ageFeature, genderFeature, residualFeature; // global feature vectors for use in replotting
+
+
 
 function processRawVecs(text) {
     let vecs = new Map();
@@ -150,6 +155,8 @@ function plotVector(newPlot=false) {
         {
             // can't use y: vectorWords since the heatmap won't display duplicate words
             z: z,
+            zmin: HEATMAPMIN,
+            zmax: HEATMAPMAX,
             type: "heatmap",
             ygap: 5
         }
@@ -180,8 +187,11 @@ function plotMagnify(hoverX, newPlot=false) {
     const data = [
         {
             z: z,
+            zmin: HEATMAPMIN,
+            zmax: HEATMAPMAX,
             type: "heatmap",
-            ygap: 5
+            ygap: 5,
+            showscale: false
         }
     ];
 
@@ -191,7 +201,8 @@ function plotMagnify(hoverX, newPlot=false) {
             title: "Words",
             tickvals: Plotly.d3.range(vectorWords.length),
             ticktext: vectorWords
-        }
+        },
+
     };
 
     if (newPlot) Plotly.newPlot("plotly_magnify", data, layout);
