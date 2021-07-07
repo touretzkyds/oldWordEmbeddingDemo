@@ -130,6 +130,19 @@ function plotScatter(newPlot=false) {
     ];
 
     const ZOOM = 0.8;
+
+    // save previous camera code (workaround for #9)
+    let camera;
+    if (newPlot) {
+        camera = {eye: {x: -2.5*ZOOM, y: -0.75*ZOOM, z: 0.5*ZOOM}};
+    } else { // save camera
+        const plotly_scatter = document.getElementById("plotly_scatter");
+        camera = plotly_scatter.layout.scene.camera;
+    }
+
+    console.log("Using camera", camera);
+
+
     const layout = {
         title: {text: "Word vector projection"},
         //uirevision: "true",
@@ -137,15 +150,17 @@ function plotScatter(newPlot=false) {
             xaxis: {title: "Residual", dtick: 0.1},
             yaxis: {title: "Gender", dtick: 0.1},
             zaxis: {title: "Age", dtick: 0.1},
-            camera: {eye: {x: -2.5*ZOOM, y: -0.75*ZOOM, z: 0.5*ZOOM}}
+            camera: camera
         },
         margin: {l:0, r:0, t:30, b:0}, // maximize viewing area
         font: {size: 12}
     };
 
 
-    if (newPlot) Plotly.newPlot("plotly_scatter", data, layout);
-    else Plotly.react("plotly_scatter", data, layout);
+
+    // always make new plot (#9)
+    Plotly.newPlot("plotly_scatter", data, layout);
+
 
     // bind scatter click event
     let plotly_scatter = document.getElementById("plotly_scatter");
@@ -155,7 +170,7 @@ function plotScatter(newPlot=false) {
         selectedWord = scatterWords[ptNum];
 
         console.log("Selected", selectedWord);
-        // replot point color
+        // replot with new point color
         // timeout hack is needed due to https://github.com/plotly/plotly.js/issues/1025
         setTimeout(() => plotScatter(), 100);
     });
