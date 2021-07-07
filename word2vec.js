@@ -200,9 +200,10 @@ function plotMagnify(hoverX, newPlot=false) {
         yaxis: {
             title: "Words",
             tickvals: Plotly.d3.range(vectorWords.length),
-            ticktext: vectorWords
+            ticktext: vectorWords,
+            // visible: false
         },
-
+        margin: {r:0} // get close to main vector view
     };
 
     if (newPlot) Plotly.newPlot("plotly_magnify", data, layout);
