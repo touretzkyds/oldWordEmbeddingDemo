@@ -131,14 +131,15 @@ function plotScatter(newPlot=false) {
 
     const ZOOM = 0.8;
     const layout = {
-        uirevision: "true",
+        title: {text: "Word vector projection"},
+        //uirevision: "true",
         scene: {
             xaxis: {title: "Residual", dtick: 0.1},
             yaxis: {title: "Gender", dtick: 0.1},
             zaxis: {title: "Age", dtick: 0.1},
             camera: {eye: {x: -2.5*ZOOM, y: -0.75*ZOOM, z: 0.5*ZOOM}}
         },
-        margin: {l:0, r:0, t:0, b:0}, // maximize viewing area
+        margin: {l:0, r:0, t:30, b:0}, // maximize viewing area
         font: {size: 12}
     };
 
@@ -163,12 +164,14 @@ function plotVector(newPlot=false) {
     ];
 
     const layout = {
+        title: {text: "Vector visualization"},
         xaxis: {title: "Vector dimension", dtick: 10},
         yaxis: {
             title: "Words",
             tickvals: Plotly.d3.range(vectorWords.length),
             ticktext: vectorWords
-        }
+        },
+        margin: {t:30},
     };
 
     if (newPlot) Plotly.newPlot("plotly_vector", data, layout);
@@ -196,14 +199,15 @@ function plotMagnify(hoverX, newPlot=false) {
     ];
 
     const layout = {
+        title: {text: "Magnified view"},
         xaxis: {title: "Vector dimension"},
         yaxis: {
-            title: "Words",
+            //title: "Words",
             tickvals: Plotly.d3.range(vectorWords.length),
             ticktext: vectorWords,
             // visible: false
         },
-        margin: {r:0} // get close to main vector view
+        margin: {r:0, t:30} // get close to main vector view
     };
 
     if (newPlot) Plotly.newPlot("plotly_magnify", data, layout);
