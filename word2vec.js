@@ -177,7 +177,7 @@ function plotVector(newPlot=false) {
 
 function plotMagnify(hoverX, newPlot=false) {
     // ensure hoverX will produce proper plot
-    if (!(0 <= hoverX - MAGNIFY_WINDOW && hoverX + MAGNIFY_WINDOW <= vecsDim))
+    if (!(0 <= hoverX - MAGNIFY_WINDOW && hoverX + MAGNIFY_WINDOW < vecsDim))
         return;
 
     // heatmap with subset of z
