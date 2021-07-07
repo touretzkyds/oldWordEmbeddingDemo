@@ -146,6 +146,20 @@ function plotScatter(newPlot=false) {
 
     if (newPlot) Plotly.newPlot("plotly_scatter", data, layout);
     else Plotly.react("plotly_scatter", data, layout);
+
+    // bind scatter click event
+    let plotly_scatter = document.getElementById("plotly_scatter");
+
+    plotly_scatter.on("plotly_click", (data) => {
+        let ptNum = data.points[0].pointNumber;
+        selectedWord = scatterWords[ptNum];
+
+        console.log("Selected", selectedWord);
+        // replot point color
+        // timeout hack is needed due to https://github.com/plotly/plotly.js/issues/1025
+        setTimeout(() => plotScatter(), 100);
+    });
+
 }
 
 function plotVector(newPlot=false) {
@@ -176,6 +190,30 @@ function plotVector(newPlot=false) {
 
     if (newPlot) Plotly.newPlot("plotly_vector", data, layout);
     else Plotly.react("plotly_vector", data, layout);
+
+
+    let plotly_vector = document.getElementById("plotly_vector");
+
+
+    // bind axis click to replace word in vector display
+    // https://stackoverflow.com/a/47400462
+    plotly_vector.on("plotly_afterplot", () => {
+        Plotly.d3.selectAll(".yaxislayer-above").selectAll("text") // d3 not exported in plotly 2.0
+            .on("click", (d) => {
+                console.log("Clicked on", d.x);
+                if (selectedWord) {
+                    vectorWords[d.x] = selectedWord;
+                    plotVector();
+                }
+            });
+    });
+
+    plotly_vector.on("plotly_hover", data => {
+        const hoverX = data.points[0].x;
+        console.log("Hover " + hoverX);
+        plotMagnify(hoverX, false);
+    });
+
 }
 
 function plotMagnify(hoverX, newPlot=false) {
@@ -278,40 +316,6 @@ async function main() {
     plotScatter(true);
     plotVector(true);
     plotMagnify(MAGNIFY_WINDOW, true);
-
-    // bind scatter click event
-    let plotly_scatter = document.getElementById("plotly_scatter");
-    let plotly_vector = document.getElementById("plotly_vector");
-
-    plotly_scatter.on("plotly_click", (data) => {
-        let ptNum = data.points[0].pointNumber;
-        selectedWord = scatterWords[ptNum];
-
-        console.log("Selected", selectedWord);
-        // replot point color
-        // timeout hack is needed due to https://github.com/plotly/plotly.js/issues/1025
-        setTimeout(() => plotScatter(), 100);
-    });
-
-    // bind axis click to replace word in vector display
-    // https://stackoverflow.com/a/47400462
-    plotly_vector.on("plotly_afterplot", () => {
-       Plotly.d3.selectAll(".yaxislayer-above").selectAll("text") // d3 not exported in plotly 2.0
-           .on("click", (d) => {
-               console.log("Clicked on", d.x);
-               if (selectedWord) {
-                   vectorWords[d.x] = selectedWord;
-                   plotVector();
-               }
-           });
-    });
-
-    plotly_vector.on("plotly_hover", data => {
-        const hoverX = data.points[0].x;
-        console.log("Hover " + hoverX);
-        plotMagnify(hoverX, false);
-    });
-
 
 }
 
