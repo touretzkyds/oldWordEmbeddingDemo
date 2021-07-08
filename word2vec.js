@@ -156,11 +156,8 @@ function plotScatter(newPlot=false) {
         font: {size: 12}
     };
 
-
-
     // always make new plot (#9)
     Plotly.newPlot("plotly_scatter", data, layout);
-
 
     // bind scatter click event
     let plotly_scatter = document.getElementById("plotly_scatter");
@@ -178,8 +175,7 @@ function plotScatter(newPlot=false) {
         }
 
         // replot with new point color
-        // timeout hack is needed due to https://github.com/plotly/plotly.js/issues/1025
-        setTimeout(() => plotScatter(), 100);
+        plotScatter();
     });
 
 }
