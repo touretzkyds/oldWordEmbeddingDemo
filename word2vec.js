@@ -197,7 +197,7 @@ function plotVector(newPlot=false) {
 
     const layout = {
         title: {text: "Vector visualization"},
-        xaxis: {title: "Vector dimension", dtick: 10},
+        xaxis: {title: "Vector dimension", dtick: 10, zeroline: false},
         yaxis: {
             title: "Words",
             tickvals: Plotly.d3.range(vectorWords.length),
@@ -256,7 +256,7 @@ function plotMagnify(hoverX, newPlot=false) {
 
     const layout = {
         title: {text: "Magnified view"},
-        xaxis: {title: "Vector dimension"},
+        xaxis: {title: "Vector dimension", zeroline: false},
         yaxis: {
             //title: "Words",
             tickvals: Plotly.d3.range(vectorWords.length),
