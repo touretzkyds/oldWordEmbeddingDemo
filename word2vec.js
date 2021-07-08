@@ -245,6 +245,7 @@ function plotMagnify(hoverX, newPlot=false) {
 
     const data = [
         {
+            x: Plotly.d3.range(hoverX - MAGNIFY_WINDOW, hoverX + MAGNIFY_WINDOW + 1),
             z: z,
             zmin: HEATMAPMIN,
             zmax: HEATMAPMAX,
@@ -256,7 +257,7 @@ function plotMagnify(hoverX, newPlot=false) {
 
     const layout = {
         title: {text: "Magnified view"},
-        xaxis: {title: "Vector dimension", zeroline: false},
+        xaxis: {title: "Vector dimension", dtick:1, zeroline: false},
         yaxis: {
             //title: "Words",
             tickvals: Plotly.d3.range(vectorWords.length),
