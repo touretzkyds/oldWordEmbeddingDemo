@@ -166,10 +166,17 @@ function plotScatter(newPlot=false) {
     let plotly_scatter = document.getElementById("plotly_scatter");
 
     plotly_scatter.on("plotly_click", (data) => {
-        let ptNum = data.points[0].pointNumber;
-        selectedWord = scatterWords[ptNum];
+        const ptNum = data.points[0].pointNumber;
+        const clickedWord = scatterWords[ptNum];
 
-        console.log("Selected", selectedWord);
+        if (clickedWord === selectedWord) { // deselect
+            selectedWord = "";
+            console.log("Deselected", clickedWord);
+        } else { // select
+            selectedWord = clickedWord;
+            console.log("Selected", selectedWord);
+        }
+
         // replot with new point color
         // timeout hack is needed due to https://github.com/plotly/plotly.js/issues/1025
         setTimeout(() => plotScatter(), 100);
