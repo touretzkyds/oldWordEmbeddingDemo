@@ -263,7 +263,7 @@ function plotMagnify(hoverX, newPlot=false) {
             ticktext: vectorWords,
             // visible: false
         },
-        margin: {r:0, t:30} // get close to main vector view
+        margin: {r:5, t:30} // get close to main vector view
     };
 
     if (newPlot) Plotly.newPlot("plotly_magnify", data, layout);
