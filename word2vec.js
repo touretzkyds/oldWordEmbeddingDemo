@@ -197,13 +197,20 @@ function plotVector(newPlot=false) {
 
     const layout = {
         title: {text: "Vector visualization"},
-        xaxis: {title: "Vector dimension", dtick: 10, zeroline: false},
+        xaxis: {
+            title: "Vector dimension",
+            dtick: 10,
+            zeroline: false,
+            fixedrange: true
+        },
         yaxis: {
             title: "Words",
             tickvals: Plotly.d3.range(vectorWords.length),
-            ticktext: vectorWords
+            ticktext: vectorWords,
+            fixedrange: true
         },
         margin: {t:30},
+        //dragmode: false
     };
 
     if (newPlot) Plotly.newPlot("plotly_vector", data, layout);
@@ -257,12 +264,17 @@ function plotMagnify(hoverX, newPlot=false) {
 
     const layout = {
         title: {text: "Magnified view"},
-        xaxis: {title: "Vector dimension", dtick:1, zeroline: false},
+        xaxis: {
+            title: "Vector dimension",
+            dtick:1,
+            zeroline: false,
+            fixedrange: true
+        },
         yaxis: {
             //title: "Words",
             tickvals: Plotly.d3.range(vectorWords.length),
             ticktext: vectorWords,
-            // visible: false
+            fixedrange: true
         },
         margin: {r:5, t:30} // get close to main vector view
     };
