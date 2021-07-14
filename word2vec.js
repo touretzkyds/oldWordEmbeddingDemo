@@ -46,6 +46,8 @@ let vectorWords = ["queen", "king", "girl", "boy", "woman", "man"];
 // empty string represents nothing selected
 let selectedWord = "";
 
+// saved hoverX for use in magnify view
+let hoverX = MAGNIFY_WINDOW;
 
 let vecs; // global word to vector Map
 let vecsDim; // word vector dim
@@ -233,19 +235,20 @@ function plotVector(newPlot=false) {
                     selectedWord = "";
                     plotScatter();
                     plotVector();
+                    plotMagnify();
                 }
             });
     });
 
     plotly_vector.on("plotly_hover", data => {
-        const hoverX = data.points[0].x;
+        hoverX = data.points[0].x;
         console.log("Hover " + hoverX);
-        plotMagnify(hoverX, false);
+        plotMagnify();
     });
 
 }
 
-function plotMagnify(hoverX, newPlot=false) {
+function plotMagnify(newPlot=false) {
     // ensure hoverX will produce proper plot
     if (!(0 <= hoverX - MAGNIFY_WINDOW && hoverX + MAGNIFY_WINDOW < vecsDim))
         return;
@@ -356,7 +359,7 @@ async function main() {
     // plot new plots for the first time
     plotScatter(true);
     plotVector(true);
-    plotMagnify(MAGNIFY_WINDOW, true);
+    plotMagnify(true);
 
 }
 
