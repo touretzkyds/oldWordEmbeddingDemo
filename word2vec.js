@@ -238,20 +238,20 @@ function plotVector(newPlot=false) {
         //dragmode: false
     };
 
-    if (newPlot) Plotly.newPlot("plotly_vector", data, layout);
+    if (newPlot) {
+        Plotly.newPlot("plotly_vector", data, layout);
+        const plotly_vector = document.getElementById("plotly_vector");
+
+        // bind axis click to replace word in vector display after plot
+        plotly_vector.on("plotly_afterplot", updateHeatmapsOnWordClick);
+
+        plotly_vector.on("plotly_hover", data => {
+            hoverX = data.points[0].x;
+            console.log("Hover " + hoverX);
+            plotMagnify();
+        });
+    }
     else Plotly.react("plotly_vector", data, layout);
-
-    const plotly_vector = document.getElementById("plotly_vector");
-
-    // bind axis click to replace word in vector display after plot
-    plotly_vector.on("plotly_afterplot", updateHeatmapsOnWordClick);
-
-    plotly_vector.on("plotly_hover", data => {
-        hoverX = data.points[0].x;
-        console.log("Hover " + hoverX);
-        plotMagnify();
-    });
-
 }
 
 function plotMagnify(newPlot=false) {
@@ -292,12 +292,13 @@ function plotMagnify(newPlot=false) {
         margin: {r:5, t:30} // get close to main vector view
     };
 
-    if (newPlot) Plotly.newPlot("plotly_magnify", data, layout);
+    if (newPlot) {
+        Plotly.newPlot("plotly_magnify", data, layout);
+        // bind axis click after plot, similar to vector
+        const plotly_magnify = document.getElementById("plotly_magnify");
+        plotly_magnify.on("plotly_afterplot", updateHeatmapsOnWordClick);
+    }
     else Plotly.react("plotly_magnify", data, layout);
-
-    // bind axis click after plot, similar to vector
-    const plotly_magnify = document.getElementById("plotly_magnify");
-    plotly_magnify.on("plotly_afterplot", updateHeatmapsOnWordClick);
 }
 
 function addRemoveWord() {
