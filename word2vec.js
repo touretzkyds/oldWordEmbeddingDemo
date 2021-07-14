@@ -157,6 +157,7 @@ function plotScatter(newPlot=false) {
     };
 
     // always make new plot (#9)
+    // replotting scatter3d produces ugly error (#10)
     Plotly.newPlot("plotly_scatter", data, layout);
 
     // bind scatter click event
