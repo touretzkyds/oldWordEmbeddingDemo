@@ -227,7 +227,10 @@ function plotVector(newPlot=false) {
             .on("click", (d) => {
                 console.log("Clicked on", d.x);
                 if (selectedWord) {
+                    // modify vector view to show selected word and then deselect
                     vectorWords[d.x] = selectedWord;
+                    selectedWord = "";
+                    plotScatter();
                     plotVector();
                 }
             });
