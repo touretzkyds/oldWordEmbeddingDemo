@@ -187,7 +187,7 @@ function updateHeatmapsOnWordClick() {
     // affects all heatmaps since they all have .yaxislayer-above!
     console.log("Binding heatmap click event");
 
-    Plotly.d3.selectAll(".yaxislayer-above").selectAll("text") // d3 not exported in plotly 2.0
+    d3.selectAll(".yaxislayer-above").selectAll("text")
         .on("click", (d) => {
             console.log("Clicked on", d.x);
             if (selectedWord) {
@@ -228,7 +228,7 @@ function plotVector(newPlot=false) {
         },
         yaxis: {
             title: "Words",
-            tickvals: Plotly.d3.range(vectorWords.length),
+            tickvals: d3.range(vectorWords.length),
             ticktext: vectorWords,
             fixedrange: true
         },
@@ -264,7 +264,7 @@ function plotMagnify(newPlot=false) {
 
     const data = [
         {
-            x: Plotly.d3.range(hoverX - MAGNIFY_WINDOW, hoverX + MAGNIFY_WINDOW + 1),
+            x: d3.range(hoverX - MAGNIFY_WINDOW, hoverX + MAGNIFY_WINDOW + 1),
             z: z,
             zmin: HEATMAPMIN,
             zmax: HEATMAPMAX,
@@ -284,7 +284,7 @@ function plotMagnify(newPlot=false) {
         },
         yaxis: {
             //title: "Words",
-            tickvals: Plotly.d3.range(vectorWords.length),
+            tickvals: d3.range(vectorWords.length),
             ticktext: vectorWords,
             fixedrange: true
         },
