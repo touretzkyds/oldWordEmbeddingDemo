@@ -183,6 +183,26 @@ function plotScatter(newPlot=false) {
 
 }
 
+function updateHeatmapsOnWordClick() {
+    // affects all heatmaps since they all have .yaxislayer-above!
+    console.log("Binding heatmap click event");
+
+    Plotly.d3.selectAll(".yaxislayer-above").selectAll("text") // d3 not exported in plotly 2.0
+        .on("click", (d) => {
+            console.log("Clicked on", d.x);
+            if (selectedWord) {
+                // modify vector view to show selected word and then deselect
+                vectorWords[d.x] = selectedWord;
+                selectedWord = "";
+
+                // replot all
+                plotScatter();
+                plotVector();
+                plotMagnify();
+            }
+        });
+}
+
 function plotVector(newPlot=false) {
     // heatmap plots matrix of values in z
     const z = vectorWords.map(word => vecs.get(word));
@@ -219,26 +239,11 @@ function plotVector(newPlot=false) {
     if (newPlot) Plotly.newPlot("plotly_vector", data, layout);
     else Plotly.react("plotly_vector", data, layout);
 
+    const plotly_vector = document.getElementById("plotly_vector");
 
-    let plotly_vector = document.getElementById("plotly_vector");
-
-
-    // bind axis click to replace word in vector display
+    // bind axis click to replace word in vector display after plot
     // https://stackoverflow.com/a/47400462
-    plotly_vector.on("plotly_afterplot", () => {
-        Plotly.d3.selectAll(".yaxislayer-above").selectAll("text") // d3 not exported in plotly 2.0
-            .on("click", (d) => {
-                console.log("Clicked on", d.x);
-                if (selectedWord) {
-                    // modify vector view to show selected word and then deselect
-                    vectorWords[d.x] = selectedWord;
-                    selectedWord = "";
-                    plotScatter();
-                    plotVector();
-                    plotMagnify();
-                }
-            });
-    });
+    plotly_vector.on("plotly_afterplot", updateHeatmapsOnWordClick);
 
     plotly_vector.on("plotly_hover", data => {
         hoverX = data.points[0].x;
@@ -288,6 +293,10 @@ function plotMagnify(newPlot=false) {
 
     if (newPlot) Plotly.newPlot("plotly_magnify", data, layout);
     else Plotly.react("plotly_magnify", data, layout);
+
+    // bind axis click after plot, similar to vector
+    const plotly_magnify = document.getElementById("plotly_magnify");
+    plotly_magnify.on("plotly_afterplot", updateHeatmapsOnWordClick);
 }
 
 function addRemoveWord() {
