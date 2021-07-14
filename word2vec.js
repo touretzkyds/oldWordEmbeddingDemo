@@ -185,14 +185,16 @@ function plotScatter(newPlot=false) {
 
 function updateHeatmapsOnWordClick() {
     // affects all heatmaps since they all have .yaxislayer-above!
+    // https://stackoverflow.com/a/47400462
     console.log("Binding heatmap click event");
 
     d3.selectAll(".yaxislayer-above").selectAll("text")
         .on("click", (d) => {
-            console.log("Clicked on", d.x);
+            const idx = d.target.__data__.x;
+            console.log("Clicked on", idx);
             if (selectedWord) {
                 // modify vector view to show selected word and then deselect
-                vectorWords[d.x] = selectedWord;
+                vectorWords[idx] = selectedWord;
                 selectedWord = "";
 
                 // replot all
@@ -242,7 +244,6 @@ function plotVector(newPlot=false) {
     const plotly_vector = document.getElementById("plotly_vector");
 
     // bind axis click to replace word in vector display after plot
-    // https://stackoverflow.com/a/47400462
     plotly_vector.on("plotly_afterplot", updateHeatmapsOnWordClick);
 
     plotly_vector.on("plotly_hover", data => {
