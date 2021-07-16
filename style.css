@@ -14,7 +14,7 @@ h1 {
     grid-template-columns: 1fr 1fr 1fr;
 }
 
-#addRemoveWordInput {
+#modifyWordInput {
     width: 50%
 }
 

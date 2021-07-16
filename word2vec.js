@@ -301,26 +301,33 @@ function plotMagnify(newPlot=false) {
     else Plotly.react("plotly_magnify", data, layout);
 }
 
-function addRemoveWord() {
-    const word = document.getElementById("addRemoveWordInput").value;
+function modifyWord() {
+    const word = document.getElementById("modifyWordInput").value;
+    let wordModified = false;
 
     if (scatterWords.includes(word)) {  // remove word
         scatterWords = scatterWords.filter(item => item !== word);
-        document.getElementById("addRemoveMessage").innerText = `"${word}" removed`;
+        document.getElementById("modifyWordMessage").innerText = `"${word}" removed`;
         selectedWord = ""; // remove selected word
-        plotScatter();  // replot (new plot, not Plotly.react)
+        wordModified = true;
     }
     else { // add word if in wordvecs
         if (vecs.has(word)) {
             scatterWords.push(word);
-            document.getElementById("addRemoveMessage").innerText = `"${word}" added`;
+            document.getElementById("modifyWordMessage").innerText = `"${word}" added`;
             selectedWord = word; // make added word selected word
-            plotScatter(); // replot
+            wordModified = true;
         }
         else { // word not found
-            document.getElementById("addRemoveMessage").innerText = `"${word}" not found`;
+            document.getElementById("modifyWordMessage").innerText = `"${word}" not found`;
             // no replot or change to selected word
         }
+    }
+
+    if (wordModified) {
+        plotScatter();  // replot to update scatter view
+        document.getElementById("modifyWordInput").value = ""; // clear word
+
     }
 }
 
