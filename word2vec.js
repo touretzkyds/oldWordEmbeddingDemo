@@ -331,6 +331,40 @@ function modifyWord() {
     }
 }
 
+// compute 3COSADD word similarity
+function computeWordSimilarity() {
+    const wordOriginal = document.getElementById("similarity-word-original").value;
+    const wordSubtract = document.getElementById("similarity-word-subtract").value;
+    const wordAdd = document.getElementById("similarity-word-add").value;
+
+    // TODO: handle more gracefully telling user if words not available
+    if (!(vecs.has(wordOriginal) && vecs.has(wordSubtract) && vecs.has(wordAdd))) {
+        console.warn("bad word");
+        return;
+    }
+
+    // vector arithmetic, scale to unit vector
+    const target = vecs.get(wordOriginal)
+        .sub(vecs.get(wordSubtract))
+        .add(vecs.get(wordAdd))
+        .unit();
+
+    let bestSimilarity = 0;
+    let bestWord;
+    for (const word of vecs.keys()) {
+        if (word === wordOriginal) continue; // don't match original word
+
+        const similarity = target.dot(vecs.get(word)); // cosine for unit vecs
+
+        if (similarity > bestSimilarity) {
+            bestWord = word;
+            bestSimilarity = similarity;
+        }
+    }
+
+    document.getElementById("similarity-word-closest").value = bestWord;
+}
+
 
 async function main() {
     // fetch wordvecs locally (no error handling) and process
