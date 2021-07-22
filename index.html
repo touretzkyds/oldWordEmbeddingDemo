@@ -32,19 +32,24 @@
     <span id="modifyWordMessage"></span>
 </div>
 
-<div class="vector-arithmetic-bar">
-    <!-- TODO: add spoiler display and pretty up -->
-    <form id="vector-arithmetic-form" action="javascript:computeWordSimilarity()" autocomplete="off">
-        <input id="similarity-word-original" type="text" placeholder="king">
-        -
-        <input id="similarity-word-subtract" type="text" placeholder="man">
-        +
-        <input id="similarity-word-add" type="text" placeholder="woman">
-        =
-        <input id="similarity-word-closest" type="text" readonly="readonly" placeholder="queen">
-        <button type="submit">Submit</button>
-    </form>
-</div>
+<details>
+    <summary>Vector arithmetic</summary>
+
+
+    <div class="vector-arithmetic-bar">
+        <!-- autocomplete off to disable Firefox from saving form entries -->
+        <form id="vector-arithmetic-form" action="javascript:computeWordSimilarity()" autocomplete="off">
+            <input id="similarity-word-original" type="text" placeholder="king">
+            -
+            <input id="similarity-word-subtract" type="text" placeholder="man">
+            +
+            <input id="similarity-word-add" type="text" placeholder="woman">
+            =
+            <input id="similarity-word-closest" type="text" readonly="readonly" placeholder="queen">
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</details>
 
 
 </body>
