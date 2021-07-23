@@ -365,6 +365,16 @@ function computeWordSimilarity() {
     document.getElementById("similarity-word-closest").value = bestWord;
 }
 
+// inflate option to:"string" freezes browser, see https://github.com/nodeca/pako/issues/228
+// TextDecoder may hang browser but seems much faster
+function unpackVectors(vecsBuf) {
+    return new Promise((resolve, reject) => {
+        const vecsUint8 = pako.inflate(vecsBuf);
+        const vecsText = new TextDecoder().decode(vecsUint8);
+        return resolve(vecsText);
+    });
+}
+
 
 async function main() {
     // fetch wordvecs locally (no error handling) and process
@@ -379,12 +389,9 @@ async function main() {
     const vecsBlob = await vecsResponse.blob();
     const vecsBuf = await vecsBlob.arrayBuffer();
 
-
-    // inflate option to:"string" freezes browser, see https://github.com/nodeca/pako/issues/228
-    // TextDecoder may hang browser but seems much faster
+    // async unpack vectors
     loadingText.innerText = "Unpacking model...";
-    const vecsUint8 = pako.inflate(vecsBuf);
-    const vecsText = new TextDecoder().decode(vecsUint8);
+    const vecsText = await unpackVectors(vecsBuf);
 
     loadingText.innerText = "Processing vectors...";
     vecs = processRawVecs(vecsText);
