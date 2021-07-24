@@ -8,7 +8,7 @@ import sys
 
 K = 10  # top-k words
 
-def read_model(model_path, normalize=False):
+def read_model(model_path, normalize=True):
     with open(model_path) as f:
         model_lines = f.readlines()
 
