@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Word2VecDemo.iml" filepath="$PROJECT_DIR$/.idea/Word2VecDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../vector/.idea/vector.iml" filepath="$PROJECT_DIR$/../vector/.idea/vector.iml" />
     </modules>
   </component>
 </project>

@@ -34,44 +34,44 @@ const AGEPAIRS =
 // Residual words made up from words in gender and age pairs
 const RESIDUALWORDS = [...new Set(GENDERPAIRS.flat().concat(AGEPAIRS.flat()))];
 
-// global array of words plotted on scatter plot
+// global variables for various plotting functionality
+
+// words plotted on scatter plot
 // changes from original demo: replace "refrigerator" with "chair" and "computer"
 let scatterWords = ['man', 'woman', 'boy', 'girl', 'king', 'queen', 'prince', 'princess', 'nephew', 'niece',
     'uncle', 'aunt', 'father', 'mother', 'son', 'daughter', 'husband', 'wife', 'chair', 'computer'];
 
-// global array for words to show in vector display
+// words to show in vector display
 let vectorWords = ["queen", "king", "girl", "boy", "woman", "man"];
 
-// global word in scatterplot to be selected
-// empty string represents nothing selected
+// selected word in scatterplot (empty string represents nothing selected)
 let selectedWord = "";
 
 // saved hoverX for use in magnify view
 let hoverX = MAGNIFY_WINDOW;
 
-let vecs; // global word to vector Map
+// main word to vector Map (may include pseudo-word vectors like "man+woman")
+let vecs = new Map();
+
 let vecsDim; // word vector dim
-let nearestWords; // global nearest words Map
-let ageFeature, genderFeature, residualFeature; // global feature vectors for use in replotting
+let nearestWords; // nearest words Map
+let ageFeature, genderFeature, residualFeature; // feature vectors for use in replotting
 
 
 
 function processRawVecs(text) {
-    let vecs = new Map();
     const lines = text.trim().split(/\n/);
     for (const line of lines) {
         const entries = line.trim().split(' ');
         vecsDim = entries.length - 1;
         const word = entries[0];
         const vec = new Vector(entries.slice(1).map(Number)).unit();  // normalize word vectors
+
         vecs.set(word, vec);
     }
 
     // sanity check for debugging input data
-    RESIDUALWORDS.forEach(word => console.assert(vecs.has(word),
-        word + " not in vecs"));
-
-    return vecs;
+    RESIDUALWORDS.forEach(word => console.assert(vecs.has(word),word + " not in vecs"));
 }
 
 function processNearestWords(text) {
@@ -394,7 +394,7 @@ async function main() {
     const vecsText = await unpackVectors(vecsBuf);
 
     loadingText.innerText = "Processing vectors...";
-    vecs = processRawVecs(vecsText);
+    processRawVecs(vecsText); // modifies vecs
 
     // fetch nearest words list
     const nearestWordsResponse = await fetch("nearest_words.txt");
