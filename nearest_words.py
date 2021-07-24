@@ -8,10 +8,8 @@ import sys
 
 K = 10  # top-k words
 
-def main():
-    MODEL_PATH = sys.argv[1]
-
-    with open(MODEL_PATH) as f:
+def read_model(model_path, normalize=False):
+    with open(model_path) as f:
         model_lines = f.readlines()
 
     N = len(model_lines)  # number of words
@@ -20,16 +18,21 @@ def main():
     assert DIM >= 50  # make sure we got rid of first line of fasttext format
     vecs = np.empty((N, DIM))  # words indexed by row
 
-
     for i in range(N):
         line = model_lines[i].strip().split()
         words[i] = line[0]
         v = np.array(line[1:], dtype=np.float)
-        vecs[i,] = v / np.linalg.norm(v)  # normalize vecs
+        if normalize:
+            vecs[i,] = v / np.linalg.norm(v)  # normalize vecs
 
+    return words, vecs
+
+
+def main():
+    words, vecs = read_model(sys.argv[1], normalize=True)
+    N = len(words)
 
     # too much memory to store all vector distances, so compute on-the-fly
-
     for i in range(N):
         # compute all dot products (cos similarities) for word i vs all other words
         sims = vecs @ vecs[i,]
