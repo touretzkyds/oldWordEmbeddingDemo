@@ -53,12 +53,15 @@ let hoverX = MAGNIFY_WINDOW;
 // main word to vector Map (may include pseudo-word vectors like "man+woman")
 let vecs = new Map();
 
+// list of actual words found in model
+let vocab = new Set();
+
 let vecsDim; // word vector dim
 let nearestWords; // nearest words Map
 let ageFeature, genderFeature, residualFeature; // feature vectors for use in replotting
 
 
-
+// read raw model text and write to vecs and vocab
 function processRawVecs(text) {
     const lines = text.trim().split(/\n/);
     for (const line of lines) {
@@ -66,7 +69,7 @@ function processRawVecs(text) {
         vecsDim = entries.length - 1;
         const word = entries[0];
         const vec = new Vector(entries.slice(1).map(Number)).unit();  // normalize word vectors
-
+        vocab.add(word);
         vecs.set(word, vec);
     }
 
@@ -351,8 +354,8 @@ function computeWordSimilarity() {
 
     let bestSimilarity = 0;
     let bestWord;
-    for (const word of vecs.keys()) {
-        if (word === wordOriginal) continue; // don't match original word
+    for (const word of vocab) {
+        //if (word === wordOriginal) continue; // don't match original word
 
         const similarity = target.dot(vecs.get(word)); // cosine for unit vecs
 
@@ -394,7 +397,7 @@ async function main() {
     const vecsText = await unpackVectors(vecsBuf);
 
     loadingText.innerText = "Processing vectors...";
-    processRawVecs(vecsText); // modifies vecs
+    processRawVecs(vecsText);
 
     // fetch nearest words list
     const nearestWordsResponse = await fetch("nearest_words.txt");
