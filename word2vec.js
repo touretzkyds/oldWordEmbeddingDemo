@@ -235,7 +235,8 @@ function plotVector(newPlot=false) {
             title: "Words",
             tickvals: d3.range(vectorWords.length),
             ticktext: vectorWords,
-            fixedrange: true
+            fixedrange: true,
+            tickangle: 60
         },
         margin: {t:30},
         //dragmode: false
@@ -299,7 +300,8 @@ function plotMagnify(newPlot=false) {
             //title: "Words",
             tickvals: d3.range(vectorWords.length),
             ticktext: vectorWords,
-            fixedrange: true
+            fixedrange: true,
+            tickangle: 60
         },
         margin: {r:5, t:30} // get close to main vector view
     };
