@@ -203,11 +203,11 @@ function updateHeatmapsOnWordClick() {
                 // replot all
                 plotScatter();
                 plotVector();
-                plotMagnify();
             }
         });
 }
 
+// plot vector and magnify views
 function plotVector(newPlot=false) {
     // heatmap plots matrix of values in z
     const z = vectorWords.map(word => vecs.get(word));
@@ -253,8 +253,14 @@ function plotVector(newPlot=false) {
             console.log("Hover " + hoverX);
             plotMagnify();
         });
+
+        plotMagnify(true);
     }
-    else Plotly.react("plotly_vector", data, layout);
+
+    else {
+        Plotly.react("plotly_vector", data, layout);
+        plotMagnify();
+    }
 }
 
 function plotMagnify(newPlot=false) {
@@ -434,8 +440,6 @@ async function main() {
     // plot new plots for the first time
     plotScatter(true);
     plotVector(true);
-    plotMagnify(true);
-
 }
 
 // Main function runs as promise after DOM has loaded
