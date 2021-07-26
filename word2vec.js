@@ -259,16 +259,19 @@ function plotVector(newPlot=false) {
 
 function plotMagnify(newPlot=false) {
     // ensure hoverX will produce proper plot
-    if (!(0 <= hoverX - MAGNIFY_WINDOW && hoverX + MAGNIFY_WINDOW < vecsDim))
+    // bounds are inclusive
+    const lo = hoverX - MAGNIFY_WINDOW;
+    const hi = hoverX + MAGNIFY_WINDOW;
+    if (!(0 <= lo && hi < vecsDim))
         return;
 
     // heatmap with subset of z
     const z = vectorWords.map(word =>
-        vecs.get(word).slice(hoverX - MAGNIFY_WINDOW, hoverX + MAGNIFY_WINDOW + 1));
+        vecs.get(word).slice(lo, hi + 1));
 
     const data = [
         {
-            x: d3.range(hoverX - MAGNIFY_WINDOW, hoverX + MAGNIFY_WINDOW + 1),
+            x: d3.range(lo, hi + 1),
             z: z,
             zmin: HEATMAPMIN,
             zmax: HEATMAPMAX,
