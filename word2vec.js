@@ -341,25 +341,25 @@ function modifyWord() {
 // also writes arithmetic vectors to vector view (#14)
 function computeWordSimilarity() {
     const wordOriginal = document.getElementById("similarity-word-original").value;
-    const wordSubtract = document.getElementById("similarity-word-subtract").value;
-    const wordAdd = document.getElementById("similarity-word-add").value;
+    const wordToSubtract = document.getElementById("similarity-word-subtract").value;
+    const wordToAdd = document.getElementById("similarity-word-add").value;
 
     // TODO: handle more gracefully telling user if words not available
-    if (!(vecs.has(wordOriginal) && vecs.has(wordSubtract) && vecs.has(wordAdd))) {
+    if (!(vecs.has(wordOriginal) && vecs.has(wordToSubtract) && vecs.has(wordToAdd))) {
         console.warn("bad word");
         return;
     }
 
     // vector arithmetic, scale to unit vector
-    const vecSubtraction = vecs.get(wordOriginal).sub(vecs.get(wordSubtract));
-    const vecTarget = vecSubtraction.add(vecs.get(wordAdd));
+    const vecSubtraction = vecs.get(wordOriginal).sub(vecs.get(wordToSubtract));
+    const vecTarget = vecSubtraction.add(vecs.get(wordToAdd));
 
     let bestSimilarity = 0;
     let bestWord;
     for (const word of vocab) {
         //if (word === wordOriginal) continue; // don't match original word
 
-        const similarity = vecTarget.dot(vecs.get(word)); // cosine for unit vecs
+        const similarity = vecTarget.unit().dot(vecs.get(word)); // cosine for unit vecs
 
         if (similarity > bestSimilarity) {
             bestWord = word;
@@ -371,13 +371,13 @@ function computeWordSimilarity() {
     document.getElementById("similarity-word-closest").value = bestWord;
 
     // write arithmetic vectors to vector view
-    const wordSubtraction = `${wordOriginal}-${wordSubtract}`;
-    const wordTarget = `${wordOriginal}-${wordSubtract}+${wordAdd}`;
+    const wordSubtraction = `${wordOriginal}-${wordToSubtract}`;
+    const wordTarget = `${wordOriginal}-${wordToSubtract}+${wordToAdd}`;
     console.log(wordSubtraction, wordTarget);
-    vecs.set(wordSubtraction, vecs.get(wordOriginal).sub(vecs.get(wordSubtract)));
+    vecs.set(wordSubtraction, vecs.get(wordOriginal).sub(vecs.get(wordToSubtract)));
     vecs.set(wordTarget, vecTarget);
 
-    vectorWords = [wordOriginal, wordSubtract, wordSubtraction, wordAdd, wordTarget, bestWord].reverse();
+    vectorWords = [wordOriginal, wordToSubtract, wordSubtraction, wordToAdd, wordTarget, bestWord].reverse();
     plotVector();
 }
 
