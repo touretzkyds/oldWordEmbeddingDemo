@@ -338,6 +338,7 @@ function modifyWord() {
 }
 
 // compute 3COSADD word similarity
+// also writes arithmetic vectors to vector view (#14)
 function computeWordSimilarity() {
     const wordOriginal = document.getElementById("similarity-word-original").value;
     const wordSubtract = document.getElementById("similarity-word-subtract").value;
@@ -350,17 +351,15 @@ function computeWordSimilarity() {
     }
 
     // vector arithmetic, scale to unit vector
-    const target = vecs.get(wordOriginal)
-        .sub(vecs.get(wordSubtract))
-        .add(vecs.get(wordAdd))
-        .unit();
+    const vecSubtraction = vecs.get(wordOriginal).sub(vecs.get(wordSubtract));
+    const vecTarget = vecSubtraction.add(vecs.get(wordAdd));
 
     let bestSimilarity = 0;
     let bestWord;
     for (const word of vocab) {
         //if (word === wordOriginal) continue; // don't match original word
 
-        const similarity = target.dot(vecs.get(word)); // cosine for unit vecs
+        const similarity = vecTarget.dot(vecs.get(word)); // cosine for unit vecs
 
         if (similarity > bestSimilarity) {
             bestWord = word;
@@ -368,7 +367,18 @@ function computeWordSimilarity() {
         }
     }
 
+    // write out most similar word to text box
     document.getElementById("similarity-word-closest").value = bestWord;
+
+    // write arithmetic vectors to vector view
+    const wordSubtraction = `${wordOriginal}-${wordSubtract}`;
+    const wordTarget = `${wordOriginal}-${wordSubtract}+${wordAdd}`;
+    console.log(wordSubtraction, wordTarget);
+    vecs.set(wordSubtraction, vecs.get(wordOriginal).sub(vecs.get(wordSubtract)));
+    vecs.set(wordTarget, vecTarget);
+
+    vectorWords = [wordOriginal, wordSubtract, wordSubtraction, wordAdd, wordTarget, bestWord].reverse();
+    plotVector();
 }
 
 // inflate option to:"string" freezes browser, see https://github.com/nodeca/pako/issues/228
