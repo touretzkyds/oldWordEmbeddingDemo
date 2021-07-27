@@ -41,6 +41,9 @@ const RESIDUALWORDS = [...new Set(GENDERPAIRS.flat().concat(AGEPAIRS.flat()))];
 let scatterWords = ['man', 'woman', 'boy', 'girl', 'king', 'queen', 'prince', 'princess', 'nephew', 'niece',
     'uncle', 'aunt', 'father', 'mother', 'son', 'daughter', 'husband', 'wife', 'chair', 'computer'];
 
+// arithmetic words in scatter plot
+let arithmeticWords = [];
+
 // words to show in vector display
 let vectorWords = ["queen", "king", "girl", "boy", "woman", "man"];
 
@@ -109,22 +112,26 @@ function plotScatter(newPlot=false) {
         }
     ).reduce((a,b) => a.add(b)).unit(); // average over residual words and normalize
 
+    // words to actually be plotted (so scatterWords is a little misleading)
+    const plotWords = [...new Set(scatterWords.concat(arithmeticWords))];
 
     // x, y, z are simply projections onto features
     // use 1 - residual for graphical convention (#3)
-    const x = scatterWords.map(word => 1 - vecs.get(word).dot(residualFeature));
-    const y = scatterWords.map(word => vecs.get(word).dot(genderFeature));
-    const z = scatterWords.map(word => vecs.get(word).dot(ageFeature));
+    const x = plotWords.map(word => 1 - vecs.get(word).dot(residualFeature));
+    const y = plotWords.map(word => vecs.get(word).dot(genderFeature));
+    const z = plotWords.map(word => vecs.get(word).dot(ageFeature));
 
-    const color = scatterWords.map(word => (word === selectedWord) ? "#FF0000" : "#000000");
+    const color = plotWords.map(word => (word === selectedWord) ? "#FF0000" : "#000000");
 
-    // For each point, include numbered list of nearest words in hovertext
-    const hovertext = scatterWords.map(target =>
-        `Reference word:<br>${target}<br>` +
-        "Nearest words:<br>" +
-        nearestWords.get(target)
-            .map((word, i) => `${i+1}. ${word}`)
-            .join("<br>")
+    // For each point, include numbered list of nearest words in hovertext if available
+    const hovertext = plotWords.map(target =>
+        nearestWords.has(target)
+            ? `Reference word:<br>${target}<br>` +
+            "Nearest words:<br>" +
+            nearestWords.get(target)
+                .map((word, i) => `${i+1}. ${word}`)
+                .join("<br>")
+            : ""
     );
 
     const data = [
@@ -139,7 +146,7 @@ function plotScatter(newPlot=false) {
                 opacity: 0.8,
                 color: color
             },
-            text: scatterWords,
+            text: plotWords,
             hoverinfo: "text",
             hovertext: hovertext
         }
@@ -181,7 +188,7 @@ function plotScatter(newPlot=false) {
 
     plotly_scatter.on("plotly_click", (data) => {
         const ptNum = data.points[0].pointNumber;
-        const clickedWord = scatterWords[ptNum];
+        const clickedWord = plotWords[ptNum];
 
         if (clickedWord === selectedWord) { // deselect
             selectedWord = "";
@@ -396,6 +403,11 @@ function computeWordSimilarity() {
     vecs.set(wordSubtraction, vecs.get(wordOriginal).sub(vecs.get(wordToSubtract)));
     vecs.set(wordTarget, vecTarget);
 
+    // set arithmetic words to display in scatter (#14)
+    arithmeticWords = [wordOriginal, wordToSubtract, wordToAdd, wordTarget, bestWord];
+    plotScatter();
+
+    // write arithmetic vectors to vector view (#14)
     vectorWords = [wordOriginal, wordToSubtract, wordSubtraction, wordToAdd, wordTarget, bestWord].reverse();
     plotVector();
 }
