@@ -58,7 +58,6 @@ let vocab = new Set();
 
 let vecsDim; // word vector dim
 let nearestWords; // nearest words Map
-let ageFeature, genderFeature, residualFeature; // feature vectors for use in replotting
 
 
 // read raw model text and write to vecs and vocab
@@ -97,8 +96,20 @@ function createFeature(vecs, wordPairs) {
 }
 
 
-// plot each word projected onto gender, age, residual features
+// plot each word on a 3D scatterplot projected onto gender, age, residual features
 function plotScatter(newPlot=false) {
+    // vector calculations and plotting, including residual (issue #3)
+    const genderFeature = createFeature(vecs, GENDERPAIRS);
+    const ageFeature = createFeature(vecs, AGEPAIRS);
+    const residualFeature = RESIDUALWORDS.map(word => {
+            const wordVec = vecs.get(word);
+            const wordNoGender = wordVec.sub(genderFeature.scale(wordVec.dot(genderFeature)));
+            const wordResidual = wordNoGender.sub(ageFeature.scale(wordNoGender.dot(ageFeature)));
+            return wordResidual;
+        }
+    ).reduce((a,b) => a.add(b)).unit(); // average over residual words and normalize
+
+
     // x, y, z are simply projections onto features
     // use 1 - residual for graphical convention (#3)
     const x = scatterWords.map(word => 1 - vecs.get(word).dot(residualFeature));
@@ -426,18 +437,8 @@ async function main() {
 
     nearestWords = processNearestWords(nearestWordsText);
 
-    // vector calculations and plotting, including residual (issue #3)
-    genderFeature = createFeature(vecs, GENDERPAIRS);
-    ageFeature = createFeature(vecs, AGEPAIRS);
-    residualFeature = RESIDUALWORDS.map(word => {
-            const wordVec = vecs.get(word);
-            const wordNoGender = wordVec.sub(genderFeature.scale(wordVec.dot(genderFeature)));
-            const wordResidual = wordNoGender.sub(ageFeature.scale(wordNoGender.dot(ageFeature)));
-            return wordResidual;
-        }
-    ).reduce((a,b) => a.add(b)).unit(); // average over residual words and normalize
-
     loadingText.innerText = "Model processing done";
+
 
     // plot new plots for the first time
     plotScatter(true);
