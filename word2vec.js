@@ -98,7 +98,6 @@ function createFeature(vecs, wordPairs) {
     return subVecs.reduce((a,b) => a.add(b)).unit();
 }
 
-
 // plot each word on a 3D scatterplot projected onto gender, age, residual features
 function plotScatter(newPlot=false) {
     // vector calculations and plotting, including residual (issue #3)
@@ -121,7 +120,14 @@ function plotScatter(newPlot=false) {
     const y = plotWords.map(word => vecs.get(word).dot(genderFeature));
     const z = plotWords.map(word => vecs.get(word).dot(ageFeature));
 
-    const color = plotWords.map(word => (word === selectedWord) ? "#FF0000" : "#000000");
+    // color points by type with priority (#12)
+    const color = plotWords.map(word =>
+        (word === selectedWord) ? "#FF0000"
+            : (word === arithmeticWords[3]) ? "#FF8888"
+            : (word === arithmeticWords[4]) ? "#00FF00"
+            : (arithmeticWords.includes(word)) ? "#0000FF"
+            : "#000000"
+    );
 
     // For each point, include numbered list of nearest words in hovertext if available
     const hovertext = plotWords.map(target =>
@@ -403,7 +409,7 @@ function computeWordSimilarity() {
     vecs.set(wordSubtraction, vecs.get(wordOriginal).sub(vecs.get(wordToSubtract)));
     vecs.set(wordTarget, vecTarget);
 
-    // set arithmetic words to display in scatter (#14)
+    // set arithmetic words to display in scatter (#12) in specific order:
     arithmeticWords = [wordOriginal, wordToSubtract, wordToAdd, wordTarget, bestWord];
     plotScatter();
 
