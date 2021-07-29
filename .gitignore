@@ -2,3 +2,4 @@
 model.txt
 *.vec
 .ipynb_checkpoints
+*.json
