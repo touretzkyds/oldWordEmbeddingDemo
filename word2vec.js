@@ -389,7 +389,8 @@ function computeWordSimilarity() {
     let bestSimilarity = 0;
     let bestWord;
     for (const word of vocab) {
-        //if (word === wordOriginal) continue; // don't match original word
+        // don't match words used in arithmetic (#12)
+        if ([wordOriginal, wordToAdd, wordToSubtract].includes(word)) continue;
 
         const similarity = vecTarget.unit().dot(vecs.get(word)); // cosine for unit vecs
 
