@@ -56,7 +56,7 @@ let hoverX = MAGNIFY_WINDOW;
 // main word to vector Map (may include pseudo-word vectors like "man+woman")
 let vecs = new Map();
 
-// list of actual words found in model
+// Set of actual words found in model
 let vocab = new Set();
 
 let vecsDim; // word vector dim
@@ -129,15 +129,13 @@ function plotScatter(newPlot=false) {
             : "#000000"
     );
 
-    // For each point, include numbered list of nearest words in hovertext if available
+    // For each point, include numbered list of nearest words in hovertext
     const hovertext = plotWords.map(target =>
-        nearestWords.has(target)
-            ? `Reference word:<br>${target}<br>` +
+            `Reference word:<br>${target}<br>` +
             "Nearest words:<br>" +
             nearestWords.get(target)
                 .map((word, i) => `${i+1}. ${word}`)
                 .join("<br>")
-            : ""
     );
 
     const data = [
@@ -379,6 +377,8 @@ function processAnalogy() {
     const wordB = document.getElementById("analogy-word-b").value;
     const wordC = document.getElementById("analogy-word-c").value;
 
+    const inputWords = [wordA, wordB, wordC];
+
     // TODO: handle more gracefully telling user if words not available
     if (!(vecs.has(wordB) && vecs.has(wordA) && vecs.has(wordC))) {
         console.warn("bad word");
@@ -392,28 +392,25 @@ function processAnalogy() {
     // vector arithmetic, scale to unit vector
     const vecBMinusA = vecB.sub(vecA);
     const wordBMinusA = `${wordB}-${wordA}`;
-    const vecY = vecBMinusA.add(vecC);
+    const vecY = vecBMinusA.add(vecC).unit();
     const wordY = `${wordB}-${wordA}+${wordC}`;
 
-    let bestSimilarity = 0;
-    let wordWstar;
-    for (const word of vocab) {
-        // don't match words used in arithmetic (#12)
-        if ([wordB, wordC, wordA].includes(word)) continue;
+    // find most similar words for analogy
+    let wordAnalogyPairs = [...vocab]
+        .filter(word => !inputWords.includes(word))  // don't match words used in arithmetic (#12)
+        .map(word => [word, vecY.dot(vecs.get(word))]);
 
-        const similarity = vecY.unit().dot(vecs.get(word)); // cosine for unit vecs
+    wordAnalogyPairs.sort((a,b) => b[1] - a[1]);
+    const nearestAnalogyWords = wordAnalogyPairs.slice(0, 10).map(pair => pair[0]);
+    const wordWstar = nearestAnalogyWords[0];
 
-        if (similarity > bestSimilarity) {
-            wordWstar = word;
-            bestSimilarity = similarity;
-        }
-    }
+    // add nearest words to Y to nearest word list (#12)
+    nearestWords.set(wordY, nearestAnalogyWords);
 
     // write out most similar word to text box
     document.getElementById("analogy-word-wstar").value = wordWstar;
 
     // write arithmetic vectors to vector view
-
     vecs.set(wordBMinusA, vecBMinusA);
     vecs.set(wordY, vecY);
 
