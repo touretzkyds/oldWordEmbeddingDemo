@@ -369,53 +369,60 @@ function modifyWord() {
     }
 }
 
-// compute 3COSADD word similarity
-// also writes arithmetic vectors to vector view (#14)
-function computeWordSimilarity() {
-    const wordOriginal = document.getElementById("similarity-word-original").value;
-    const wordToSubtract = document.getElementById("similarity-word-subtract").value;
-    const wordToAdd = document.getElementById("similarity-word-add").value;
+// compute 3COSADD word analogy
+// also write arithmetic vectors to vector view and add nearest neighbors to result (#14)
+// "Linguistic Regularities in Continuous Space Word Representations" (Mikolov 2013)
+// Analogy notation for words: a:b as c:d, with d unknown
+// vector y = x_b - x_a + x_c, find w* = argmax_w cossim(x_w, y)
+function processAnalogy() {
+    const wordA = document.getElementById("analogy-word-a").value;
+    const wordB = document.getElementById("analogy-word-b").value;
+    const wordC = document.getElementById("analogy-word-c").value;
 
     // TODO: handle more gracefully telling user if words not available
-    if (!(vecs.has(wordOriginal) && vecs.has(wordToSubtract) && vecs.has(wordToAdd))) {
+    if (!(vecs.has(wordB) && vecs.has(wordA) && vecs.has(wordC))) {
         console.warn("bad word");
         return;
     }
 
+    const vecA = vecs.get(wordA);
+    const vecB = vecs.get(wordB);
+    const vecC = vecs.get(wordC);
+
     // vector arithmetic, scale to unit vector
-    const vecSubtraction = vecs.get(wordOriginal).sub(vecs.get(wordToSubtract));
-    const vecTarget = vecSubtraction.add(vecs.get(wordToAdd));
+    const vecBMinusA = vecB.sub(vecA);
+    const wordBMinusA = `${wordB}-${wordA}`;
+    const vecY = vecBMinusA.add(vecC);
+    const wordY = `${wordB}-${wordA}+${wordC}`;
 
     let bestSimilarity = 0;
-    let bestWord;
+    let wordWstar;
     for (const word of vocab) {
         // don't match words used in arithmetic (#12)
-        if ([wordOriginal, wordToAdd, wordToSubtract].includes(word)) continue;
+        if ([wordB, wordC, wordA].includes(word)) continue;
 
-        const similarity = vecTarget.unit().dot(vecs.get(word)); // cosine for unit vecs
+        const similarity = vecY.unit().dot(vecs.get(word)); // cosine for unit vecs
 
         if (similarity > bestSimilarity) {
-            bestWord = word;
+            wordWstar = word;
             bestSimilarity = similarity;
         }
     }
 
     // write out most similar word to text box
-    document.getElementById("similarity-word-closest").value = bestWord;
+    document.getElementById("analogy-word-wstar").value = wordWstar;
 
     // write arithmetic vectors to vector view
-    const wordSubtraction = `${wordOriginal}-${wordToSubtract}`;
-    const wordTarget = `${wordOriginal}-${wordToSubtract}+${wordToAdd}`;
-    console.log(wordSubtraction, wordTarget);
-    vecs.set(wordSubtraction, vecs.get(wordOriginal).sub(vecs.get(wordToSubtract)));
-    vecs.set(wordTarget, vecTarget);
+
+    vecs.set(wordBMinusA, vecBMinusA);
+    vecs.set(wordY, vecY);
 
     // set arithmetic words to display in scatter (#12) in specific order:
-    arithmeticWords = [wordOriginal, wordToSubtract, wordToAdd, wordTarget, bestWord];
+    arithmeticWords = [wordB, wordA, wordC, wordY, wordWstar];
     plotScatter();
 
     // write arithmetic vectors to vector view (#14)
-    vectorWords = [wordOriginal, wordToSubtract, wordSubtraction, wordToAdd, wordTarget, bestWord].reverse();
+    vectorWords = [wordB, wordA, wordBMinusA, wordC, wordY, wordWstar].reverse();
     plotVector();
 }
 

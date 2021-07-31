@@ -38,14 +38,14 @@
 
     <div class="vector-arithmetic-bar">
         <!-- autocomplete off to disable Firefox from saving form entries -->
-        <form id="vector-arithmetic-form" action="javascript:computeWordSimilarity()" autocomplete="off">
-            <input id="similarity-word-original" type="text" placeholder="king">
+        <form id="vector-arithmetic-form" action="javascript:processAnalogy()" autocomplete="off">
+            <input id="analogy-word-b" type="text" placeholder="king">
             -
-            <input id="similarity-word-subtract" type="text" placeholder="man">
+            <input id="analogy-word-a" type="text" placeholder="man">
             +
-            <input id="similarity-word-add" type="text" placeholder="woman">
+            <input id="analogy-word-c" type="text" placeholder="woman">
             =
-            <input id="similarity-word-closest" type="text" readonly="readonly" placeholder="queen">
+            <input id="analogy-word-wstar" type="text" readonly="readonly" placeholder="queen">
             <button type="submit">Submit</button>
         </form>
     </div>
