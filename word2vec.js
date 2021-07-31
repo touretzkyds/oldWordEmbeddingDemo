@@ -41,8 +41,8 @@ const RESIDUALWORDS = [...new Set(GENDERPAIRS.flat().concat(AGEPAIRS.flat()))];
 let scatterWords = ['man', 'woman', 'boy', 'girl', 'king', 'queen', 'prince', 'princess', 'nephew', 'niece',
     'uncle', 'aunt', 'father', 'mother', 'son', 'daughter', 'husband', 'wife', 'chair', 'computer'];
 
-// arithmetic words in scatter plot
-let arithmeticWords = [];
+// words involved in the computation of analogy in scatter plot (#12)
+let analogyScatterWords = [];
 
 // words to show in vector display
 let vectorWords = ["queen", "king", "girl", "boy", "woman", "man"];
@@ -112,7 +112,7 @@ function plotScatter(newPlot=false) {
     ).reduce((a,b) => a.add(b)).unit(); // average over residual words and normalize
 
     // words to actually be plotted (so scatterWords is a little misleading)
-    const plotWords = [...new Set(scatterWords.concat(arithmeticWords))];
+    const plotWords = [...new Set(scatterWords.concat(analogyScatterWords))];
 
     // x, y, z are simply projections onto features
     // use 1 - residual for graphical convention (#3)
@@ -123,9 +123,9 @@ function plotScatter(newPlot=false) {
     // color points by type with priority (#12)
     const color = plotWords.map(word =>
         (word === selectedWord) ? "#FF0000"
-            : (word === arithmeticWords[3]) ? "#FF8888"
-            : (word === arithmeticWords[4]) ? "#00FF00"
-            : (arithmeticWords.includes(word)) ? "#0000FF"
+            : (word === analogyScatterWords[3]) ? "#FF8888"
+            : (word === analogyScatterWords[4]) ? "#00FF00"
+            : (analogyScatterWords.includes(word)) ? "#0000FF"
             : "#000000"
     );
 
@@ -414,8 +414,8 @@ function processAnalogy() {
     vecs.set(wordBMinusA, vecBMinusA);
     vecs.set(wordY, vecY);
 
-    // set arithmetic words to display in scatter (#12) in specific order:
-    arithmeticWords = [wordB, wordA, wordC, wordY, wordWstar];
+    // set analogy words to display in scatter (#12) in specific order:
+    analogyScatterWords = [wordB, wordA, wordC, wordY, wordWstar];
     plotScatter();
 
     // write arithmetic vectors to vector view (#14)
