@@ -62,6 +62,9 @@ let vocab = new Set();
 let vecsDim; // word vector dim
 let nearestWords; // nearest words Map
 
+// vector calculations and plotting, including residual (issue #3)
+let genderFeature, ageFeature, residualFeature;
+
 
 // read raw model text and write to vecs and vocab
 function processRawVecs(text) {
@@ -100,16 +103,21 @@ function createFeature(vecs, wordPairs) {
 
 // plot each word on a 3D scatterplot projected onto gender, age, residual features
 function plotScatter(newPlot=false) {
-    // vector calculations and plotting, including residual (issue #3)
-    const genderFeature = createFeature(vecs, GENDERPAIRS);
-    const ageFeature = createFeature(vecs, AGEPAIRS);
-    const residualFeature = RESIDUALWORDS.map(word => {
+    // populate feature vectors
+    genderFeature = createFeature(vecs, GENDERPAIRS);
+    ageFeature = createFeature(vecs, AGEPAIRS);
+    residualFeature = RESIDUALWORDS.map(word => {
             const wordVec = vecs.get(word);
             const wordNoGender = wordVec.sub(genderFeature.scale(wordVec.dot(genderFeature)));
             const wordResidual = wordNoGender.sub(ageFeature.scale(wordNoGender.dot(ageFeature)));
             return wordResidual;
         }
     ).reduce((a,b) => a.add(b)).unit(); // average over residual words and normalize
+
+    // add features as pseudo-words
+    // TODO: not hard-code
+    vecs.set("[age]", ageFeature);
+    vecs.set("[gender]", genderFeature);
 
     // words to actually be plotted (so scatterWords is a little misleading)
     const plotWords = [...new Set(scatterWords.concat(analogyScatterWords))];
@@ -206,6 +214,14 @@ function plotScatter(newPlot=false) {
         plotScatter();
     });
 
+}
+
+function selectAxis(axis) {
+    // TODO: cleanup
+    const axisNames = ["[age]", "[gender]"];
+    selectedWord = axisNames[axis];
+
+    plotScatter(); // replot selected word
 }
 
 function updateHeatmapsOnWordClick() {

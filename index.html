@@ -17,7 +17,13 @@
 <h1>Word2Vec Demo</h1>
 
 <div class="plotly-wrapper">
-    <div id="plotly_scatter"> </div>
+    <div id="plotly-scatter-wrapper">
+        <div id="plotly_scatter"> </div>
+        <div id="plotly-scatter-buttons">
+            <button onclick="selectAxis(0)">Age</button>
+            <button onclick="selectAxis(1)">Gender</button>
+        </div>
+    </div>
     <div id="plotly_magnify"></div>
     <div id="plotly_vector"> </div>
 </div>
@@ -39,6 +45,7 @@
     <div class="vector-arithmetic-bar">
         <!-- autocomplete off to disable Firefox from saving form entries -->
         <form id="vector-arithmetic-form" action="javascript:processAnalogy()" autocomplete="off">
+            <!-- TODO: add proper spacing for equation -->
             <input id="analogy-word-b" type="text" placeholder="king">
             -
             <input id="analogy-word-a" type="text" placeholder="man">
