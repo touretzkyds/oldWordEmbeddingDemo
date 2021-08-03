@@ -10,6 +10,15 @@ h1 {
     /* TODO: cleanup axis buttons */
 }
 
+#plotly-scatter-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+#plotly_scatter {
+    flex-grow: 1;
+}
+
 .status-bar {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
