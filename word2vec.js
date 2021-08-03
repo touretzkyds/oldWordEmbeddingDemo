@@ -1,11 +1,11 @@
 "use strict";
 
 const MAGNIFY_WINDOW = 5; // range for magnified view
-const HEATMAPMIN = -0.2;  // min and max for heatmap colorscale
-const HEATMAPMAX = 0.2;
+const HEATMAP_MIN = -0.2;  // min and max for heatmap colorscale
+const HEATMAP_MAX = 0.2;
 
 // Word pairs used to compute features
-const GENDERPAIRS =
+const FEATURE1_PAIRS =
     [
         ["man", "woman"], 
         ["king", "queen"],
@@ -19,7 +19,7 @@ const GENDERPAIRS =
         ["male", "female"]
     ];
 
-const AGEPAIRS =
+const FEATURE2_PAIRS =
     [
         ["man", "boy"],
         ["woman", "girl"],
@@ -32,7 +32,7 @@ const AGEPAIRS =
     ];
 
 // Residual words made up from words in gender and age pairs
-const RESIDUALWORDS = [...new Set(GENDERPAIRS.flat().concat(AGEPAIRS.flat()))];
+const RESIDUAL_WORDS = [...new Set(FEATURE1_PAIRS.flat().concat(FEATURE2_PAIRS.flat()))];
 
 // global variables for various plotting functionality
 
@@ -79,7 +79,7 @@ function processRawVecs(text) {
     }
 
     // sanity check for debugging input data
-    RESIDUALWORDS.forEach(word => console.assert(vecs.has(word),word + " not in vecs"));
+    RESIDUAL_WORDS.forEach(word => console.assert(vecs.has(word),word + " not in vecs"));
 }
 
 function processNearestWords(text) {
@@ -104,9 +104,9 @@ function createFeature(vecs, wordPairs) {
 // plot each word on a 3D scatterplot projected onto gender, age, residual features
 function plotScatter(newPlot=false) {
     // populate feature vectors
-    genderFeature = createFeature(vecs, GENDERPAIRS);
-    ageFeature = createFeature(vecs, AGEPAIRS);
-    residualFeature = RESIDUALWORDS.map(word => {
+    genderFeature = createFeature(vecs, FEATURE1_PAIRS);
+    ageFeature = createFeature(vecs, FEATURE2_PAIRS);
+    residualFeature = RESIDUAL_WORDS.map(word => {
             const wordVec = vecs.get(word);
             const wordNoGender = wordVec.sub(genderFeature.scale(wordVec.dot(genderFeature)));
             const wordResidual = wordNoGender.sub(ageFeature.scale(wordNoGender.dot(ageFeature)));
@@ -266,8 +266,8 @@ function plotVector(newPlot=false) {
         {
             // can't use y: vectorWords since the heatmap won't display duplicate words
             z: z,
-            zmin: HEATMAPMIN,
-            zmax: HEATMAPMAX,
+            zmin: HEATMAP_MIN,
+            zmax: HEATMAP_MAX,
             type: "heatmap",
             ygap: 5
         }
@@ -330,8 +330,8 @@ function plotMagnify(newPlot=false) {
         {
             x: d3.range(lo, hi + 1),
             z: z,
-            zmin: HEATMAPMIN,
-            zmax: HEATMAPMAX,
+            zmin: HEATMAP_MIN,
+            zmax: HEATMAP_MAX,
             type: "heatmap",
             ygap: 5,
             showscale: false
