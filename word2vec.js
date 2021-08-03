@@ -218,8 +218,20 @@ function plotScatter(newPlot=false) {
 
 function selectAxis(axis) {
     // TODO: cleanup
+    console.log("button", axis);
     const axisNames = ["[age]", "[gender]"];
-    selectedWord = axisNames[axis];
+
+    if (selectedWord === axisNames[axis]) {  // deselect word
+        selectedWord = "";
+    } else { // select word
+        selectedWord = axisNames[axis];
+    }
+
+    // TODO: move updating button color to own function that is also called on scatter click
+    for (const i of [0,1]) {
+        const buttonID = "plotly-scatter-button" + i;
+        document.getElementById(buttonID).style.color = (selectedWord === axisNames[i]) ? "red" : "black";
+    }
 
     plotScatter(); // replot selected word
 }
