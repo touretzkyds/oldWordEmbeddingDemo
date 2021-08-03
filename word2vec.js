@@ -171,7 +171,7 @@ function plotScatter(newPlot=false) {
     if (newPlot) {
         camera = {eye: {x: -2.5*ZOOM, y: -0.75*ZOOM, z: 0.5*ZOOM}};
     } else { // save camera
-        const plotly_scatter = document.getElementById("plotly_scatter");
+        const plotly_scatter = document.getElementById("plotly-scatter");
         camera = plotly_scatter.layout.scene.camera;
     }
 
@@ -193,10 +193,10 @@ function plotScatter(newPlot=false) {
 
     // always make new plot (#9)
     // replotting scatter3d produces ugly error (#10)
-    Plotly.newPlot("plotly_scatter", data, layout);
+    Plotly.newPlot("plotly-scatter", data, layout);
 
     // bind scatter click event
-    let plotly_scatter = document.getElementById("plotly_scatter");
+    let plotly_scatter = document.getElementById("plotly-scatter");
 
     plotly_scatter.on("plotly_click", (data) => {
         const ptNum = data.points[0].pointNumber;
@@ -229,7 +229,7 @@ function selectAxis(axis) {
 
     // TODO: move updating button color to own function that is also called on scatter click
     for (const i of [0,1]) {
-        const buttonID = "plotly-scatter-button" + i;
+        const buttonID = "scatter-button" + i;
         document.getElementById(buttonID).style.color = (selectedWord === axisNames[i]) ? "red" : "black";
     }
 
@@ -293,8 +293,8 @@ function plotVector(newPlot=false) {
     };
 
     if (newPlot) {
-        Plotly.newPlot("plotly_vector", data, layout);
-        const plotly_vector = document.getElementById("plotly_vector");
+        Plotly.newPlot("plotly-vector", data, layout);
+        const plotly_vector = document.getElementById("plotly-vector");
 
         // bind axis click to replace word in vector display after plot
         plotly_vector.on("plotly_afterplot", updateHeatmapsOnWordClick);
@@ -309,7 +309,7 @@ function plotVector(newPlot=false) {
     }
 
     else {
-        Plotly.react("plotly_vector", data, layout);
+        Plotly.react("plotly-vector", data, layout);
         plotMagnify();
     }
 }
@@ -357,40 +357,40 @@ function plotMagnify(newPlot=false) {
     };
 
     if (newPlot) {
-        Plotly.newPlot("plotly_magnify", data, layout);
+        Plotly.newPlot("plotly-magnify", data, layout);
         // bind axis click after plot, similar to vector
-        const plotly_magnify = document.getElementById("plotly_magnify");
+        const plotly_magnify = document.getElementById("plotly-magnify");
         plotly_magnify.on("plotly_afterplot", updateHeatmapsOnWordClick);
     }
-    else Plotly.react("plotly_magnify", data, layout);
+    else Plotly.react("plotly-magnify", data, layout);
 }
 
 function modifyWord() {
-    const word = document.getElementById("modifyWordInput").value;
+    const word = document.getElementById("modify-word-input").value;
     let wordModified = false;
 
     if (scatterWords.includes(word)) {  // remove word
         scatterWords = scatterWords.filter(item => item !== word);
-        document.getElementById("modifyWordMessage").innerText = `"${word}" removed`;
+        document.getElementById("modify-word-message").innerText = `"${word}" removed`;
         selectedWord = ""; // remove selected word
         wordModified = true;
     }
     else { // add word if in wordvecs
         if (vecs.has(word)) {
             scatterWords.push(word);
-            document.getElementById("modifyWordMessage").innerText = `"${word}" added`;
+            document.getElementById("modify-word-message").innerText = `"${word}" added`;
             selectedWord = word; // make added word selected word
             wordModified = true;
         }
         else { // word not found
-            document.getElementById("modifyWordMessage").innerText = `"${word}" not found`;
+            document.getElementById("modify-word-message").innerText = `"${word}" not found`;
             // no replot or change to selected word
         }
     }
 
     if (wordModified) {
         plotScatter();  // replot to update scatter view
-        document.getElementById("modifyWordInput").value = ""; // clear word
+        document.getElementById("modify-word-input").value = ""; // clear word
 
     }
 }
@@ -468,7 +468,7 @@ async function main() {
     // browsers and servers support content-encoding, but manually compress to fit on github (#1)
 
     // lo-tech progress indication
-    const loadingText = document.getElementById("loading_text");
+    const loadingText = document.getElementById("loading-text");
     loadingText.innerText = "Downloading model...";
 
     const vecsResponse = await fetch("wordvecs50k.vec.gz");

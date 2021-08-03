@@ -16,35 +16,34 @@
 
 <h1>Word2Vec Demo</h1>
 
-<div class="plotly-wrapper">
-    <div id="plotly-scatter-wrapper">
-        <div id="plotly_scatter"> </div>
-        <div id="plotly-scatter-buttons">
-            <button id = "plotly-scatter-button0" onclick="selectAxis(0)">Age</button>
-            <button id = "plotly-scatter-button1" onclick="selectAxis(1)">Gender</button>
+<div id="plots-wrapper">
+    <div id="scatter-wrapper">
+        <div id="plotly-scatter"> </div>
+        <div id="scatter-buttons">
+            <button id="scatter-button0" onclick="selectAxis(0)">Age</button>
+            <button id="scatter-button1" onclick="selectAxis(1)">Gender</button>
         </div>
     </div>
-    <div id="plotly_magnify"></div>
-    <div id="plotly_vector"> </div>
+    <div id="plotly-magnify"></div>
+    <div id="plotly-vector"> </div>
 </div>
 
-<div class="status-bar">
-    <span id="loading_text"></span>
+<div id="plots-status-bar">
+    <span id="loading-text"></span>
 
-    <form class="word-entry">
-        <input id="modifyWordInput" type="text">
+    <form id="word-entry">
+        <input id="modify-word-input" type="text">
         <button formaction="javascript:modifyWord();" type="submit">Add/Remove Word</button>
     </form>
-    <span id="modifyWordMessage"></span>
+    <span id="modify-word-message"></span>
 </div>
 
 <details>
-    <summary>Vector arithmetic</summary>
+    <summary>Vector analogy arithmetic</summary>
 
-
-    <div class="vector-arithmetic-bar">
+    <div id="analogy-bar">
         <!-- autocomplete off to disable Firefox from saving form entries -->
-        <form id="vector-arithmetic-form" action="javascript:processAnalogy()" autocomplete="off">
+        <form id="analogy-form" action="javascript:processAnalogy()" autocomplete="off">
             <!-- TODO: add proper spacing for equation -->
             <input id="analogy-word-b" type="text" placeholder="king">
             -
