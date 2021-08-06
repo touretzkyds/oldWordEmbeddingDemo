@@ -101,11 +101,11 @@ function processNearestWords(text) {
     return nearestWords;
 }
 
-// using array of pairs like [["man", "woman"], ... ]
-// create feature dimension vectors (described in #3)
-function createFeature(vecs, wordPairs) {
-    // for each word pair, subtract vectors
-    const subVecs = wordPairs.map(pair => vecs.get(pair[0]).sub(vecs.get(pair[1])));
+// create feature dimension vectors (math described in #3)
+function createFeature(vecs, wordSet1, wordSet2) {
+    // for each pair of words, subtract vectors
+    console.assert(wordSet1.length === wordSet2.length);
+    const subVecs = wordSet1.map((word1, i) => vecs.get(word1).sub(vecs.get(wordSet2[i])));
     // average subtracted vectors into one unit feature vector
     return subVecs.reduce((a,b) => a.add(b)).unit();
 }
@@ -113,9 +113,14 @@ function createFeature(vecs, wordPairs) {
 // plot each word on a 3D scatterplot projected onto gender, age, residual features
 function plotScatter(newPlot=false) {
     // populate feature vectors
-    genderFeature = createFeature(vecs, FEATURE1_PAIRS);
-    ageFeature = createFeature(vecs, FEATURE2_PAIRS);
-    residualFeature = RESIDUAL_WORDS.map(word => {
+    genderFeature = createFeature(vecs, feature1Set1, feature1Set2);
+    ageFeature = createFeature(vecs, feature2Set1, feature2Set2);
+
+    const allFeatureWords = feature1Set1.concat(feature1Set2).concat(feature2Set1).concat(feature2Set2);
+    const residualWords = [...new Set(allFeatureWords)];
+
+
+    residualFeature = residualWords.map(word => {
             const wordVec = vecs.get(word);
             const wordNoGender = wordVec.sub(genderFeature.scale(wordVec.dot(genderFeature)));
             const wordResidual = wordNoGender.sub(ageFeature.scale(wordNoGender.dot(ageFeature)));
@@ -498,15 +503,15 @@ function processDimensionInput() {
 
     console.log(feature1Set1, feature1Set2, feature2Set1, feature2Set2);
 
-    plotScatter();
 
 }
 
 // fetch wordvecs locally (no error handling) and process
 
 async function main() {
-    // fill default
+    // fill default feature for scatterplot
     fillDimensionDefault();
+
 
     // lo-tech progress indication
     const loadingText = document.getElementById("loading-text");
@@ -532,6 +537,8 @@ async function main() {
     nearestWords = processNearestWords(nearestWordsText);
 
     loadingText.innerText = "Model processing done";
+
+    processDimensionInput();
 
 
     // plot new plots for the first time
