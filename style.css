@@ -32,3 +32,23 @@ h1 {
     cursor: pointer;
     pointer-events: all;
 }
+
+#user-dimension-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.user-dimension-area {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-dimension-entry {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 5px;
+}
+
+.user-dimension-feature-set {
+    margin: 5px;
+}

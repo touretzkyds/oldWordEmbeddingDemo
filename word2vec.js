@@ -94,6 +94,8 @@ function processNearestWords(text) {
     return nearestWords;
 }
 
+// using array of pairs like [["man", "woman"], ... ]
+// create feature dimension vectors (described in #3)
 function createFeature(vecs, wordPairs) {
     // for each word pair, subtract vectors
     const subVecs = wordPairs.map(pair => vecs.get(pair[0]).sub(vecs.get(pair[1])));
@@ -449,6 +451,10 @@ function processAnalogy() {
     // write arithmetic vectors to vector view (#14)
     vectorWords = [wordB, wordA, wordBMinusA, wordC, wordY, wordWstar].reverse();
     plotVector();
+}
+
+function processDimension() {
+
 }
 
 // inflate option to:"string" freezes browser, see https://github.com/nodeca/pako/issues/228
