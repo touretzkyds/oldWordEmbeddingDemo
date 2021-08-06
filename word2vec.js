@@ -4,8 +4,12 @@ const MAGNIFY_WINDOW = 5; // range for magnified view
 const HEATMAP_MIN = -0.2;  // min and max for heatmap colorscale
 const HEATMAP_MAX = 0.2;
 
+// to be used for naming features
 let feature1Name;
 let feature2Name;
+
+// words to be used for creating dimensions
+let feature1Set1, feature1Set2, feature2Set1, feature2Set2;
 
 // Word pairs used to compute features
 const FEATURE1_PAIRS =
@@ -456,9 +460,6 @@ function processAnalogy() {
     plotVector();
 }
 
-function processDimension() {
-
-}
 
 // inflate option to:"string" freezes browser, see https://github.com/nodeca/pako/issues/228
 // TextDecoder may hang browser but seems much faster
@@ -483,18 +484,36 @@ function fillDimensionDefault() {
 
 }
 
+function processDimensionInput() {
+    const feature1Set1Input = document.getElementById("user-dimension-feature1-set1").value.split('\n');
+    const feature1Set2Input = document.getElementById("user-dimension-feature1-set2").value.split('\n');
+    const feature2Set1Input = document.getElementById("user-dimension-feature2-set1").value.split('\n');
+    const feature2Set2Input = document.getElementById("user-dimension-feature2-set2").value.split('\n');
+
+    // TODO: user validation
+    feature1Set1 = feature1Set1Input;
+    feature1Set2 = feature1Set2Input;
+    feature2Set1 = feature2Set1Input;
+    feature2Set2 = feature2Set2Input;
+
+    console.log(feature1Set1, feature1Set2, feature2Set1, feature2Set2);
+
+    plotScatter();
+
+}
+
 // fetch wordvecs locally (no error handling) and process
-// note python's http.server does not support response compression Content-Encoding
-// browsers and servers support content-encoding, but manually compress to fit on github (#1)
+
 async function main() {
-
+    // fill default
     fillDimensionDefault();
-
 
     // lo-tech progress indication
     const loadingText = document.getElementById("loading-text");
     loadingText.innerText = "Downloading model...";
 
+    // note python's http.server does not support response compression Content-Encoding
+    // browsers and servers support content-encoding, but manually compress to fit on github (#1)
     const vecsResponse = await fetch("wordvecs50k.vec.gz");
     const vecsBlob = await vecsResponse.blob();
     const vecsBuf = await vecsBlob.arrayBuffer();
