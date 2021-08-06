@@ -70,7 +70,7 @@ let vecsDim; // word vector dim
 let nearestWords; // nearest words Map
 
 // vector calculations and plotting, including residual (issue #3)
-let genderFeature, ageFeature, residualFeature;
+let feature1, feature2, residualFeature;
 
 
 // read raw model text and write to vecs and vocab
@@ -101,7 +101,7 @@ function processNearestWords(text) {
     return nearestWords;
 }
 
-// create feature dimension vectors (math described in #3)
+// create feature dimension vectors
 function createFeature(vecs, wordSet1, wordSet2) {
     // for each pair of words, subtract vectors
     console.assert(wordSet1.length === wordSet2.length);
@@ -113,25 +113,25 @@ function createFeature(vecs, wordSet1, wordSet2) {
 // plot each word on a 3D scatterplot projected onto gender, age, residual features
 function plotScatter(newPlot=false) {
     // populate feature vectors
-    genderFeature = createFeature(vecs, feature1Set1, feature1Set2);
-    ageFeature = createFeature(vecs, feature2Set1, feature2Set2);
+    feature1 = createFeature(vecs, feature1Set1, feature1Set2);
+    feature2 = createFeature(vecs, feature2Set1, feature2Set2);
 
     const allFeatureWords = feature1Set1.concat(feature1Set2).concat(feature2Set1).concat(feature2Set2);
     const residualWords = [...new Set(allFeatureWords)];
 
-
+    // residual dim calculation described in #3
     residualFeature = residualWords.map(word => {
             const wordVec = vecs.get(word);
-            const wordNoGender = wordVec.sub(genderFeature.scale(wordVec.dot(genderFeature)));
-            const wordResidual = wordNoGender.sub(ageFeature.scale(wordNoGender.dot(ageFeature)));
+            const wordNoFeature1 = wordVec.sub(feature1.scale(wordVec.dot(feature1)));
+            const wordResidual = wordNoFeature1.sub(feature2.scale(wordNoFeature1.dot(feature2)));
             return wordResidual;
         }
     ).reduce((a,b) => a.add(b)).unit(); // average over residual words and normalize
 
     // add features as pseudo-words
     // TODO: not hard-code
-    vecs.set("[age]", ageFeature);
-    vecs.set("[gender]", genderFeature);
+    vecs.set("[age]", feature2);
+    vecs.set("[gender]", feature1);
 
     // words to actually be plotted (so scatterWords is a little misleading)
     const plotWords = [...new Set(scatterWords.concat(analogyScatterWords))];
@@ -139,8 +139,8 @@ function plotScatter(newPlot=false) {
     // x, y, z are simply projections onto features
     // use 1 - residual for graphical convention (#3)
     const x = plotWords.map(word => 1 - vecs.get(word).dot(residualFeature));
-    const y = plotWords.map(word => vecs.get(word).dot(genderFeature));
-    const z = plotWords.map(word => vecs.get(word).dot(ageFeature));
+    const y = plotWords.map(word => vecs.get(word).dot(feature1));
+    const z = plotWords.map(word => vecs.get(word).dot(feature2));
 
     // color points by type with priority (#12)
     const color = plotWords.map(word =>
