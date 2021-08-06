@@ -4,10 +4,13 @@ const MAGNIFY_WINDOW = 5; // range for magnified view
 const HEATMAP_MIN = -0.2;  // min and max for heatmap colorscale
 const HEATMAP_MAX = 0.2;
 
+let feature1Name;
+let feature2Name;
+
 // Word pairs used to compute features
 const FEATURE1_PAIRS =
     [
-        ["man", "woman"], 
+        ["man", "woman"],
         ["king", "queen"],
         ["prince", "princess"],
         ["husband", "wife"],
@@ -467,11 +470,26 @@ function unpackVectors(vecsBuf) {
     });
 }
 
+// fill in default words used to define semantic dimensions for scatterplot
+function fillDimensionDefault() {
+    document.getElementById("user-dimension-feature1-set1").textContent =
+        "man\nking\nprince\nhusband\nfather\nson\nuncle\nnephew\nboy\nmale";
+    document.getElementById("user-dimension-feature1-set2").textContent =
+        "woman\nqueen\nprincess\nwife\nmother\ndaughter\naunt\nniece\ngirl\nfemale";
+    document.getElementById("user-dimension-feature2-set1").textContent =
+        "man\nwoman\nking\nqueen\nfather\nmother\nuncle\naunt";
+    document.getElementById("user-dimension-feature2-set2").textContent =
+        "boy\ngirl\nprince\nprincess\nson\ndaughter\nnephew\nniece";
 
+}
+
+// fetch wordvecs locally (no error handling) and process
+// note python's http.server does not support response compression Content-Encoding
+// browsers and servers support content-encoding, but manually compress to fit on github (#1)
 async function main() {
-    // fetch wordvecs locally (no error handling) and process
-    // note python's http.server does not support response compression Content-Encoding
-    // browsers and servers support content-encoding, but manually compress to fit on github (#1)
+
+    fillDimensionDefault();
+
 
     // lo-tech progress indication
     const loadingText = document.getElementById("loading-text");
