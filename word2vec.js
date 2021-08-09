@@ -110,7 +110,11 @@ function createFeature(vecs, wordSet1, wordSet2) {
     return subVecs.reduce((a,b) => a.add(b)).unit();
 }
 
+
+
 // plot each word on a 3D scatterplot projected onto gender, age, residual features
+// as part of the process, computes features and adds as psuedo-words
+// used to refresh selected word (also recolors axis buttons)
 function plotScatter(newPlot=false) {
     // populate feature vectors
     feature1 = createFeature(vecs, feature1Set1, feature1Set2);
@@ -132,6 +136,8 @@ function plotScatter(newPlot=false) {
     // TODO: not hard-code
     vecs.set("[age]", feature2);
     vecs.set("[gender]", feature1);
+
+
 
     // words to actually be plotted (so scatterWords is a little misleading)
     const plotWords = [...new Set(scatterWords.concat(analogyScatterWords))];
@@ -409,9 +415,8 @@ function modifyWord() {
     }
 }
 
-// compute 3COSADD word analogy
-// also write arithmetic vectors to vector view and add nearest neighbors to result (#14)
-// "Linguistic Regularities in Continuous Space Word Representations" (Mikolov 2013)
+// process 3COSADD word analogy input, write arithmetic vectors to vector view and add nearest neighbors to result (#14)
+// notation from original paper: "Linguistic Regularities in Continuous Space Word Representations" (Mikolov 2013)
 // Analogy notation for words: a:b as c:d, with d unknown
 // vector y = x_b - x_a + x_c, find w* = argmax_w cossim(x_w, y)
 function processAnalogy() {
@@ -421,11 +426,16 @@ function processAnalogy() {
 
     const inputWords = [wordA, wordB, wordC];
 
-    // TODO: handle more gracefully telling user if words not available
-    if (!(vecs.has(wordB) && vecs.has(wordA) && vecs.has(wordC))) {
-        console.warn("bad word");
-        return;
+    // Handle not found input words gracefully
+    for (const word of inputWords) {
+        if (!(vecs.has(word))) {
+            document.getElementById("analogy-message").innerText = `"${word}" not found`;
+            return;
+        }
     }
+
+    // all words in inputWords, clear analogy-message
+    document.getElementById("analogy-message").innerText = "";
 
     const vecA = vecs.get(wordA);
     const vecB = vecs.get(wordB);
