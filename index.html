@@ -41,52 +41,55 @@
 <details>
     <summary>Vector analogy arithmetic</summary>
 
-    <div id="analogy-bar">
-        <!-- autocomplete off to disable Firefox from saving form entries -->
-        <form id="analogy-form" action="javascript:processAnalogy()" autocomplete="off">
-            <!-- TODO: add proper spacing for equation -->
-            <input id="analogy-word-b" type="text" placeholder="king">
-            -
-            <input id="analogy-word-a" type="text" placeholder="man">
-            +
-            <input id="analogy-word-c" type="text" placeholder="woman">
-            =
-            <input id="analogy-word-wstar" type="text" readonly="readonly" placeholder="queen">
-            <button type="submit">Submit</button>
-        </form>
+    <!-- autocomplete off to disable Firefox from saving form entries -->
+    <form id="analogy-form" action="javascript:processAnalogy()" autocomplete="off">
+        <!-- TODO: add proper spacing for equation -->
+        <input id="analogy-word-b" type="text" placeholder="king">
+        -
+        <input id="analogy-word-a" type="text" placeholder="man">
+        +
+        <input id="analogy-word-c" type="text" placeholder="woman">
+        =
+        <input id="analogy-word-wstar" type="text" readonly="readonly" placeholder="queen">
+        <button type="submit">Submit</button>
 
         <span id="analogy-message"></span>
-    </div>
+    </form>
+
 </details>
 
-<form id="user-dimension-wrapper" action="javascript:processDimensionInput();plotScatter()">
-    <div class="user-dimension-area">
-        <div class="user-dimension-input">
-            <label for="user-dimension-feature1-name">Dimension Name</label>
-            <!-- TODO: better naming scheme in CSS -->
-            <input class="user-dimension-name" id="user-dimension-feature1-name" type="text">
+<details>
+    <summary>Custom semantic dimensions</summary>
+
+    <form id="user-dimension-wrapper" action="javascript:processDimensionInput();plotScatter()">
+        <div class="user-dimension-area">
+            <div class="user-dimension-input">
+                <label for="user-dimension-feature1-name">Dimension Name</label>
+                <!-- TODO: better naming scheme in CSS -->
+                <input class="user-dimension-name" id="user-dimension-feature1-name" type="text">
+            </div>
+            <div class="user-dimension-entry">
+                <textarea class="user-dimension-feature-set" id="user-dimension-feature1-set1" rows="16"></textarea>
+                <textarea class="user-dimension-feature-set" id="user-dimension-feature1-set2" rows="16"></textarea>
+            </div>
         </div>
-        <div class="user-dimension-entry">
-            <textarea class="user-dimension-feature-set" id="user-dimension-feature1-set1" rows="16"></textarea>
-            <textarea class="user-dimension-feature-set" id="user-dimension-feature1-set2" rows="16"></textarea>
-        </div>
-    </div>
-    <div class="user-dimension-area">
-        <div class="user-dimension-input">
-            <label for="user-dimension-feature1-name">Dimension Name</label>
-            <input class="user-dimension-name" id="user-dimension-feature2-name" type="text">
-        </div>
-        <div class="user-dimension-entry">
-            <textarea class="user-dimension-feature-set" id="user-dimension-feature2-set1" rows="16"></textarea>
-            <textarea class="user-dimension-feature-set" id="user-dimension-feature2-set2" rows="16"></textarea>
-        </div>
+        <div class="user-dimension-area">
+            <div class="user-dimension-input">
+                <label for="user-dimension-feature1-name">Dimension Name</label>
+                <input class="user-dimension-name" id="user-dimension-feature2-name" type="text">
+            </div>
+            <div class="user-dimension-entry">
+                <textarea class="user-dimension-feature-set" id="user-dimension-feature2-set1" rows="16"></textarea>
+                <textarea class="user-dimension-feature-set" id="user-dimension-feature2-set2" rows="16"></textarea>
+            </div>
 
 
-    </div>
+        </div>
 
-    <button type="submit">Submit</button>
+        <button type="submit">Submit</button>
 
-</form>
+    </form>
+</details>
 
 </body>
 </html>

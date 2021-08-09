@@ -33,6 +33,16 @@ h1 {
     pointer-events: all;
 }
 
+details {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+details > form {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 #user-dimension-wrapper {
     display: grid;
     grid-template-columns: 1fr 1fr;
