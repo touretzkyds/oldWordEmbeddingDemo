@@ -16,8 +16,8 @@
 
 <h1>Word2Vec Demo</h1>
 
-<div id="plots-wrapper">
-    <div id="scatter-wrapper">
+<div id="plots-container">
+    <div id="scatter-container">
         <div id="plotly-scatter"> </div>
         <div id="scatter-buttons">
             <button id="scatter-button0" onclick="selectAxis(0)">Age</button>
@@ -61,7 +61,7 @@
 <details>
     <summary>Custom semantic dimensions</summary>
 
-    <form id="user-dimension-wrapper" action="javascript:processDimensionInput();plotScatter()">
+    <form id="user-dimension-form" action="javascript:processDimensionInput();plotScatter()">
         <div class="user-dimension-area">
             <div class="user-dimension-input">
                 <label for="user-dimension-feature1-name">Dimension Name</label>

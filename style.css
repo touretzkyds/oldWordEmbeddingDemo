@@ -2,14 +2,14 @@ h1 {
     text-align: center;
 }
 
-#plots-wrapper {
+#plots-container {
     /* default width 100% */
     height: 70vh;
     display: grid;
     grid-template-columns: 50% 15% 35%;
 }
 
-#scatter-wrapper {
+#scatter-container {
     display: flex;
     flex-direction: column;
 }
@@ -43,7 +43,7 @@ details > form {
     margin-bottom: 10px;
 }
 
-#user-dimension-wrapper {
+#user-dimension-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
