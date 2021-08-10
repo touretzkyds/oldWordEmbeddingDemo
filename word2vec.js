@@ -63,7 +63,7 @@ let hoverX = MAGNIFY_WINDOW;
 // main word to vector Map (may include pseudo-word vectors like "man+woman")
 let vecs = new Map();
 
-// Set of actual words found in model
+// Set of actual words found in model (no pseudo-words)
 let vocab = new Set();
 
 let vecsDim; // word vector dim
@@ -86,7 +86,7 @@ function processRawVecs(text) {
     }
 
     // sanity check for debugging input data
-    RESIDUAL_WORDS.forEach(word => console.assert(vecs.has(word),word + " not in vecs"));
+    RESIDUAL_WORDS.forEach(word => console.assert(vocab.has(word),word + " not in vecs"));
 }
 
 function processNearestWords(text) {
@@ -395,8 +395,8 @@ function modifyWord() {
         selectedWord = ""; // remove selected word
         wordModified = true;
     }
-    else { // add word if in wordvecs
-        if (vecs.has(word)) {
+    else { // add word if in vocab
+        if (vocab.has(word)) {
             scatterWords.push(word);
             document.getElementById("modify-word-message").innerText = `"${word}" added`;
             selectedWord = word; // make added word selected word
@@ -428,7 +428,7 @@ function processAnalogy() {
 
     // Handle not found input words gracefully
     for (const word of inputWords) {
-        if (!(vecs.has(word))) {
+        if (!(vocab.has(word))) {
             document.getElementById("analogy-message").innerText = `"${word}" not found`;
             return;
         }
