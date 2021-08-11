@@ -500,19 +500,46 @@ function fillDimensionDefault() {
 }
 
 function processDimensionInput() {
-    const feature1Set1Input = document.getElementById("user-dimension-feature1-set1").value.split('\n');
-    const feature1Set2Input = document.getElementById("user-dimension-feature1-set2").value.split('\n');
-    const feature2Set1Input = document.getElementById("user-dimension-feature2-set1").value.split('\n');
-    const feature2Set2Input = document.getElementById("user-dimension-feature2-set2").value.split('\n');
+    // TODO: cleanup
+    // local function for parsing input box data
+    function parseInput(id) {
+        return document.getElementById(id).value.split('\n');
+    }
 
-    // TODO: user validation
+
+    const feature1Set1Input = parseInput("user-dimension-feature1-set1");
+    const feature1Set2Input = parseInput("user-dimension-feature1-set2");
+    const feature2Set1Input = parseInput("user-dimension-feature2-set1");
+    const feature2Set2Input = parseInput("user-dimension-feature2-set2");
+
+    // ensure feature sets are the same length
+    if (!(feature1Set1Input.length === feature1Set2Input.length &&
+        feature2Set1Input.length === feature2Set2Input.length)) {
+        document.getElementById("user-dimension-message").innerText =
+            "Ensure feature word sets are same length";
+        return;
+    }
+
+    // simple user input validation
+    // ensure all words in vocab
+    for (const set of [feature1Set1Input, feature1Set2Input, feature2Set1Input, feature2Set2Input]) {
+        for (const word of set) {
+            if (!vocab.has(word)) {
+                document.getElementById("user-dimension-message").innerText =
+                    `"${word}" not found`;
+                return;
+            }
+        }
+    }
+
+
+    // copy inputs after validation
     feature1Set1 = feature1Set1Input;
     feature1Set2 = feature1Set2Input;
     feature2Set1 = feature2Set1Input;
     feature2Set2 = feature2Set2Input;
 
     console.log(feature1Set1, feature1Set2, feature2Set1, feature2Set2);
-
 
 }
 

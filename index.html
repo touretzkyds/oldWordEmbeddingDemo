@@ -61,7 +61,7 @@
 <details>
     <summary>Custom semantic dimensions</summary>
 
-    <form id="user-dimension-form" action="javascript:processDimensionInput();plotScatter()">
+    <form id="user-dimension-form" action="javascript:processDimensionInput();plotScatter()" autocomplete="off">
         <div class="user-dimension-area">
             <label>Dimension 1 Name
                 <!-- TODO: better naming scheme in CSS -->
@@ -86,6 +86,8 @@
         </div>
 
         <button type="submit">Submit</button>
+
+        <span id="user-dimension-message"></span>
 
     </form>
 </details>
