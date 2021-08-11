@@ -170,9 +170,9 @@ function plotScatter(newPlot=false) {
         title: {text: "Word vector projection"},
         //uirevision: "true",
         scene: {
-            xaxis: {title: "Residual", dtick: 0.1},
-            yaxis: {title: "Gender", dtick: 0.1},
-            zaxis: {title: "Age", dtick: 0.1},
+            xaxis: {title: "residual", dtick: 0.1},
+            yaxis: {title: feature1Name, dtick: 0.1},
+            zaxis: {title: feature2Name, dtick: 0.1},
             camera: camera
         },
         margin: {l:0, r:0, t:30, b:0}, // maximize viewing area
@@ -457,9 +457,9 @@ function unpackVectors(vecsBuf) {
 // fill in default words used to define semantic dimensions and feature names for scatterplot
 function fillDimensionDefault() {
     document.getElementById("user-dimension-feature1-name-input").value =
-        "age";
-    document.getElementById("user-dimension-feature2-name-input").value =
         "gender";
+    document.getElementById("user-dimension-feature2-name-input").value =
+        "age";
 
     document.getElementById("user-dimension-feature1-set1").textContent =
         "man\nking\nprince\nhusband\nfather\nson\nuncle\nnephew\nboy\nmale";
@@ -506,14 +506,18 @@ function processDimensionInput() {
     }
 
 
-    // copy inputs after validation
+    // copy feature words and names after validation
     feature1Set1 = feature1Set1Input;
     feature1Set2 = feature1Set2Input;
     feature2Set1 = feature2Set1Input;
     feature2Set2 = feature2Set2Input;
 
-    console.log(feature1Set1, feature1Set2, feature2Set1, feature2Set2);
+    feature1Name = document.getElementById("user-dimension-feature1-name-input").value;
+    feature2Name = document.getElementById("user-dimension-feature2-name-input").value;
 
+    // write names to buttons
+    document.getElementById("scatter-button0").innerText = feature1Name;
+    document.getElementById("scatter-button1").innerText = feature2Name;
 }
 
 // fetch wordvecs locally (no error handling) and process
