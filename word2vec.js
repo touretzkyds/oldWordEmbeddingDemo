@@ -4,42 +4,6 @@ const MAGNIFY_WINDOW = 5; // range for magnified view
 const HEATMAP_MIN = -0.2;  // min and max for heatmap colorscale
 const HEATMAP_MAX = 0.2;
 
-// to be used for naming features
-let feature1Name;
-let feature2Name;
-
-// words to be used for creating dimensions
-let feature1Set1, feature1Set2, feature2Set1, feature2Set2;
-
-// Word pairs used to compute features
-const FEATURE1_PAIRS =
-    [
-        ["man", "woman"],
-        ["king", "queen"],
-        ["prince", "princess"],
-        ["husband", "wife"],
-        ["father", "mother"],
-        ["son", "daughter"],
-        ["uncle", "aunt"],
-        ["nephew", "niece"],
-        ["boy", "girl"],
-        ["male", "female"]
-    ];
-
-const FEATURE2_PAIRS =
-    [
-        ["man", "boy"],
-        ["woman", "girl"],
-        ["king", "prince"],
-        ["queen", "princess"],
-        ["father", "son"],
-        ["mother", "daughter"],
-        ["uncle", "nephew"],
-        ["aunt", "niece"]
-    ];
-
-// Residual words made up from words in gender and age pairs
-const RESIDUAL_WORDS = [...new Set(FEATURE1_PAIRS.flat().concat(FEATURE2_PAIRS.flat()))];
 
 // global variables for various plotting functionality
 
@@ -72,6 +36,13 @@ let nearestWords; // nearest words Map
 // vector calculations and plotting, including residual (issue #3)
 let feature1, feature2, residualFeature;
 
+// to be used for naming features
+let feature1Name;
+let feature2Name;
+
+// words to be used for creating dimensions
+let feature1Set1, feature1Set2, feature2Set1, feature2Set2;
+
 
 // read raw model text and write to vecs and vocab
 function processRawVecs(text) {
@@ -84,9 +55,6 @@ function processRawVecs(text) {
         vocab.add(word);
         vecs.set(word, vec);
     }
-
-    // sanity check for debugging input data
-    RESIDUAL_WORDS.forEach(word => console.assert(vocab.has(word),word + " not in vecs"));
 }
 
 function processNearestWords(text) {
@@ -486,8 +454,13 @@ function unpackVectors(vecsBuf) {
     });
 }
 
-// fill in default words used to define semantic dimensions for scatterplot
+// fill in default words used to define semantic dimensions and feature names for scatterplot
 function fillDimensionDefault() {
+    document.getElementById("user-dimension-feature1-name-input").value =
+        "age";
+    document.getElementById("user-dimension-feature2-name-input").value =
+        "gender";
+
     document.getElementById("user-dimension-feature1-set1").textContent =
         "man\nking\nprince\nhusband\nfather\nson\nuncle\nnephew\nboy\nmale";
     document.getElementById("user-dimension-feature1-set2").textContent =
