@@ -100,12 +100,6 @@ function plotScatter(newPlot=false) {
         }
     ).reduce((a,b) => a.add(b)).unit(); // average over residual words and normalize
 
-    // add features as pseudo-words
-    // TODO: not hard-code
-    vecs.set("[age]", feature2);
-    vecs.set("[gender]", feature1);
-
-
 
     // words to actually be plotted (so scatterWords is a little misleading)
     const plotWords = [...new Set(scatterWords.concat(analogyScatterWords))];
@@ -168,9 +162,8 @@ function plotScatter(newPlot=false) {
 
     const layout = {
         title: {text: "Word vector projection"},
-        //uirevision: "true",
         scene: {
-            xaxis: {title: "residual", dtick: 0.1},
+            xaxis: {title: "[residual]", dtick: 0.1},
             yaxis: {title: feature1Name, dtick: 0.1},
             zaxis: {title: feature2Name, dtick: 0.1},
             camera: camera
@@ -205,21 +198,19 @@ function plotScatter(newPlot=false) {
 }
 
 function selectAxis(axis) {
-    // TODO: cleanup
-    console.log("button", axis);
-    const axisNames = ["[age]", "[gender]"];
+    let selectedWordInput = (axis === 0) ? feature1Name : feature2Name;
+    console.log("button", selectedWordInput);
 
-    if (selectedWord === axisNames[axis]) {  // deselect word
+    // add features as pseudo-words (should it be computed here?)
+    vecs.set(selectedWordInput, (axis === 0) ? feature1 : feature2);
+
+
+    if (selectedWordInput === selectedWord) {  // deselect word
         selectedWord = "";
     } else { // select word
-        selectedWord = axisNames[axis];
+        selectedWord = selectedWordInput;
     }
 
-    // TODO: move updating button color to own function that is also called on scatter click
-    for (const i of [0,1]) {
-        const buttonID = "scatter-button" + i;
-        document.getElementById(buttonID).style.color = (selectedWord === axisNames[i]) ? "red" : "black";
-    }
 
     plotScatter(); // replot selected word
 }
@@ -506,14 +497,15 @@ function processDimensionInput() {
     }
 
 
-    // copy feature words and names after validation
+    // copy feature words after validation
     feature1Set1 = feature1Set1Input;
     feature1Set2 = feature1Set2Input;
     feature2Set1 = feature2Set1Input;
     feature2Set2 = feature2Set2Input;
 
-    feature1Name = document.getElementById("user-dimension-feature1-name-input").value;
-    feature2Name = document.getElementById("user-dimension-feature2-name-input").value;
+    // read feature names from inputs, adding bracket syntax
+    feature1Name = '[' + document.getElementById("user-dimension-feature1-name-input").value + ']';
+    feature2Name = '[' + document.getElementById("user-dimension-feature2-name-input").value + ']';
 
     // write names to buttons
     document.getElementById("scatter-button0").innerText = feature1Name;
