@@ -13,7 +13,7 @@ let scatterWords = ['man', 'woman', 'boy', 'girl', 'king', 'queen', 'prince', 'p
     'uncle', 'aunt', 'father', 'mother', 'son', 'daughter', 'husband', 'wife', 'chair', 'computer'];
 
 // words involved in the computation of analogy in scatter plot (#12)
-let analogyScatterWords = [];
+let analogyScatterWords = {};  // default empty
 
 // words to show in vector display
 let vectorWords = ["queen", "king", "girl", "boy", "woman", "man"];
@@ -102,7 +102,8 @@ function plotScatter(newPlot=false) {
 
 
     // words to actually be plotted (so scatterWords is a little misleading)
-    const plotWords = [...new Set(scatterWords.concat(analogyScatterWords))];
+    let plotWords = scatterWords.concat(Object.values(analogyScatterWords));
+    plotWords = [...new Set(plotWords)]; // remove duplicates
 
     // x, y, z are simply projections onto features
     // use 1 - residual for graphical convention (#3)
@@ -112,10 +113,10 @@ function plotScatter(newPlot=false) {
 
     // color points by type with priority (#12)
     const color = plotWords.map(word =>
-        (word === selectedWord) ? "red"
-            : (word === analogyScatterWords[3]) ? "pink"
-            : (word === analogyScatterWords[4]) ? "lime"
-            : (analogyScatterWords.includes(word)) ? "blue"
+        (word === selectedWord) ? "red" // selected word has highest priority
+            : (word === analogyScatterWords.y) ? "pink"
+            : (word === analogyScatterWords.Wstar) ? "lime"
+            : (Object.values(analogyScatterWords).includes(word)) ? "blue"
             : "black"
     );
 
@@ -444,8 +445,9 @@ function processAnalogy() {
     vecs.set(wordBMinusA, vecBMinusA);
     vecs.set(wordY, vecY);
 
-    // set analogy words to display in scatter (#12) in specific order:
-    analogyScatterWords = [wordB, wordA, wordC, wordY, wordWstar];
+    // set analogy words to display in scatter (#12):
+    analogyScatterWords = {"b": wordB, "a": wordA, "c": wordC, "y": wordY, "Wstar": wordWstar};
+
     plotScatter();
 
     // write arithmetic vectors to vector view (#14)
