@@ -298,8 +298,9 @@ function plotMagnify(newPlot=false) {
     // bounds are inclusive
     const lo = hoverX - MAGNIFY_WINDOW;
     const hi = hoverX + MAGNIFY_WINDOW;
-    if (!(0 <= lo && hi < vecsDim))
-        return;
+    if (!(0 <= lo && hi < vecsDim)) {
+            return;
+        }
 
     // heatmap with subset of z
     const z = vectorWords.map(word =>
@@ -341,7 +342,9 @@ function plotMagnify(newPlot=false) {
         const plotly_magnify = document.getElementById("plotly-magnify");
         plotly_magnify.on("plotly_afterplot", updateHeatmapsOnWordClick);
     }
-    else Plotly.react("plotly-magnify", data, layout);
+    else {
+        Plotly.react("plotly-magnify", data, layout);
+    }
 }
 
 function modifyWord() {
@@ -438,7 +441,7 @@ function processAnalogy() {
 // inflate option to:"string" freezes browser, see https://github.com/nodeca/pako/issues/228
 // TextDecoder may hang browser but seems much faster
 function unpackVectors(vecsBuf) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const vecsUint8 = pako.inflate(vecsBuf);
         const vecsText = new TextDecoder().decode(vecsUint8);
         return resolve(vecsText);
