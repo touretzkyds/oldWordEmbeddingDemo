@@ -81,8 +81,8 @@ function createFeature(vecs, wordSet1, wordSet2) {
 
 
 // plot each word on a 3D scatterplot projected onto gender, age, residual features
-// as part of the process, computes features and adds as psuedo-words
-// used to refresh selected word (also recolors axis buttons)
+// as part of the process, computes features
+// used to refresh selected word
 function plotScatter(newPlot=false) {
     // populate feature vectors
     feature1 = createFeature(vecs, feature1Set1, feature1Set2);
@@ -163,9 +163,25 @@ function plotScatter(newPlot=false) {
     const layout = {
         title: {text: "Word vector projection"},
         scene: {
-            xaxis: {title: "[residual]", dtick: 0.1},
-            yaxis: {title: feature1Name, dtick: 0.1},
-            zaxis: {title: feature2Name, dtick: 0.1},
+            xaxis: {
+                title: {text: "[residual]"},
+                dtick: 0.1
+            },
+            yaxis: {
+                title: {
+                    text: feature1Name,
+                    // color based on if axis feature is selected word
+                    font: {color: (selectedWord === feature1Name) ? "red" : "black"}
+                },
+                dtick: 0.1
+            },
+            zaxis: {
+                title: {
+                    text: feature2Name,
+                    font: {color: (selectedWord === feature2Name ? "red" : "black")}
+                },
+                dtick: 0.1
+            },
             camera: camera
         },
         margin: {l:0, r:0, t:30, b:0}, // maximize viewing area
