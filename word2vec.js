@@ -112,11 +112,11 @@ function plotScatter(newPlot=false) {
 
     // color points by type with priority (#12)
     const color = plotWords.map(word =>
-        (word === selectedWord) ? "#FF0000"
-            : (word === analogyScatterWords[3]) ? "#FF8888"
-            : (word === analogyScatterWords[4]) ? "#00FF00"
-            : (analogyScatterWords.includes(word)) ? "#0000FF"
-            : "#000000"
+        (word === selectedWord) ? "red"
+            : (word === analogyScatterWords[3]) ? "pink"
+            : (word === analogyScatterWords[4]) ? "lime"
+            : (analogyScatterWords.includes(word)) ? "blue"
+            : "black"
     );
 
     // For each point, include numbered list of nearest words in hovertext
