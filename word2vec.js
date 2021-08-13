@@ -106,8 +106,8 @@ function plotScatter(newPlot=false) {
     plotWords = [...new Set(plotWords)]; // remove duplicates
 
     // x, y, z are simply projections onto features
-    // use 1 - residual for graphical convention (#3)
-    const x = plotWords.map(word => 1 - vecs.get(word).dot(residualFeature));
+    // use 1 - residual and scale residual for graphical convention (#3, #17)
+    const x = plotWords.map(word => 2 *(1 - vecs.get(word).dot(residualFeature)));
     const y = plotWords.map(word => vecs.get(word).dot(feature1));
     const z = plotWords.map(word => vecs.get(word).dot(feature2));
 
