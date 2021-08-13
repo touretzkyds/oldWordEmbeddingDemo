@@ -12,8 +12,8 @@ const HEATMAP_MAX = 0.2;
 let scatterWords = ['man', 'woman', 'boy', 'girl', 'king', 'queen', 'prince', 'princess', 'nephew', 'niece',
     'uncle', 'aunt', 'father', 'mother', 'son', 'daughter', 'husband', 'wife', 'chair', 'computer'];
 
-// words involved in the computation of analogy in scatter plot (#12)
-let analogyScatterWords = {};  // default empty
+// words involved in the computation of analogy (#12)
+let analogyWords = {};  // default empty
 
 // words to show in vector display
 let vectorWords = ["queen", "king", "girl", "boy", "woman", "man"];
@@ -102,21 +102,26 @@ function plotScatter(newPlot=false) {
 
 
     // words to actually be plotted (so scatterWords is a little misleading)
-    let plotWords = scatterWords.concat(Object.values(analogyScatterWords));
+    let plotWords = scatterWords.concat(Object.values(analogyWords));
     plotWords = [...new Set(plotWords)]; // remove duplicates
 
     // x, y, z are simply projections onto features
     // use 1 - residual and scale residual for graphical convention (#3, #17)
-    const x = plotWords.map(word => 2 *(1 - vecs.get(word).dot(residualFeature)));
+    function projectResidual(word) {
+        return 2 *(1 - vecs.get(word).dot(residualFeature));
+    }
+
+
+    const x = plotWords.map(projectResidual);
     const y = plotWords.map(word => vecs.get(word).dot(feature1));
     const z = plotWords.map(word => vecs.get(word).dot(feature2));
 
     // color points by type with priority (#12)
     const color = plotWords.map(word =>
         (word === selectedWord) ? "red" // selected word has highest priority
-            : (word === analogyScatterWords.y) ? "pink"
-            : (word === analogyScatterWords.Wstar) ? "lime"
-            : (Object.values(analogyScatterWords).includes(word)) ? "blue"
+            : (word === analogyWords.y) ? "pink"
+            : (word === analogyWords.Wstar) ? "lime"
+            : (Object.values(analogyWords).includes(word)) ? "blue"
             : "black"
     );
 
@@ -129,7 +134,7 @@ function plotScatter(newPlot=false) {
                 .join("<br>")
     );
 
-    const data = [
+    let data = [
         {
             x: x,
             y: y,
@@ -146,6 +151,21 @@ function plotScatter(newPlot=false) {
             hovertext: hovertext
         }
     ];
+
+    // draw vectors if analogy words are available
+    if (Object.keys(analogyWords).length > 0) {
+        const arrowWords = [analogyWords.b, analogyWords.a];
+        data.push(
+            {
+                x: arrowWords.map(projectResidual),
+                y: arrowWords.map(word => vecs.get(word).dot(feature1)),
+                z: arrowWords.map(word => vecs.get(word).dot(feature2)),
+                mode: "lines",
+                type: "scatter3d"
+            }
+
+        )
+    }
 
     const ZOOM = 0.8;
 
@@ -446,7 +466,7 @@ function processAnalogy() {
     vecs.set(wordY, vecY);
 
     // set analogy words to display in scatter (#12):
-    analogyScatterWords = {"b": wordB, "a": wordA, "c": wordC, "y": wordY, "Wstar": wordWstar};
+    analogyWords = {"b": wordB, "a": wordA, "c": wordC, "y": wordY, "Wstar": wordWstar};
 
     plotScatter();
 
