@@ -449,10 +449,10 @@ function processAnalogy() {
     const vecB = vecs.get(wordB);
     const vecC = vecs.get(wordC);
 
-    // vector arithmetic, scale to unit vector
+    // vector arithmetic
     const vecBMinusA = vecB.sub(vecA);
     const wordBMinusA = `${wordB}-${wordA}`;
-    const vecY = vecBMinusA.add(vecC).unit();
+    const vecY = vecBMinusA.add(vecC); // dont normalize for now (#12)
     const wordY = `${wordB}-${wordA}+${wordC}`;
 
     // find most similar words for analogy
