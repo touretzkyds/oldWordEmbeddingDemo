@@ -154,7 +154,7 @@ function plotScatter(newPlot=false) {
 
     // draw vectors if analogy words are available
     if (Object.keys(analogyWords).length > 0) {
-        const arrowPairs = [[analogyWords.b, analogyWords.a], [analogyWords.c, analogyWords.y]];
+        const arrowPairs = [[analogyWords.a, analogyWords.b], [analogyWords.c, analogyWords.y]];
         for (const arrowPair of arrowPairs) {
             // xyz coordinates of endpoints
             const x = arrowPair.map(projectResidual);
