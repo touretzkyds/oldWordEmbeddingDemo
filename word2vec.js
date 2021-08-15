@@ -156,11 +156,17 @@ function plotScatter(newPlot=false) {
     if (Object.keys(analogyWords).length > 0) {
         const arrowPairs = [[analogyWords.b, analogyWords.a], [analogyWords.c, analogyWords.y]];
         for (const arrowPair of arrowPairs) {
+            // xyz coordinates of endpoints
+            const x = arrowPair.map(projectResidual);
+            const y = arrowPair.map(word => vecs.get(word).dot(feature1));
+            const z = arrowPair.map(word => vecs.get(word).dot(feature2));
+
+
             data.push(
                 {
-                    x: arrowPair.map(projectResidual),
-                    y: arrowPair.map(word => vecs.get(word).dot(feature1)),
-                    z: arrowPair.map(word => vecs.get(word).dot(feature2)),
+                    x: x,
+                    y: y,
+                    z: z,
                     mode: "lines",
                     type: "scatter3d",
                     hoverinfo: "none",
@@ -168,6 +174,19 @@ function plotScatter(newPlot=false) {
                         color: "blue",
                         width: 3
                     }
+                },
+                {
+                    type: "cone",
+                    x: [x[1]],
+                    y: [y[1]],
+                    z: [z[1]],
+                    u: [0.3*(x[1]-x[0])],
+                    v: [0.3*(y[1]-y[0])],
+                    w: [0.3*(z[1]-z[0])],
+                    anchor: "tip",
+                    hoverinfo: "none",
+                    colorscale: [[0, "blue"], [1, "blue"]],
+                    showscale: false,
                 }
             )
         }
