@@ -162,7 +162,12 @@ function plotScatter(newPlot=false) {
                     y: arrowPair.map(word => vecs.get(word).dot(feature1)),
                     z: arrowPair.map(word => vecs.get(word).dot(feature2)),
                     mode: "lines",
-                    type: "scatter3d"
+                    type: "scatter3d",
+                    hoverinfo: "none",
+                    line: {
+                        color: "blue",
+                        width: 3
+                    }
                 }
             )
         }
@@ -209,7 +214,8 @@ function plotScatter(newPlot=false) {
             camera: camera
         },
         margin: {l:0, r:0, t:30, b:0}, // maximize viewing area
-        font: {size: 12}
+        font: {size: 12},
+        showlegend: false
     };
 
     // always make new plot (#9)
