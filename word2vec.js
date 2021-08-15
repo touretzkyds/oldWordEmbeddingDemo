@@ -154,17 +154,20 @@ function plotScatter(newPlot=false) {
 
     // draw vectors if analogy words are available
     if (Object.keys(analogyWords).length > 0) {
-        const arrowWords = [analogyWords.b, analogyWords.a];
-        data.push(
-            {
-                x: arrowWords.map(projectResidual),
-                y: arrowWords.map(word => vecs.get(word).dot(feature1)),
-                z: arrowWords.map(word => vecs.get(word).dot(feature2)),
-                mode: "lines",
-                type: "scatter3d"
-            }
+        const arrowPairs = [[analogyWords.b, analogyWords.a], [analogyWords.c, analogyWords.y]];
+        for (const arrowPair of arrowPairs) {
+            data.push(
+                {
+                    x: arrowPair.map(projectResidual),
+                    y: arrowPair.map(word => vecs.get(word).dot(feature1)),
+                    z: arrowPair.map(word => vecs.get(word).dot(feature2)),
+                    mode: "lines",
+                    type: "scatter3d"
+                }
+            )
+        }
 
-        )
+
     }
 
     const ZOOM = 0.8;
