@@ -267,7 +267,7 @@ class Demo {
 
     }
 
-    selectAxis(axis) {
+    selectFeature(axis) {
         let selectedWordInput = (axis === 0) ? this.feature1Name : this.feature2Name;
         console.log("button", selectedWordInput);
 
