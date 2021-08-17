@@ -287,8 +287,7 @@ class Demo {
 
 
     // after plotly plot, bind heatmap axis click event using d3
-    // requires some trickery passing around _this since plotly and d3 overwrite `this`
-    updateHeatmapsOnWordClick(_this) {
+    updateHeatmapsOnWordClick() {
         // affects all heatmaps since they all have .yaxislayer-above!
         // https://stackoverflow.com/a/47400462
         console.log("Binding heatmap click event");
@@ -297,7 +296,7 @@ class Demo {
             .on("click", (d) => {
                 const idx = d.target.__data__.x;
                 console.log("Clicked on", idx);
-                console.log("Using this", this);
+                console.log("Using this", this); // should be demo `this`, not d3
                 if (this.selectedWord) {
                     // modify vector view to show selected word and then deselect
                     this.vectorWords[idx] = this.selectedWord;
@@ -350,7 +349,8 @@ class Demo {
             const plotly_vector = document.getElementById("plotly-vector");
 
             // bind axis click to replace word in vector display after plot
-            plotly_vector.on("plotly_afterplot", () => this.updateHeatmapsOnWordClick(this));
+            // use demo instance `this`, not plotly listener `this`
+            plotly_vector.on("plotly_afterplot", this.updateHeatmapsOnWordClick.bind(this));
 
             plotly_vector.on("plotly_hover", data => {
                 this.hoverX = data.points[0].x;
@@ -412,7 +412,7 @@ class Demo {
             Plotly.newPlot("plotly-magnify", data, layout);
             // bind axis click after plot, similar to vector
             const plotly_magnify = document.getElementById("plotly-magnify");
-            plotly_magnify.on("plotly_afterplot", () => this.updateHeatmapsOnWordClick(this));
+            plotly_magnify.on("plotly_afterplot", this.updateHeatmapsOnWordClick.bind(this));
         } else {
             Plotly.react("plotly-magnify", data, layout);
         }
