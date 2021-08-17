@@ -516,23 +516,23 @@ function unpackVectors(vecsBuf) {
 
 // fill in default words used to define semantic dimensions and feature names for scatterplot
 function fillDimensionDefault() {
-    document.getElementById("user-dimension-feature1-name-input").value =
+    document.getElementById("user-feature-feature1-name-input").value =
         "gender";
-    document.getElementById("user-dimension-feature2-name-input").value =
+    document.getElementById("user-feature-feature2-name-input").value =
         "age";
 
-    document.getElementById("user-dimension-feature1-set1").textContent =
+    document.getElementById("user-feature-feature1-set1").textContent =
         "man\nking\nprince\nhusband\nfather\nson\nuncle\nnephew\nboy\nmale";
-    document.getElementById("user-dimension-feature1-set2").textContent =
+    document.getElementById("user-feature-feature1-set2").textContent =
         "woman\nqueen\nprincess\nwife\nmother\ndaughter\naunt\nniece\ngirl\nfemale";
-    document.getElementById("user-dimension-feature2-set1").textContent =
+    document.getElementById("user-feature-feature2-set1").textContent =
         "man\nwoman\nking\nqueen\nfather\nmother\nuncle\naunt";
-    document.getElementById("user-dimension-feature2-set2").textContent =
+    document.getElementById("user-feature-feature2-set2").textContent =
         "boy\ngirl\nprince\nprincess\nson\ndaughter\nnephew\nniece";
 
 }
 
-function processDimensionInput() {
+function processFeatureInput() {
     // TODO: cleanup
     // local function for parsing input box data
     function parseInput(id) {
@@ -540,15 +540,15 @@ function processDimensionInput() {
     }
 
 
-    const feature1Set1Input = parseInput("user-dimension-feature1-set1");
-    const feature1Set2Input = parseInput("user-dimension-feature1-set2");
-    const feature2Set1Input = parseInput("user-dimension-feature2-set1");
-    const feature2Set2Input = parseInput("user-dimension-feature2-set2");
+    const feature1Set1Input = parseInput("user-feature-feature1-set1");
+    const feature1Set2Input = parseInput("user-feature-feature1-set2");
+    const feature2Set1Input = parseInput("user-feature-feature2-set1");
+    const feature2Set2Input = parseInput("user-feature-feature2-set2");
 
     // ensure feature sets are the same length
     if (!(feature1Set1Input.length === feature1Set2Input.length &&
         feature2Set1Input.length === feature2Set2Input.length)) {
-        document.getElementById("user-dimension-message").innerText =
+        document.getElementById("user-feature-message").innerText =
             "Ensure feature word sets are same length";
         return;
     }
@@ -558,7 +558,7 @@ function processDimensionInput() {
     for (const set of [feature1Set1Input, feature1Set2Input, feature2Set1Input, feature2Set2Input]) {
         for (const word of set) {
             if (!vocab.has(word)) {
-                document.getElementById("user-dimension-message").innerText =
+                document.getElementById("user-feature-message").innerText =
                     `"${word}" not found`;
                 return;
             }
@@ -573,8 +573,8 @@ function processDimensionInput() {
     feature2Set2 = feature2Set2Input;
 
     // read feature names from inputs, adding bracket syntax
-    feature1Name = '[' + document.getElementById("user-dimension-feature1-name-input").value + ']';
-    feature2Name = '[' + document.getElementById("user-dimension-feature2-name-input").value + ']';
+    feature1Name = '[' + document.getElementById("user-feature-feature1-name-input").value + ']';
+    feature2Name = '[' + document.getElementById("user-feature-feature2-name-input").value + ']';
 
     // write names to buttons
     document.getElementById("scatter-button0").innerText = feature1Name;
@@ -613,7 +613,7 @@ async function main() {
 
     loadingText.innerText = "Model processing done";
 
-    processDimensionInput();
+    processFeatureInput();
 
 
     // plot new plots for the first time

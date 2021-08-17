@@ -61,25 +61,25 @@
 <details>
     <summary>Custom semantic dimensions</summary>
 
-    <form id="user-dimension-form" action="javascript:processDimensionInput();plotScatter()" autocomplete="off">
-        <div class="user-dimension-area">
+    <form id="user-feature-form" action="javascript:processFeatureInput();plotScatter()" autocomplete="off">
+        <div class="user-feature-area">
             <label>Dimension 1 Name
                 <!-- TODO: better naming scheme in CSS -->
-                <input class="user-dimension-name" id="user-dimension-feature1-name-input" type="text">
+                <input class="user-feature-name" id="user-feature-feature1-name-input" type="text">
             </label>
 
-            <div class="user-dimension-entry">
-                <textarea class="user-dimension-feature-set" id="user-dimension-feature1-set1" rows="16"></textarea>
-                <textarea class="user-dimension-feature-set" id="user-dimension-feature1-set2" rows="16"></textarea>
+            <div class="user-feature-entry">
+                <textarea class="user-feature-feature-set" id="user-feature-feature1-set1" rows="16"></textarea>
+                <textarea class="user-feature-feature-set" id="user-feature-feature1-set2" rows="16"></textarea>
             </div>
         </div>
-        <div class="user-dimension-area">
+        <div class="user-feature-area">
             <label>Dimension 2 Name
-                <input class="user-dimension-name" id="user-dimension-feature2-name-input" type="text">
+                <input class="user-feature-name" id="user-feature-feature2-name-input" type="text">
             </label>
-            <div class="user-dimension-entry">
-                <textarea class="user-dimension-feature-set" id="user-dimension-feature2-set1" rows="16"></textarea>
-                <textarea class="user-dimension-feature-set" id="user-dimension-feature2-set2" rows="16"></textarea>
+            <div class="user-feature-entry">
+                <textarea class="user-feature-feature-set" id="user-feature-feature2-set1" rows="16"></textarea>
+                <textarea class="user-feature-feature-set" id="user-feature-feature2-set2" rows="16"></textarea>
             </div>
 
 
@@ -87,7 +87,7 @@
 
         <button type="submit">Submit</button>
 
-        <span id="user-dimension-message"></span>
+        <span id="user-feature-message"></span>
 
     </form>
 </details>

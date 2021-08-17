@@ -43,22 +43,22 @@ details > form {
     margin-bottom: 10px;
 }
 
-#user-dimension-form {
+#user-feature-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
 
-.user-dimension-area {
+.user-feature-area {
     display: flex;
     flex-direction: column;
 }
 
-.user-dimension-entry {
+.user-feature-entry {
     display: grid;
     grid-template-columns: 1fr 1fr;
     margin: 5px;
 }
 
-.user-dimension-feature-set {
+.user-feature-feature-set {
     margin: 5px;
 }
