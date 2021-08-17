@@ -31,7 +31,7 @@
 <div id="plots-status-bar">
     <span id="loading-text"></span>
 
-    <form id="word-entry" action="javascript:modifyWord()">
+    <form id="word-entry" action="javascript:demo.modifyWord()">
         <input id="modify-word-input" type="text">
         <button type="submit">Add/Remove Word</button>
     </form>
@@ -42,7 +42,7 @@
     <summary>Vector analogy arithmetic</summary>
 
     <!-- autocomplete off to disable Firefox from saving form entries -->
-    <form id="analogy-form" action="javascript:processAnalogy()" autocomplete="off">
+    <form id="analogy-form" action="javascript:demo.processAnalogy()" autocomplete="off">
         <!-- TODO: add proper spacing for equation -->
         <input id="analogy-word-b" type="text" placeholder="king">
         -
@@ -61,7 +61,7 @@
 <details>
     <summary>Custom semantic dimensions</summary>
 
-    <form id="user-feature-form" action="javascript:processFeatureInput();plotScatter()" autocomplete="off">
+    <form id="user-feature-form" action="javascript:demo.processFeatureInput();demo.plotScatter()" autocomplete="off">
         <div class="user-feature-area">
             <label>Dimension 1 Name
                 <!-- TODO: better naming scheme in CSS -->
