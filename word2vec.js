@@ -265,19 +265,17 @@ class Demo {
     }
 
     selectFeature(axis) {
-        let selectedWordInput = (axis === 0) ? this.featureNames[0] : this.featureNames[1];
+        const selectedWordInput = this.featureNames[axis];
         console.log("button", selectedWordInput);
 
-        // add features as pseudo-words (should it be computed here?)
-        this.vecs.set(selectedWordInput, (axis === 0) ? this.features[0] : this.features[1]);
-
+        // add features as pseudo-words to vecs
+        this.vecs.set(selectedWordInput, this.features[axis]);
 
         if (selectedWordInput === this.selectedWord) {  // deselect word
             this.selectedWord = "";
         } else { // select word
             this.selectedWord = selectedWordInput;
         }
-
 
         this.plotScatter(); // replot selected word
     }
