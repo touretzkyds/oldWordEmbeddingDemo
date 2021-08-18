@@ -68,12 +68,11 @@ class Demo {
         }
     }
 
-    // create feature dimension vectors
-    createFeature(vecs, wordSet1, wordSet2) {
-        // for each pair of words, subtract vectors
-        console.assert(wordSet1.length === wordSet2.length);
-        const subVecs = wordSet1.map((word1, i) => vecs.get(word1).sub(vecs.get(wordSet2[i])));
-        // average subtracted vectors into one unit feature vector
+    // create feature vectors by pairwise subtracting word vectors from lists
+    // then average into one unit vector
+    createFeature(vecs, wordList0, wordList1) {
+        console.assert(wordList0.length === wordList1.length);
+        const subVecs = wordList0.map((word0, i) => vecs.get(word0).sub(vecs.get(wordList1[i])));
         return subVecs.reduce((a, b) => a.add(b)).unit();
     }
 
