@@ -2,6 +2,10 @@ h1 {
     text-align: center;
 }
 
+#links {
+    text-align: center;
+}
+
 #plots-container {
     /* default width 100% */
     height: 70vh;
