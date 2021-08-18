@@ -30,23 +30,18 @@ class Demo {
         // Set of actual words found in model (no pseudo-words)
         this.vocab = new Set();
 
-        this.vecsDim = undefined; // word vector dim
+        this.vecsDim = 0; // word vector dim
         this.nearestWords = new Map(); // nearest words Map
 
         // vector calculations and plotting, including residual (issue #3)
-        this.feature1 = undefined;
-        this.feature2 = undefined;
-        this.residualFeature = undefined;
+        // features 0 and 1 are user defined, feature 2 is residual
+        this.features = Array(3); // init Array length doesn't actually matter
 
-        // to be used for naming features
-        this.feature1Name = undefined;
-        this.feature2Name = undefined;
+        // user-supplied names of features 0 and 1
+        this.featureNames = Array(2);
 
         // words to be used for creating dimensions
-        this.feature1Set1 = undefined;
-        this.feature1Set2 = undefined;
-        this.feature2Set1 = undefined;
-        this.feature2Set2 = undefined;
+        this.featuresLists = [Array(2), Array(2)];
     }
 
 
@@ -85,7 +80,7 @@ class Demo {
     // x, y, z are simply projections onto features
     // use 1 - residual and scale residual for graphical convention (#3, #17)
     projectResidual(word) {
-        return 2 * (1 - this.vecs.get(word).dot(this.residualFeature));
+        return 2 * (1 - this.vecs.get(word).dot(this.features[2]));
     }
 
 
@@ -94,17 +89,17 @@ class Demo {
     // used to refresh selected word
     plotScatter(newPlot = false) {
         // populate feature vectors
-        this.feature1 = this.createFeature(this.vecs, this.feature1Set1, this.feature1Set2);
-        this.feature2 = this.createFeature(this.vecs, this.feature2Set1, this.feature2Set2);
+        this.features[0] = this.createFeature(this.vecs, this.featuresLists[0][0], this.featuresLists[0][1]);
+        this.features[1] = this.createFeature(this.vecs, this.featuresLists[1][0], this.featuresLists[1][1]);
 
-        const allFeatureWords = this.feature1Set1.concat(this.feature1Set2).concat(this.feature2Set1).concat(this.feature2Set2);
+        const allFeatureWords = this.featuresLists[0][0].concat(this.featuresLists[0][1]).concat(this.featuresLists[1][0]).concat(this.featuresLists[1][1]);
         const residualWords = [...new Set(allFeatureWords)];
 
         // residual dim calculation described in #3
-        this.residualFeature = residualWords.map(word => {
+        this.features[2] = residualWords.map(word => {
                 const wordVec = this.vecs.get(word);
-                const wordNoFeature1 = wordVec.sub(this.feature1.scale(wordVec.dot(this.feature1)));
-                const wordResidual = wordNoFeature1.sub(this.feature2.scale(wordNoFeature1.dot(this.feature2)));
+                const wordNoFeature1 = wordVec.sub(this.features[0].scale(wordVec.dot(this.features[0])));
+                const wordResidual = wordNoFeature1.sub(this.features[1].scale(wordNoFeature1.dot(this.features[1])));
                 return wordResidual;
             }
         ).reduce((a, b) => a.add(b)).unit(); // average over residual words and normalize
@@ -118,8 +113,8 @@ class Demo {
 
 
         const x = plotWords.map(this.projectResidual, this);
-        const y = plotWords.map(word => this.vecs.get(word).dot(this.feature1));
-        const z = plotWords.map(word => this.vecs.get(word).dot(this.feature2));
+        const y = plotWords.map(word => this.vecs.get(word).dot(this.features[0]));
+        const z = plotWords.map(word => this.vecs.get(word).dot(this.features[1]));
 
         // color points by type with priority (#12)
         const color = plotWords.map(word =>
@@ -163,8 +158,8 @@ class Demo {
             for (const arrowPair of arrowPairs) {
                 // xyz coordinates of endpoints
                 const x = arrowPair.map(this.projectResidual, this);
-                const y = arrowPair.map(word => this.vecs.get(word).dot(this.feature1));
-                const z = arrowPair.map(word => this.vecs.get(word).dot(this.feature2));
+                const y = arrowPair.map(word => this.vecs.get(word).dot(this.features[0]));
+                const z = arrowPair.map(word => this.vecs.get(word).dot(this.features[1]));
 
 
                 data.push(
@@ -222,16 +217,16 @@ class Demo {
                 },
                 yaxis: {
                     title: {
-                        text: this.feature1Name,
+                        text: this.featureNames[0],
                         // color based on if axis feature is selected word
-                        font: {color: (this.selectedWord === this.feature1Name) ? "red" : "black"}
+                        font: {color: (this.selectedWord === this.featureNames[0]) ? "red" : "black"}
                     },
                     dtick: 0.1
                 },
                 zaxis: {
                     title: {
-                        text: this.feature2Name,
-                        font: {color: (this.selectedWord === this.feature2Name ? "red" : "black")}
+                        text: this.featureNames[1],
+                        font: {color: (this.selectedWord === this.featureNames[1] ? "red" : "black")}
                     },
                     dtick: 0.1
                 },
@@ -268,11 +263,11 @@ class Demo {
     }
 
     selectFeature(axis) {
-        let selectedWordInput = (axis === 0) ? this.feature1Name : this.feature2Name;
+        let selectedWordInput = (axis === 0) ? this.featureNames[0] : this.featureNames[1];
         console.log("button", selectedWordInput);
 
         // add features as pseudo-words (should it be computed here?)
-        this.vecs.set(selectedWordInput, (axis === 0) ? this.feature1 : this.feature2);
+        this.vecs.set(selectedWordInput, (axis === 0) ? this.features[0] : this.features[1]);
 
 
         if (selectedWordInput === this.selectedWord) {  // deselect word
@@ -572,18 +567,18 @@ class Demo {
 
 
         // copy feature words after validation
-        this.feature1Set1 = feature1Set1Input;
-        this.feature1Set2 = feature1Set2Input;
-        this.feature2Set1 = feature2Set1Input;
-        this.feature2Set2 = feature2Set2Input;
+        this.featuresLists[0][0] = feature1Set1Input;
+        this.featuresLists[0][1] = feature1Set2Input;
+        this.featuresLists[1][0] = feature2Set1Input;
+        this.featuresLists[1][1] = feature2Set2Input;
 
         // read feature names from inputs, adding bracket syntax
-        this.feature1Name = '[' + document.getElementById("user-feature-feature1-name-input").value + ']';
-        this.feature2Name = '[' + document.getElementById("user-feature-feature2-name-input").value + ']';
+        this.featureNames[0] = '[' + document.getElementById("user-feature-feature1-name-input").value + ']';
+        this.featureNames[1] = '[' + document.getElementById("user-feature-feature2-name-input").value + ']';
 
         // write names to buttons
-        document.getElementById("scatter-button0").innerText = this.feature1Name;
-        document.getElementById("scatter-button1").innerText = this.feature2Name;
+        document.getElementById("scatter-button0").innerText = this.featureNames[0];
+        document.getElementById("scatter-button1").innerText = this.featureNames[1];
     }
 
     // fetch wordvecs locally (no error handling) and process
