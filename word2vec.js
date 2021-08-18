@@ -40,8 +40,8 @@ class Demo {
         // user-supplied names of features 0 and 1
         this.featureNames = Array(2);
 
-        // words to be used for creating dimensions
-        this.featuresLists = [Array(2), Array(2)];
+        // lists of word pairs to be used for creating features
+        this.featureWordsPairs = [Array(2), Array(2)];
     }
 
 
@@ -88,17 +88,20 @@ class Demo {
     // used to refresh selected word
     plotScatter(newPlot = false) {
         // populate feature vectors
-        this.features[0] = this.createFeature(this.vecs, this.featuresLists[0][0], this.featuresLists[0][1]);
-        this.features[1] = this.createFeature(this.vecs, this.featuresLists[1][0], this.featuresLists[1][1]);
+        this.features[0] = this.createFeature(this.vecs, this.featureWordsPairs[0][0], this.featureWordsPairs[0][1]);
+        this.features[1] = this.createFeature(this.vecs, this.featureWordsPairs[1][0], this.featureWordsPairs[1][1]);
 
-        const allFeatureWords = this.featuresLists[0][0].concat(this.featuresLists[0][1]).concat(this.featuresLists[1][0]).concat(this.featuresLists[1][1]);
+        const allFeatureWords = this.featureWordsPairs[0][0]
+            .concat(this.featureWordsPairs[0][1])
+            .concat(this.featureWordsPairs[1][0])
+            .concat(this.featureWordsPairs[1][1]);
         const residualWords = [...new Set(allFeatureWords)];
 
         // residual dim calculation described in #3
         this.features[2] = residualWords.map(word => {
                 const wordVec = this.vecs.get(word);
-                const wordNoFeature1 = wordVec.sub(this.features[0].scale(wordVec.dot(this.features[0])));
-                const wordResidual = wordNoFeature1.sub(this.features[1].scale(wordNoFeature1.dot(this.features[1])));
+                const wordNoFeature0 = wordVec.sub(this.features[0].scale(wordVec.dot(this.features[0])));
+                const wordResidual = wordNoFeature0.sub(this.features[1].scale(wordNoFeature0.dot(this.features[1])));
                 return wordResidual;
             }
         ).reduce((a, b) => a.add(b)).unit(); // average over residual words and normalize
@@ -566,10 +569,10 @@ class Demo {
 
 
         // copy feature words after validation
-        this.featuresLists[0][0] = feature1Set1Input;
-        this.featuresLists[0][1] = feature1Set2Input;
-        this.featuresLists[1][0] = feature2Set1Input;
-        this.featuresLists[1][1] = feature2Set2Input;
+        this.featureWordsPairs[0][0] = feature1Set1Input;
+        this.featureWordsPairs[0][1] = feature1Set2Input;
+        this.featureWordsPairs[1][0] = feature2Set1Input;
+        this.featureWordsPairs[1][1] = feature2Set2Input;
 
         // read feature names from inputs, adding bracket syntax
         this.featureNames[0] = '[' + document.getElementById("user-feature-feature1-name-input").value + ']';
