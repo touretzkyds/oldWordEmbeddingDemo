@@ -4,6 +4,8 @@ h1 {
 
 #links {
     text-align: center;
+    display: grid;
+    grid-template-columns: 50% 50%;
 }
 
 #plots-container {
