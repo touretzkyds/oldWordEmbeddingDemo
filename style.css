@@ -49,6 +49,11 @@ details > form {
     margin-bottom: 10px;
 }
 
+output {
+    border: solid silver;
+    padding: 2px;
+}
+
 #user-feature-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
