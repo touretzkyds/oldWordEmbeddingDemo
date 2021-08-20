@@ -9,15 +9,22 @@ h1 {
 }
 
 #plots-container {
-    /* default width 100% */
     height: 70vh;
-    display: grid;
-    grid-template-columns: 50% 15% 35%;
+    display: flex;
 }
 
 #scatter-container {
+    flex: 50;
     display: flex;
     flex-direction: column;
+}
+
+#plotly-magnify {
+    flex: 10;
+}
+
+#plotly-vector {
+    flex: 40;
 }
 
 #plotly-scatter {

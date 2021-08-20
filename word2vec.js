@@ -3,7 +3,7 @@
 // Class currently holding all controller and model functionality (God class?)
 class Demo {
     constructor() {
-        this.MAGNIFY_WINDOW = 5; // range for magnified view
+        this.MAGNIFY_WINDOW = 0; // window size for magnified view
         this.HEATMAP_MIN = -0.2;  // min and max for heatmap colorscale
         this.HEATMAP_MAX = 0.2;
         
@@ -387,7 +387,7 @@ class Demo {
         const layout = {
             title: {text: "Magnified view"},
             xaxis: {
-                title: "Vector dimension",
+                title: "Dimension",
                 dtick: 1,
                 zeroline: false,
                 fixedrange: true
