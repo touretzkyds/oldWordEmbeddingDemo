@@ -385,9 +385,9 @@ class Demo {
         ];
 
         const layout = {
-            title: {text: "Magnified view"},
+            title: {text: "Magnified"},
             xaxis: {
-                title: "Dimension",
+                title: "Dim",
                 dtick: 1,
                 zeroline: false,
                 fixedrange: true
@@ -397,7 +397,7 @@ class Demo {
                 ticktext: this.vectorWords.map(word => this.vecs.get(word).norm().toFixed(2)),
                 fixedrange: true,
             },
-            margin: {r: 5, t: 30} // get close to main vector view
+            margin: {l: 30, r: 5, t: 30} // get close to main vector view
         };
 
         if (newPlot) {

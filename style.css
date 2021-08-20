@@ -20,11 +20,11 @@ h1 {
 }
 
 #plotly-magnify {
-    flex: 10;
+    flex: 3;
 }
 
 #plotly-vector {
-    flex: 40;
+    flex: 47;
 }
 
 #plotly-scatter {
