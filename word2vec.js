@@ -336,7 +336,6 @@ class Demo {
                 tickangle: 60
             },
             margin: {t: 30},
-            //dragmode: false
         };
 
         if (newPlot) {
@@ -394,11 +393,9 @@ class Demo {
                 fixedrange: true
             },
             yaxis: {
-                //title: "Words",
                 tickvals: d3.range(this.vectorWords.length),
-                ticktext: this.vectorWords,
+                ticktext: this.vectorWords.map(word => this.vecs.get(word).norm().toFixed(2)),
                 fixedrange: true,
-                tickangle: 60
             },
             margin: {r: 5, t: 30} // get close to main vector view
         };
