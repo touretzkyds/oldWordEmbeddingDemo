@@ -385,9 +385,9 @@ class Demo {
         ];
 
         const layout = {
-            title: {text: "Magnified"},
+            title: {text: ""},
             xaxis: {
-                title: "Dim",
+                title: "",
                 dtick: 1,
                 zeroline: false,
                 fixedrange: true

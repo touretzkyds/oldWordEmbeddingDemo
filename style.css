@@ -1,11 +1,17 @@
-h1 {
-    text-align: center;
+#header {
+    margin: 50px;
 }
 
-#links {
-    text-align: center;
-    display: grid;
-    grid-template-columns: 50% 50%;
+#header h1 {
+    display: inline-block;
+    font-size: 3em;
+    margin: auto 50px;
+}
+
+#header a {
+    display: inline-block;
+    margin: auto 20px;
+    font-weight: bold;
 }
 
 #plots-container {
@@ -20,11 +26,11 @@ h1 {
 }
 
 #plotly-magnify {
-    flex: 3;
+    flex: 0 0 50px;
 }
 
 #plotly-vector {
-    flex: 47;
+    flex: 40;
 }
 
 #plotly-scatter {
