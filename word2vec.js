@@ -6,6 +6,7 @@ class Demo {
         this.MAGNIFY_WINDOW = 0; // window size for magnified view
         this.HEATMAP_MIN = -0.2;  // min and max for heatmap colorscale
         this.HEATMAP_MAX = 0.2;
+        this.EMPTY_FEATURE_NAME = "[empty]";
         
         // words plotted on scatter plot
         // changes from original demo: replace "refrigerator" with "chair" and "computer"
@@ -263,6 +264,18 @@ class Demo {
             this.plotScatter();
         });
 
+    }
+
+    // clear all words and set vector view to empty (#21)
+    clearWords() {
+        this.scatterWords = [];
+        this.analogyWords = [];
+        const zeroArray = new Array(this.vecsDim).fill(0);
+        this.vecs.set(this.EMPTY_FEATURE_NAME, new Vector(zeroArray));
+        this.vectorWords = new Array(6).fill(this.EMPTY_FEATURE_NAME);
+
+        this.plotScatter();
+        this.plotVector();
     }
 
     selectFeature(axis) {
