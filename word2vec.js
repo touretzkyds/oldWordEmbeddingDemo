@@ -128,14 +128,13 @@ class Demo {
             : "black"
         );
 
+        // For each point, include numbered list of nearest words in hovertext
         const hovertext = plotWords.map(target =>
-            (`Reference word:<br>${target}<br>` +
-            (this.nearestWords.has(target) ? // check nearestWords if computed
-                ("Nearest words:<br>" +
-                this.nearestWords.get(target)
-                    .map((word, i) => `${i + 1}. ${word}`)
-                    .join("<br>"))
-                : ""))
+            `Reference word:<br>${target}<br>` +
+            "Nearest words:<br>" +
+            this.nearestWords.get(target)
+                .map((word, i) => `${i + 1}. ${word}`)
+                .join("<br>")
         );
 
         let data = [
@@ -282,10 +281,8 @@ class Demo {
         const selectedWordInput = this.featureNames[axis];
         console.log("button", selectedWordInput);
 
-        // add features as pseudo-words to vecs and scatterplot
+        // add features as pseudo-words to vecs
         this.vecs.set(selectedWordInput, this.features[axis]);
-        this.scatterWords.push(selectedWordInput);
-
 
         if (selectedWordInput === this.selectedWord) {  // deselect word
             this.selectedWord = "";
