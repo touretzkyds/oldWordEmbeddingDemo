@@ -6,6 +6,7 @@ class Demo {
         this.MAGNIFY_WINDOW = 0; // window size for magnified view
         this.HEATMAP_MIN = -0.2;  // min and max for heatmap colorscale
         this.HEATMAP_MAX = 0.2;
+        this.VECTOR_DISPLAY_SIZE = 6;
         this.EMPTY_FEATURE_NAME = "[empty]";
         
         // words plotted on scatter plot
@@ -14,7 +15,7 @@ class Demo {
                 'uncle', 'aunt', 'father', 'mother', 'son', 'daughter', 'husband', 'wife', 'chair', 'computer'];
 
         // words involved in the computation of analogy (#12)
-        this.analogyWords = {};  // default empty
+        this.analogy = {};  // default empty
 
         // words to show in vector display
         this.vectorWords = ["queen", "king", "girl", "boy", "woman", "man"];
@@ -109,7 +110,7 @@ class Demo {
 
 
         // words to actually be plotted (so this.scatterWords is a little misleading)
-        let plotWords = this.scatterWords.concat(Object.values(this.analogyWords));
+        let plotWords = this.scatterWords.concat(Object.values(this.analogy));
         plotWords = [...new Set(plotWords)]; // remove duplicates
 
 
@@ -122,9 +123,9 @@ class Demo {
         // color points by type with priority (#12)
         const color = plotWords.map(word =>
             (word === this.selectedWord) ? "red" // selected word has highest priority
-            : (word === this.analogyWords.y) ? "pink"
-            : (word === this.analogyWords.Wstar) ? "lime"
-            : (Object.values(this.analogyWords).includes(word)) ? "blue"
+            : (word === this.analogy.y) ? "pink"
+            : (word === this.analogy.Wstar) ? "lime"
+            : (Object.values(this.analogy).includes(word)) ? "blue"
             : "black"
         );
 
@@ -156,8 +157,8 @@ class Demo {
         ];
 
         // draw vectors if analogy words are available
-        if (Object.keys(this.analogyWords).length > 0) {
-            const arrowPairs = [[this.analogyWords.a, this.analogyWords.b], [this.analogyWords.c, this.analogyWords.y]];
+        if (Object.keys(this.analogy).length > 0) {
+            const arrowPairs = [[this.analogy.a, this.analogy.b], [this.analogy.c, this.analogy.y]];
             for (const arrowPair of arrowPairs) {
                 // xyz coordinates of endpoints
                 const x = arrowPair.map(this.projectResidual, this);
@@ -268,10 +269,9 @@ class Demo {
     // clear all words and set vector view to empty (#21)
     clearWords() {
         this.scatterWords = [];
-        this.analogyWords = [];
-        const zeroArray = new Array(this.vecsDim).fill(0);
-        this.vecs.set(this.EMPTY_FEATURE_NAME, new Vector(zeroArray));
-        this.vectorWords = new Array(6).fill(this.EMPTY_FEATURE_NAME);
+        this.analogy = {};
+
+        this.vectorWords = new Array(this.VECTOR_DISPLAY_SIZE).fill(this.EMPTY_FEATURE_NAME);
 
         this.plotScatter();
         this.plotVector();
@@ -504,7 +504,7 @@ class Demo {
         this.vecs.set(wordY, vecY);
 
         // set analogy words to display in scatter (#12):
-        this.analogyWords = {"b": wordB, "a": wordA, "c": wordC, "y": wordY, "Wstar": wordWstar};
+        this.analogy = {"b": wordB, "a": wordA, "c": wordC, "y": wordY, "Wstar": wordWstar};
 
         this.plotScatter();
 
@@ -591,6 +591,17 @@ class Demo {
         document.getElementById("scatter-button1").innerText = this.featureNames[1];
     }
 
+    handleAnalogyToggle(element) {
+        console.log("toggle", element);
+        if (!element.open) {
+            // on details close, erase analogy object and
+            this.analogy = {};
+            this.vectorWords = new Array(this.VECTOR_DISPLAY_SIZE).fill(this.EMPTY_FEATURE_NAME);
+            this.plotScatter();
+            this.plotVector();
+        }
+    }
+
     // fetch wordvecs locally (no error handling) and process
     async main() {
         // fill default feature for scatterplot
@@ -623,6 +634,14 @@ class Demo {
         loadingText.innerText = "Model processing done";
 
         this.processFeatureInput();
+
+        // make empty feature available to all
+        const zeroArray = new Array(this.vecsDim).fill(0);
+        this.vecs.set(this.EMPTY_FEATURE_NAME, new Vector(zeroArray));
+
+        // analogy details event listener
+        const analogyDetails = document.getElementById("analogy-details");
+        analogyDetails.ontoggle = () => this.handleAnalogyToggle(analogyDetails);
 
 
         // plot new plots for the first time
