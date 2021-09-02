@@ -1,5 +1,10 @@
+body {
+    /* match Plotly defaults */
+    font-family: 'Open Sans', Verdana, Arial, sans-serif;
+}
+
 #header {
-    margin: 50px;
+    margin: 50px 50px 30px;
 }
 
 #header h1 {
@@ -16,7 +21,7 @@
 
 #loading-text {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
 }
 
 #plots-container {
