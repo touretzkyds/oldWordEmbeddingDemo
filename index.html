@@ -68,8 +68,8 @@
 <details>
     <summary>Custom semantic dimensions</summary>
 
-    <form id="user-feature-form" action="javascript:demo.processFeatureInput();demo.plotScatter()" autocomplete="off">
-        <div class="user-feature-area">
+    <form id="user-features-form" action="javascript:demo.processFeatureInput();demo.plotScatter()" autocomplete="off">
+        <div class="user-feature-container">
             <label>Dimension 1 Name
                 <!-- TODO: better naming scheme in CSS -->
                 <input class="user-feature-name" id="user-feature-feature1-name-input" type="text">
@@ -80,7 +80,7 @@
                 <textarea class="user-feature-feature-set" id="user-feature-feature1-set2" rows="16"></textarea>
             </div>
         </div>
-        <div class="user-feature-area">
+        <div class="user-feature-container">
             <label>Dimension 2 Name
                 <input class="user-feature-name" id="user-feature-feature2-name-input" type="text">
             </label>
@@ -88,8 +88,6 @@
                 <textarea class="user-feature-feature-set" id="user-feature-feature2-set1" rows="16"></textarea>
                 <textarea class="user-feature-feature-set" id="user-feature-feature2-set2" rows="16"></textarea>
             </div>
-
-
         </div>
 
         <button type="submit">Submit</button>

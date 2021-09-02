@@ -86,22 +86,22 @@ output {
     width: 15em;
 }
 
-#user-feature-form {
+#user-features-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
 
-.user-feature-area {
+.user-feature-container {
     display: flex;
     flex-direction: column;
 }
 
 .user-feature-entry {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
     margin: 5px;
 }
 
-.user-feature-feature-set {
+.user-feature-entry textarea {
+    flex: 1;
     margin: 5px;
 }
