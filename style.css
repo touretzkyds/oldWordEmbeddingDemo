@@ -35,6 +35,10 @@ body {
     flex-direction: column;
 }
 
+#scatter-buttons {
+    margin: 5px auto 5px 5px;
+}
+
 #plotly-magnify {
     flex: 0 0 50px; /* fixed width */
 }
@@ -70,18 +74,16 @@ body {
 }
 
 details {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin: 10px auto;
 }
 
 details > form {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin: 10px auto;
 }
 
 output {
-    border: solid silver;
-    padding: 2px;
+    display: inline-block;
+    width: 15em;
 }
 
 #user-feature-form {
