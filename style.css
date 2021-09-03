@@ -86,12 +86,15 @@ output {
     width: 15em;
 }
 
-#user-features-form {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+.user-features-form {
+}
+
+#user-features-container {
+    display: flex;
 }
 
 .user-feature-container {
+    flex: 1;
     display: flex;
     flex-direction: column;
 }
@@ -104,4 +107,8 @@ output {
 .user-feature-entry textarea {
     flex: 1;
     margin: 5px;
+}
+
+#user-feature-message {
+    margin-left: 10%;  /* good size? */
 }
