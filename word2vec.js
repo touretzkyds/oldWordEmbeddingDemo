@@ -8,11 +8,6 @@ class Demo {
         this.HEATMAP_MAX = 0.2;
         this.VECTOR_DISPLAY_SIZE = 6;
         this.EMPTY_FEATURE_NAME = "[empty]";
-        
-        // words plotted on scatter plot
-        // changes from original demo: replace "refrigerator" with "chair" and "computer"
-        this.scatterWords = ['man', 'woman', 'boy', 'girl', 'king', 'queen', 'prince', 'princess', 'nephew', 'niece',
-                'uncle', 'aunt', 'father', 'mother', 'son', 'daughter', 'husband', 'wife', 'chair', 'computer'];
 
         // words involved in the computation of analogy (#12)
         this.analogy = {};  // default empty
@@ -35,15 +30,29 @@ class Demo {
         this.vecsDim = 0; // word vector dim
         this.nearestWords = new Map(); // nearest words Map
 
+        // words plotted on scatter plot
+        // changes from original demo: replace "refrigerator" with "chair" and "computer"
+        this.scatterWords = ['man', 'woman', 'boy', 'girl', 'king', 'queen', 'prince', 'princess', 'nephew', 'niece',
+            'uncle', 'aunt', 'father', 'mother', 'son', 'daughter', 'husband', 'wife', 'chair', 'computer'];
+
         // vector calculations and plotting, including residual (issue #3)
         // features 0 and 1 are user defined, feature 2 is residual
         this.features = Array(3); // init Array length doesn't actually matter
 
         // user-supplied names of features 0 and 1
-        this.featureNames = Array(2);
+        this.featureNames = ["gender", "age"];
 
         // lists of word pairs to be used for creating features
-        this.featureWordsPairs = [Array(2), Array(2)];
+        this.featureWordsPairs = [
+            [
+                ["man","king","prince","husband","father","son","uncle","nephew","boy","male"],
+                ["woman","queen","princess","wife","mother","daughter","aunt","niece","girl","female"]
+            ],
+            [
+                ["man","woman","king","queen","father","mother","uncle","aunt"],
+                ["boy","girl","prince","princess","son","daughter","nephew","niece"]
+            ]
+        ];
     }
 
 
@@ -524,22 +533,15 @@ class Demo {
         });
     }
 
-    // fill in default words used to define semantic dimensions and feature names for scatterplot
+    // fill in HTML default words used to define semantic dimensions and feature names for scatterplot
     fillDimensionDefault() {
-        document.querySelector(".user-feature-name.feature0").value =
-            "gender";
-        document.querySelector(".user-feature-name.feature1").value =
-            "age";
+        document.querySelector(".user-feature-name.feature0").value = this.featureNames[0];
+        document.querySelector(".user-feature-name.feature1").value = this.featureNames[1];
 
-        document.getElementById("user-feature-feature1-set1").textContent =
-            "man\nking\nprince\nhusband\nfather\nson\nuncle\nnephew\nboy\nmale";
-        document.getElementById("user-feature-feature1-set2").textContent =
-            "woman\nqueen\nprincess\nwife\nmother\ndaughter\naunt\nniece\ngirl\nfemale";
-        document.getElementById("user-feature-feature2-set1").textContent =
-            "man\nwoman\nking\nqueen\nfather\nmother\nuncle\naunt";
-        document.getElementById("user-feature-feature2-set2").textContent =
-            "boy\ngirl\nprince\nprincess\nson\ndaughter\nnephew\nniece";
-
+        document.getElementById("user-feature-feature1-set1").textContent = this.featureWordsPairs[0][0].join("\n");
+        document.getElementById("user-feature-feature1-set2").textContent = this.featureWordsPairs[0][1].join("\n");
+        document.getElementById("user-feature-feature2-set1").textContent = this.featureWordsPairs[1][0].join("\n");
+        document.getElementById("user-feature-feature2-set2").textContent = this.featureWordsPairs[1][1].join("\n");
     }
 
     processFeatureInput() {
@@ -633,7 +635,6 @@ class Demo {
 
         loadingText.innerText = "Model processing done";
 
-        this.processFeatureInput();
 
         // make empty feature available to all
         const zeroArray = new Array(this.vecsDim).fill(0);
