@@ -524,24 +524,6 @@ class Demo {
         });
     }
 
-    // fill in default words used to define semantic dimensions and feature names for scatterplot
-    fillDimensionDefault() {
-        document.querySelector(".user-feature-name.feature0").value =
-            "gender";
-        document.querySelector(".user-feature-name.feature1").value =
-            "age";
-
-        document.getElementById("user-feature-feature1-set1").textContent =
-            "man\nking\nprince\nhusband\nfather\nson\nuncle\nnephew\nboy\nmale";
-        document.getElementById("user-feature-feature1-set2").textContent =
-            "woman\nqueen\nprincess\nwife\nmother\ndaughter\naunt\nniece\ngirl\nfemale";
-        document.getElementById("user-feature-feature2-set1").textContent =
-            "man\nwoman\nking\nqueen\nfather\nmother\nuncle\naunt";
-        document.getElementById("user-feature-feature2-set2").textContent =
-            "boy\ngirl\nprince\nprincess\nson\ndaughter\nnephew\nniece";
-
-    }
-
     processFeatureInput() {
         // TODO: cleanup
         // local function for parsing input box data
@@ -604,10 +586,6 @@ class Demo {
 
     // fetch wordvecs locally (no error handling) and process
     async main() {
-        // fill default feature for scatterplot
-        this.fillDimensionDefault();
-
-
         // lo-tech progress indication
         const loadingText = document.getElementById("loading-text");
         loadingText.innerText = "Downloading model...";
