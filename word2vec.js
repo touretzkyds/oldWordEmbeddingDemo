@@ -526,9 +526,9 @@ class Demo {
 
     // fill in default words used to define semantic dimensions and feature names for scatterplot
     fillDimensionDefault() {
-        document.getElementById("user-feature-feature1-name-input").value =
+        document.querySelector(".user-feature-name.feature0").value =
             "gender";
-        document.getElementById("user-feature-feature2-name-input").value =
+        document.querySelector(".user-feature-name.feature1").value =
             "age";
 
         document.getElementById("user-feature-feature1-set1").textContent =
@@ -583,8 +583,8 @@ class Demo {
         this.featureWordsPairs[1][1] = feature2Set2Input;
 
         // read feature names from inputs, adding bracket syntax
-        this.featureNames[0] = '[' + document.getElementById("user-feature-feature1-name-input").value + ']';
-        this.featureNames[1] = '[' + document.getElementById("user-feature-feature2-name-input").value + ']';
+        this.featureNames[0] = '[' + document.querySelector(".user-feature-name.feature0").value + ']';
+        this.featureNames[1] = '[' + document.querySelector(".user-feature-name.feature1").value + ']';
 
         // write names to buttons
         document.getElementById("scatter-button0").innerText = this.featureNames[0];
