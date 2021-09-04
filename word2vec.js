@@ -102,11 +102,7 @@ class Demo {
         this.features[0] = this.createFeature(this.vecs, this.featureWordsPairs[0][0], this.featureWordsPairs[0][1]);
         this.features[1] = this.createFeature(this.vecs, this.featureWordsPairs[1][0], this.featureWordsPairs[1][1]);
 
-        const allFeatureWords = this.featureWordsPairs[0][0]
-            .concat(this.featureWordsPairs[0][1])
-            .concat(this.featureWordsPairs[1][0])
-            .concat(this.featureWordsPairs[1][1]);
-        const residualWords = [...new Set(allFeatureWords)];
+        const residualWords = [...new Set(this.featureWordsPairs.flat(2))];
 
         // residual dim calculation described in #3
         this.features[2] = residualWords.map(word => {
@@ -591,6 +587,8 @@ class Demo {
         // write names to buttons
         document.getElementById("scatter-button0").innerText = this.featureNames[0];
         document.getElementById("scatter-button1").innerText = this.featureNames[1];
+
+        this.plotScatter();
     }
 
     handleAnalogyToggle(element) {
