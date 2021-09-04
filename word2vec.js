@@ -40,7 +40,7 @@ class Demo {
         this.features = Array(3); // init Array length doesn't actually matter
 
         // user-supplied names of features 0 and 1
-        this.featureNames = ["gender", "age"];
+        this.featureNames = ["[gender]", "[age]"];
 
         // lists of word pairs to be used for creating features
         this.featureWordsPairs = [
@@ -534,51 +534,49 @@ class Demo {
         document.querySelector(".user-feature-name.feature0").value = this.featureNames[0];
         document.querySelector(".user-feature-name.feature1").value = this.featureNames[1];
 
-        document.getElementById("user-feature-feature1-set1").textContent = this.featureWordsPairs[0][0].join("\n");
-        document.getElementById("user-feature-feature1-set2").textContent = this.featureWordsPairs[0][1].join("\n");
-        document.getElementById("user-feature-feature2-set1").textContent = this.featureWordsPairs[1][0].join("\n");
-        document.getElementById("user-feature-feature2-set2").textContent = this.featureWordsPairs[1][1].join("\n");
+        for (let i=0; i<2; i++) {
+            for (let j=0; j<2; j++) {
+                document.querySelector(`.user-feature-words.feature${i}.set${j}`).textContent =
+                    this.featureWordsPairs[i][j].join("\n");
+            }
+        }
     }
 
     processFeatureInput() {
-        // TODO: cleanup
-        // local function for parsing input box data
-        function parseInput(id) {
-            return document.getElementById(id).value.split('\n');
-        }
-
-
-        const feature1Set1Input = parseInput("user-feature-feature1-set1");
-        const feature1Set2Input = parseInput("user-feature-feature1-set2");
-        const feature2Set1Input = parseInput("user-feature-feature2-set1");
-        const feature2Set2Input = parseInput("user-feature-feature2-set2");
-
-        // ensure feature sets are the same length
-        if (!(feature1Set1Input.length === feature1Set2Input.length &&
-            feature2Set1Input.length === feature2Set2Input.length)) {
-            document.getElementById("user-feature-message").innerText =
-                "Ensure feature word sets are same length";
-            return;
+        // temporary input to be validated
+        let featureWordsPairsInput = [Array(2), Array(2)];
+        for (let i=0; i<2; i++) {
+            for (let j=0; j<2; j++) {
+                featureWordsPairsInput[i][j] =
+                    document.querySelector(`.user-feature-words.feature${i}.set${j}`).value.split('\n');
+            }
         }
 
         // simple user input validation
+        // ensure feature sets are the same length
+        for (let i=0; i<2; i++) {
+            if (featureWordsPairsInput[i][0].length !== featureWordsPairsInput[i][1].length) {
+                document.getElementById("user-feature-message").innerText =
+                    "Ensure feature word sets are same length";
+                return;
+            }
+        }
+
         // ensure all words in vocab
-        for (const set of [feature1Set1Input, feature1Set2Input, feature2Set1Input, feature2Set2Input]) {
-            for (const word of set) {
-                if (!this.vocab.has(word)) {
-                    document.getElementById("user-feature-message").innerText =
-                        `"${word}" not found`;
-                    return;
+        for (let i=0; i<2; i++) {
+            for (let j=0; j<2; j++) {
+                for (const word of featureWordsPairsInput[i][j]) {
+                    if (!this.vocab.has(word)) {
+                        document.getElementById("user-feature-message").innerText =
+                            `"${word}" not found`;
+                        return;
+                    }
                 }
             }
         }
 
-
-        // copy feature words after validation
-        this.featureWordsPairs[0][0] = feature1Set1Input;
-        this.featureWordsPairs[0][1] = feature1Set2Input;
-        this.featureWordsPairs[1][0] = feature2Set1Input;
-        this.featureWordsPairs[1][1] = feature2Set2Input;
+        // (shallow) copy feature words after validation
+        this.featureWordsPairs = featureWordsPairsInput;
 
         // read feature names from inputs, adding bracket syntax
         this.featureNames[0] = '[' + document.querySelector(".user-feature-name.feature0").value + ']';
