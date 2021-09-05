@@ -10,7 +10,7 @@ class Demo {
         this.EMPTY_FEATURE_NAME = "[empty]";
 
         // words involved in the computation of analogy (#12)
-        this.analogy = {};  // default empty
+        this.analogy = {};  // default empty Object
 
         // words to show in vector display
         this.vectorWords = ["queen", "king", "girl", "boy", "woman", "man"];
@@ -55,8 +55,7 @@ class Demo {
         ];
     }
 
-
-    // read raw model text and write to vecs and vocab
+    // read raw model text and write vectors to vecs and vocab
     processRawVecs(text) {
         const lines = text.trim().split(/\n/);
         for (const line of lines) {
@@ -69,6 +68,7 @@ class Demo {
         }
     }
 
+    // read raw nearest words text (see nearest words script) and write to nearestWords
     processNearestWords(text) {
         const lines = text.trim().split(/\n/);
         for (const line of lines) {
@@ -87,12 +87,10 @@ class Demo {
         return subVecs.reduce((a, b) => a.add(b)).unit();
     }
 
-    // x, y, z are simply projections onto features
     // use 1 - residual and scale residual for graphical convention (#3, #17)
     projectResidual(word) {
         return 2 * (1 - this.vecs.get(word).dot(this.features[2]));
     }
-
 
     // plot each word on a 3D scatterplot projected onto gender, age, residual features
     // as part of the process, computes features
@@ -118,7 +116,7 @@ class Demo {
         let plotWords = this.scatterWords.concat(Object.values(this.analogy));
         plotWords = [...new Set(plotWords)]; // remove duplicates
 
-
+        // y, z are simply projections onto features
         const x = plotWords.map(this.projectResidual, this);
         const y = plotWords.map(word => this.vecs.get(word).dot(this.features[0]));
         const z = plotWords.map(word => this.vecs.get(word).dot(this.features[1]));
@@ -159,7 +157,7 @@ class Demo {
             }
         ];
 
-        // draw vectors if analogy words are available
+        // draw vector arrows if analogy words are available (#18)
         if (Object.keys(this.analogy).length > 0) {
             const arrowPairs = [[this.analogy.a, this.analogy.b], [this.analogy.c, this.analogy.y]];
             for (const arrowPair of arrowPairs) {
@@ -167,7 +165,6 @@ class Demo {
                 const x = arrowPair.map(this.projectResidual, this);
                 const y = arrowPair.map(word => this.vecs.get(word).dot(this.features[0]));
                 const z = arrowPair.map(word => this.vecs.get(word).dot(this.features[1]));
-
 
                 data.push(
                     {
@@ -283,6 +280,7 @@ class Demo {
         this.plotVector();
     }
 
+    // handle feature button pressing
     selectFeature(axis) {
         const selectedWordInput = this.featureNames[axis];
         console.log("button", selectedWordInput);
@@ -378,6 +376,7 @@ class Demo {
         }
     }
 
+    // similar to plotVector
     plotMagnify(newPlot = false) {
         // ensure this.hoverX will produce proper plot
         // bounds are inclusive
@@ -429,6 +428,7 @@ class Demo {
         }
     }
 
+    // handle user adding/removing word in form
     modifyWord() {
         const word = document.getElementById("modify-word-input").value;
         let wordModified = false;
@@ -461,7 +461,6 @@ class Demo {
     // notation from original paper: "Linguistic Regularities in Continuous Space Word Representations" (Mikolov 2013)
     // Analogy notation for words: a:b as c:d, with d unknown
     // vector y = x_b - x_a + x_c, find w* = argmax_w cossim(x_w, y)
-
     processAnalogy() {
         const wordA = document.getElementById("analogy-word-a").value;
         const wordB = document.getElementById("analogy-word-b").value;
@@ -543,6 +542,7 @@ class Demo {
         }
     }
 
+    // handle user submitting feature words into form
     processFeatureInput() {
         // temporary input to be validated
         let featureWordsPairsInput = [Array(2), Array(2)];
@@ -590,6 +590,7 @@ class Demo {
         this.plotScatter();
     }
 
+    // switch "vector arithmetic mode" (#22)
     handleAnalogyToggle(element) {
         console.log("toggle", element);
         if (!element.open) {
@@ -605,7 +606,6 @@ class Demo {
     async main() {
         // fill default feature for scatterplot
         this.fillDimensionDefault();
-
 
         // lo-tech progress indication
         const loadingText = document.getElementById("loading-text");
@@ -629,9 +629,7 @@ class Demo {
         const nearestWordsText = await nearestWordsResponse.text();
 
         this.processNearestWords(nearestWordsText);
-
         loadingText.innerText = "Model processing done";
-
 
         // make empty feature available to all
         const zeroArray = new Array(this.vecsDim).fill(0);
