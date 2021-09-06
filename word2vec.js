@@ -266,6 +266,16 @@ class Demo {
 
     }
 
+    // surround a feature word in brackets
+    formatFeatureName(s) {
+        return `[${s}]`;
+    }
+
+    // remove feature word brackets
+    unformatFeatureName(s) {
+        return s.slice(1,-1);
+    }
+
     // clear all words and set vector view to empty (#21)
     clearWords() {
         this.scatterWords = [];
@@ -528,10 +538,11 @@ class Demo {
 
     // fill in HTML default words used to define semantic dimensions and feature names for scatterplot
     fillDimensionDefault() {
-        document.querySelector(".user-feature-name.feature0").value = this.featureNames[0];
-        document.querySelector(".user-feature-name.feature1").value = this.featureNames[1];
-
         for (let i=0; i<2; i++) {
+            // write button names and feature names
+            document.getElementById(`scatter-button${i}`).innerText = this.featureNames[i];
+            document.querySelector(`.user-feature-name.feature${i}`).value = this.unformatFeatureName(this.featureNames[i]);
+
             for (let j=0; j<2; j++) {
                 document.querySelector(`.user-feature-words.feature${i}.set${j}`).textContent =
                     this.featureWordsPairs[i][j].join("\n");
@@ -577,8 +588,8 @@ class Demo {
         this.featureWordsPairs = featureWordsPairsInput;
 
         // read feature names from inputs, adding bracket syntax
-        this.featureNames[0] = '[' + document.querySelector(".user-feature-name.feature0").value + ']';
-        this.featureNames[1] = '[' + document.querySelector(".user-feature-name.feature1").value + ']';
+        this.featureNames[0] = this.formatFeatureName(document.querySelector(".user-feature-name.feature0").value);
+        this.featureNames[1] = this.formatFeatureName(document.querySelector(".user-feature-name.feature1").value);
 
         // write names to buttons
         document.getElementById("scatter-button0").innerText = this.featureNames[0];
