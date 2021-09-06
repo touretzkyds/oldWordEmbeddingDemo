@@ -211,14 +211,13 @@ class Demo {
 
         console.log("Using camera", camera);
 
-        // use fixed ranges (#21)
+
         const layout = {
             title: {text: "Word vector projection"},
             scene: {
                 xaxis: {
                     title: {text: "[residual]"},
-                    dtick: 0.1,
-                    range: [0, 1]
+                    dtick: 0.1
                 },
                 yaxis: {
                     title: {
@@ -226,16 +225,14 @@ class Demo {
                         // color based on if axis feature is selected word
                         font: {color: (this.selectedWord === this.featureNames[0]) ? "red" : "black"}
                     },
-                    dtick: 0.1,
-                    range: [-0.3, 0.3]
+                    dtick: 0.1
                 },
                 zaxis: {
                     title: {
                         text: this.featureNames[1],
                         font: {color: (this.selectedWord === this.featureNames[1] ? "red" : "black")}
                     },
-                    dtick: 0.1,
-                    range: [-0.3, 0.3]
+                    dtick: 0.1
                 },
                 camera: camera
             },
