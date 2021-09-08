@@ -422,7 +422,7 @@ class Demo {
                 ticktext: this.vectorWords.map(word => this.vecs.get(word).norm().toFixed(2)),
                 fixedrange: true,
             },
-            margin: {l: 30, r: 5, t: 30} // get close to main vector view
+            margin: {l: 40, r: 5, t: 30} // get close to main vector view
         };
 
         if (newPlot) {

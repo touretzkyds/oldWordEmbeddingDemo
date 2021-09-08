@@ -40,7 +40,7 @@ body {
 }
 
 #plotly-magnify {
-    flex: 0 0 50px; /* fixed width */
+    flex: 0 0 60px; /* fixed width */
 }
 
 #plotly-vector {
