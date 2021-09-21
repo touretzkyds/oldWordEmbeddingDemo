@@ -1,4 +1,4 @@
-# Word2VecDemo
+# WordEmbeddingDemo
 Graphical exploration of word embeddings and analogies by vector arithmetic.
 
 Authors: Jason Xu, Saptarashmi Bandyopadhyay, and David S. Touretzky.
