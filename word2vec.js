@@ -510,6 +510,9 @@ class Demo {
 
         // write out most similar word to text box
         document.getElementById("analogy-word-wstar").value = wordWstar;
+        // simultaneously update lower result field (#28)
+        document.getElementById("analogy-word-wstar-mirror").value = wordWstar;
+        
 
         // write arithmetic vectors to vector view
         this.vecs.set(wordBMinusA, vecBMinusA);
@@ -596,6 +599,13 @@ class Demo {
         document.getElementById("scatter-button1").innerText = this.featureNames[1];
 
         this.plotScatter();
+    }
+
+    // populate other box if one box is filled (#28)
+    populateOther(wordId, mirrorId) {
+        var word = document.getElementById(wordId);
+        var mirror = document.getElementById(mirrorId);
+        mirror.value = word.value
     }
 
     // switch "vector arithmetic mode" (#22)

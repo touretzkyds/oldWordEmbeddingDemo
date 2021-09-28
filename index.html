@@ -51,16 +51,38 @@
     <!-- autocomplete off to disable Firefox from saving form entries -->
     <form id="analogy-form" action="javascript:demo.processAnalogy()" autocomplete="off">
         <!-- TODO: add proper spacing for equation -->
-        <input id="analogy-word-b" type="text" placeholder="king">
-        -
-        <input id="analogy-word-a" type="text" placeholder="man">
-        +
-        <input id="analogy-word-c" type="text" placeholder="woman">
-        =
-        <output id="analogy-word-wstar" for="analogy-word-b analogy-word-a analogy-word-c"></output>
-        <button type="submit">Submit</button>
+        
+            <div id="english-notation">
+                <!-- English notation (#28) -->
+                English notation: 
+                <input id="analogy-word-a" type="text" onkeyup="demo.populateOther('analogy-word-a', 'analogy-word-a-mirror')" placeholder="man">
+                is to
+                <input id="analogy-word-b" type="text" onkeyup="demo.populateOther('analogy-word-b', 'analogy-word-b-mirror')" placeholder="king">
+                as
+                <input id="analogy-word-c" type="text" onkeyup="demo.populateOther('analogy-word-c', 'analogy-word-c-mirror')" placeholder="woman">
+                is to
+                <output id="analogy-word-wstar" for="analogy-word-b analogy-word-a analogy-word-c"></output>
+                <button type="submit">Submit</button>
+                <span id="analogy-message"></span>
+                <br>
+                <br>
+            </div>
 
-        <span id="analogy-message"></span>
+            <div id="vector-notation">
+                <!-- Vector notation -->
+                Vector notation :
+                <input id="analogy-word-b-mirror" onkeyup="demo.populateOther('analogy-word-b-mirror', 'analogy-word-b')" type="text" placeholder="king">
+                -  
+                <input id="analogy-word-a-mirror" onkeyup="demo.populateOther('analogy-word-a-mirror', 'analogy-word-a')" type="text" placeholder="man">
+                +  
+                <input id="analogy-word-c-mirror"  onkeyup="demo.populateOther('analogy-word-c-mirror', 'analogy-word-c')" type="text" placeholder="woman">
+                =  
+                <output id="analogy-word-wstar-mirror" for="analogy-word-b analogy-word-a analogy-word-c"></output>
+                <button type="submit">Submit</button>
+                <span id="analogy-message"></span>
+                <br>
+            </div>    
+
     </form>
 
 </details>
