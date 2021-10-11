@@ -40,11 +40,12 @@
 <div id="plots-status-bar">
     <form id="word-entry" action="javascript:demo.modifyWord()">
         <input id="modify-word-input" type="text">
-        <button type="submit">Add/Remove Word</button>
+        <button type="submit" autocomplete="off">Add/Remove Word</button>
     </form>
     <div id="modify-word-message"></div>
 </div>
 
+<!-- Vector analogies -->
 <details id="analogy-details">
     <summary>Vector analogy arithmetic</summary>
 
@@ -63,7 +64,7 @@
                 is to
                 <output id="analogy-word-wstar" for="analogy-word-b analogy-word-a analogy-word-c"></output>
                 <button type="submit">Submit</button>
-                <span id="analogy-message"></span>
+                <span id="analogy-message" type="text"></span>
                 <br>
                 <br>
             </div>
@@ -79,7 +80,8 @@
                 =  
                 <output id="analogy-word-wstar-mirror" for="analogy-word-b analogy-word-a analogy-word-c"></output>
                 <button type="submit">Submit</button>
-                <span id="analogy-message"></span>
+                <span id="analogy-message" type="text"></span>
+                <br>
                 <br>
             </div>    
 
@@ -87,28 +89,78 @@
 
 </details>
 
+<!-- Custom user-defined semantic dimensions #29 -->
 <details>
     <summary>Custom semantic dimensions</summary>
 
     <form id="user-features-form" action="javascript:demo.processFeatureInput()" autocomplete="off">
         <div id="user-features-container">
             <div class="user-feature-container">
-                <label>Dimension 1 Name
+                <label>Feature Name
                     <input class="user-feature-name feature0" type="text">
                 </label>
+                <label for="dimNum"></label>
+                <!-- dropdown -->
+                <select class="dropdown" id="dropdown0" onchange= "demo.dropDownActions(id)">
+                    <option value="defaultValue">---</option>
+                    <option value="value1" selected>X - Axis</option>
+                    <option value="value2">Y - Axis</option>
+                </select>
 
                 <div class="user-feature-entry">
                     <textarea class="user-feature-words feature0 set0" rows="16"></textarea>
                     <textarea class="user-feature-words feature0 set1" rows="16"></textarea>
                 </div>
             </div>
-            <div class="user-feature-container">
-                <label>Dimension 2 Name
+
+            <div  class="user-feature-container">
+                <label>Feature Name
                     <input class="user-feature-name feature1" type="text">
                 </label>
+                <label for="dimNum"></label>
+                <!-- dropdown -->
+                <select class="dropdown" id="dropdown1" onchange= "demo.dropDownActions(id)">
+                    <option value="defaultValue">---</option>
+                    <option value="value1">X - Axis</option>
+                    <option value="value2" selected>Y - Axis</option>
+                </select>
                 <div class="user-feature-entry">
                     <textarea class="user-feature-words feature1 set0" rows="16"></textarea>
                     <textarea class="user-feature-words feature1 set1" rows="16"></textarea>
+                </div>
+            </div>
+            
+
+            <div class="user-feature-container">
+                <label>Feature Name
+                    <input class="user-feature-name feature2" type="text">
+                </label>
+                <label for="dimNum"></label>
+                <!-- dropdown -->
+                <select class="dropdown" id="dropdown2" onchange= "demo.dropDownActions(id)">
+                    <option value="defaultValue">---</option>
+                    <option value="value1">X - Axis</option>
+                    <option value="value2">Y - Axis</option>
+                </select>
+                <div class="user-feature-entry">
+                    <textarea class="user-feature-words feature2 set0" rows="16"></textarea>
+                    <textarea class="user-feature-words feature2 set1" rows="16"></textarea>
+                </div>
+            </div>
+            <div class="user-feature-container">
+                <label>Feature Name
+                    <input class="user-feature-name feature3" type="text">
+                </label>
+                <label for="dimNum"></label>
+                <!-- dropdown -->
+                <select class="dropdown" id="dropdown3" onchange= "demo.dropDownActions(id)">
+                    <option value="defaultValue">---</option>
+                    <option value="value1">X - Axis</option>
+                    <option value="value2">Y - Axis</option>
+                </select>
+                <div class="user-feature-entry">
+                    <textarea class="user-feature-words feature3 set0" rows="16"></textarea>
+                    <textarea class="user-feature-words feature3 set1" rows="16"></textarea>
                 </div>
             </div>
         </div>

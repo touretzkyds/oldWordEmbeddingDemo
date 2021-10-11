@@ -91,6 +91,9 @@ output {
 
 #user-features-container {
     display: flex;
+    flex-direction: column;
+    width: 100%;
+
 }
 
 .user-feature-container {
@@ -99,8 +102,16 @@ output {
     flex-direction: column;
 }
 
+.dropdown {
+    height: 30px;
+    width: 300px; 
+    font-size: larger;
+    color:blue
+}
+
 .user-feature-entry {
     display: flex;
+    height: 175px;
     margin: 5px;
 }
 

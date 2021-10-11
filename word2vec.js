@@ -40,7 +40,7 @@ class Demo {
         this.features = Array(3); // init Array length doesn't actually matter
 
         // user-supplied names of features 0 and 1
-        this.featureNames = ["[gender]", "[age]"];
+        this.featureNames = ["[gender]", "[age]", "[royalty]", "[number]"]; //"[tense]", "[part-of]"];
 
         // lists of word pairs to be used for creating features
         this.featureWordsPairs = [
@@ -51,8 +51,22 @@ class Demo {
             [
                 ["man","woman","king","queen","father","mother","uncle","aunt"],
                 ["boy","girl","prince","princess","son","daughter","nephew","niece"]
+            ],
+            [
+                ["man","woman","boy","girl"],
+                ["king","queen","prince","princess"]
+            ],
+            [
+                ["men","women","boys","girls"],
+                ["man","woman","boy","girl"]
             ]
+            
         ];
+
+        // default feature names (#29)
+        this.idx0 = 0;
+        this.idx1 = 1;
+        this.selectedFeatureNames = ["[gender]", "[age]"];
     }
 
     // read raw model text and write vectors to vecs and vocab
@@ -541,9 +555,10 @@ class Demo {
 
     // fill in HTML default words used to define semantic dimensions and feature names for scatterplot
     fillDimensionDefault() {
-        for (let i=0; i<2; i++) {
+        for (let i=0; i<this.featureNames.length; i++) {
             // write button names and feature names
-            document.getElementById(`scatter-button${i}`).innerText = this.featureNames[i];
+            if (i<2) //for two scatter buttons
+                document.getElementById(`scatter-button${i}`).innerText = this.selectedFeatureNames[i];
             document.querySelector(`.user-feature-name.feature${i}`).value = this.unformatFeatureName(this.featureNames[i]);
 
             for (let j=0; j<2; j++) {
@@ -555,12 +570,14 @@ class Demo {
 
     // handle user submitting feature words into form
     processFeatureInput() {
+        console.log(`this.idx0 = ${this.idx0}, this.idx1 = ${this.idx1}`)
+        let selectedNames = [`feature${this.idx0}`, `feature${this.idx1}`] //.user-feature-words.
         // temporary input to be validated
         let featureWordsPairsInput = [Array(2), Array(2)];
         for (let i=0; i<2; i++) {
             for (let j=0; j<2; j++) {
                 featureWordsPairsInput[i][j] =
-                    document.querySelector(`.user-feature-words.feature${i}.set${j}`).value.split('\n');
+                    document.querySelector(`.user-feature-words.${selectedNames[i]}.set${j}`).value.split('\n');
             }
         }
 
@@ -591,8 +608,8 @@ class Demo {
         this.featureWordsPairs = featureWordsPairsInput;
 
         // read feature names from inputs, adding bracket syntax
-        this.featureNames[0] = this.formatFeatureName(document.querySelector(".user-feature-name.feature0").value);
-        this.featureNames[1] = this.formatFeatureName(document.querySelector(".user-feature-name.feature1").value);
+        this.featureNames[0] = this.formatFeatureName(document.querySelector(`.user-feature-name.${selectedNames[0]}`).value); //.user-feature-name.feature${1}
+        this.featureNames[1] = this.formatFeatureName(document.querySelector(`.user-feature-name.${selectedNames[1]}`).value);
 
         // write names to buttons
         document.getElementById("scatter-button0").innerText = this.featureNames[0];
@@ -606,6 +623,29 @@ class Demo {
         var word = document.getElementById(wordId);
         var mirror = document.getElementById(mirrorId);
         mirror.value = word.value
+    }
+
+    // (#29) user dropdown selection actions for custom features 
+    dropDownActions(selectedId) {
+        var selectedValue = document.getElementById(selectedId).value
+        var allIds = ["dropdown0", "dropdown1", "dropdown2", "dropdown3"]
+        console.log(selectedValue)
+
+        if (selectedValue == "value1"){
+            this.idx0 = parseInt(selectedId[(selectedId).length-1]);
+        }
+        if (selectedValue == "value2"){
+            this.idx1 = parseInt(selectedId[(selectedId).length-1]);
+        }
+        this.selectedFeatureNames = [this.featureNames[this.idx0], this.featureNames[this.idx1]];
+
+        for (var id of allIds) {
+            if (id != selectedId && selectedValue != "defaultValue") {
+                if (document.getElementById(id).value == selectedValue){
+                    document.getElementById(id).value = "defaultValue";
+                }
+            }
+        }
     }
 
     // switch "vector arithmetic mode" (#22)
