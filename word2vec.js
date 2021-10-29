@@ -667,7 +667,9 @@ class Demo {
         if (!element.open) {
             // on details close, erase analogy object and
             this.analogy = {};
-            this.vectorWords = new Array(this.VECTOR_DISPLAY_SIZE).fill(this.EMPTY_FEATURE_NAME);
+            //this.vectorWords = new Array(this.VECTOR_DISPLAY_SIZE).fill(this.EMPTY_FEATURE_NAME);
+            // comment out above line to clear plot, instead replot default words (#35)
+            this.vectorWords = ["queen", "king", "girl", "boy", "woman", "man"]; 
             this.plotScatter();
             this.plotVector();
         }
