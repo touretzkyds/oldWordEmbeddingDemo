@@ -60,8 +60,9 @@ class Demo {
                 ["men","women","boys","girls"],
                 ["man","woman","boy","girl"]
             ]
-            
         ];
+
+        this.axis_color = "black";
 
         // default feature names (#29)
         this.idx0 = 0;
@@ -267,12 +268,17 @@ class Demo {
             const clickedWord = plotWords[ptNum];
 
             if (clickedWord === this.selectedWord) { // deselect
+                // this.axis_color = "black" // reset axis colour for vector plot //pending test
                 this.selectedWord = "";
                 console.log("Deselected", clickedWord);
             } else { // select
+                // this.axis_color = "red" // change axis colour for vector plot //pending test
                 this.selectedWord = clickedWord;
                 console.log("Selected", this.selectedWord);
             }
+            
+            // @change to efficient update - update plotly
+            this.plotScatter() //pending test
 
             // replot with new point color
             this.plotScatter();
@@ -371,7 +377,8 @@ class Demo {
                 tickvals: d3.range(this.vectorWords.length),
                 ticktext: this.vectorWords,
                 fixedrange: true,
-                tickangle: 60
+                tickangle: 60,
+                color: this.axis_color
             },
             margin: {t: 30},
         };
@@ -627,6 +634,12 @@ class Demo {
 
     // (#29) user dropdown selection actions for custom features 
     dropDownActions(selectedId) {
+        this.setFeatureAxes(selectedId);
+        this.processFeatureInput();
+    }
+
+    // set X, Z axes as features selected by user
+    setFeatureAxes(selectedId) {
         var selectedValue = document.getElementById(selectedId).value
         var allIds = ["dropdown0", "dropdown1", "dropdown2", "dropdown3"]
         console.log(selectedValue)
@@ -697,6 +710,7 @@ class Demo {
         const analogyDetails = document.getElementById("analogy-details");
         analogyDetails.ontoggle = () => this.handleAnalogyToggle(analogyDetails);
 
+        // add feature toggle here 
 
         // plot new plots for the first time
         this.plotScatter(true);
