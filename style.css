@@ -19,6 +19,76 @@ body {
     font-weight: bold;
 }
 
+/* other attributes:  */
+
+#analogy-table {
+    border-collapse: collapse;
+    width: 90%;
+    margin-left: 3%;
+}
+
+#analogy-table td, #analogy-table th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#analogy-table tr:nth-child(even){background-color: #f2f2f2;}
+
+#analogy-table td:nth-child(even){
+    width: 6%;
+    text-align: center;
+}
+
+#analogy-table td:nth-child(odd){
+    width: 20%;
+    text-align: center;
+}
+
+#analogy-table tr:hover {background-color: #ddd;}
+
+#analogy-table th {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    text-align: left;
+    /* background-color: #ff7171;
+    color: white; */
+}
+
+#analogy-button {
+    padding: 7px 10px;
+    /* background-color: #ff7171; */
+    /* color: black; */
+    /* border: none; */
+    border-radius: 4px;
+}
+
+[id^="analogy-word"]{
+    padding: 5px;
+    font-size: 15px;
+    width: 80%
+}
+
+#arith-symbol {
+    color: #ff7171;
+    font-weight: bold;
+}
+
+
+
+.button {
+    height: 20px;
+    width: 100px;
+    display: inline-flex;
+}
+
+.dropdown {
+    height: 20px;
+    width: 100px; 
+    color:blue;
+    display: inline-block;
+
+}
+
 #loading-text {
     text-align: center;
     margin-bottom: 10px;
@@ -117,18 +187,4 @@ output {
 
 #user-feature-message {
     margin-left: 10%;  /* good size? */
-}
-
-.dropdown {
-    height: 20px;
-    width: 100px; 
-    color:blue;
-    display: inline-block;
-
-}
-
-.button {
-    height: 20px;
-    width: 100px;
-    display: inline-flex;
 }

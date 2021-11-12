@@ -11,9 +11,12 @@ class Demo {
 
         // words involved in the computation of analogy (#12)
         this.analogy = {};  // default empty Object
-
+        
         // words to show in vector display
         this.vectorWords = ["queen", "king", "girl", "boy", "woman", "man"];
+        
+        // empty words array for checking if vector words are empty (#35)
+        this.emptyVector = new Array(this.VECTOR_DISPLAY_SIZE).fill(this.EMPTY_FEATURE_NAME);
 
         // selected word in scatterplot (empty string represents nothing selected)
         this.selectedWord = "";
@@ -40,7 +43,7 @@ class Demo {
         this.features = Array(3); // init Array length doesn't actually matter
 
         // user-supplied names of features 0 and 1
-        this.featureNames = ["[gender]", "[age]", "[royalty]", "[number]"]; //"[tense]", "[part-of]"];
+        this.featureNames = ["[gender]", "[age]", "[royalty]", "[number]", "[part-of]", "[tense]", "[capital]"]; //"[tense]", "[part-of]"];
 
         // lists of word pairs to be used for creating features
         this.featureWordsPairs = [
@@ -59,6 +62,18 @@ class Demo {
             [
                 ["men","women","boys","girls"],
                 ["man","woman","boy","girl"]
+            ],
+            [
+                ["cake","whole","universe","ocean"],
+                ["slice","piece","planet","drop"]
+            ],
+            [
+                ["bought", "shone", "tried", "sold", "sought"],
+                ["buy",    "shine", "try",   "sell", "seek"]
+            ],
+            [
+                ["texas", "california", "egypt", "china", "italy"],
+                ["austin","sacramento", "cairo", "beijing",  "rome"]
             ]
         ];
 
@@ -268,20 +283,18 @@ class Demo {
             const clickedWord = plotWords[ptNum];
 
             if (clickedWord === this.selectedWord) { // deselect
-                // this.axis_color = "black" // reset axis colour for vector plot //pending test
+                this.axis_color = "black" // reset axis colour for vector plot //pending test
                 this.selectedWord = "";
                 console.log("Deselected", clickedWord);
             } else { // select
-                // this.axis_color = "red" // change axis colour for vector plot //pending test
+                this.axis_color = "red" // change axis colour for vector plot //pending test
                 this.selectedWord = clickedWord;
                 console.log("Selected", this.selectedWord);
             }
-            
-            // @change to efficient update - update plotly
-            this.plotScatter() //pending test
 
             // replot with new point color
             this.plotScatter();
+            this.plotVector(newPlot=false);
         });
 
     }
@@ -667,12 +680,44 @@ class Demo {
         if (!element.open) {
             // on details close, erase analogy object and
             this.analogy = {};
-            //this.vectorWords = new Array(this.VECTOR_DISPLAY_SIZE).fill(this.EMPTY_FEATURE_NAME);
+            // this.vectorWords = new Array(this.VECTOR_DISPLAY_SIZE).fill(this.EMPTY_FEATURE_NAME);
             // comment out above line to clear plot, instead replot default words (#35)
-            this.vectorWords = ["queen", "king", "girl", "boy", "woman", "man"]; 
+            // if vectorwords is already empty, don't fill it 
+            console.log(this.vectorWords)
+            console.log(this.getEraseRequirement())
+            if (!this.compareArrays(this.vectorWords, this.emptyVector)) {
+                this.vectorWords = ["queen", "king", "girl", "boy", "woman", "man"]; 
+            }
+            
             this.plotScatter();
             this.plotVector();
         }
+    }
+
+    // detect if erase is required for vectorplot on analogy toggle (#35)
+    getEraseRequirement() {
+        const defaultArray = ["queen", "king", "girl", "boy", "woman", "man"];
+        if (defaultArray.length != this.vectorWords.length) {
+            return false
+        }
+        for (let i = 0; i < defaultArray.length; i++) {
+            if (defaultArray[i] != this.vectorWords[i]) {
+                return false
+            }
+            if (defaultArray[i].split('-').length > 1) {
+                return false
+            }
+        }
+        return true
+    }
+    
+
+    // compare any two arrays (#35)
+    compareArrays(a, b) {
+        return Array.isArray(a) &&
+        Array.isArray(b) &&
+        a.length === b.length &&
+        a.every((val, index) => val === b[index]);
     }
 
     // fetch wordvecs locally (no error handling) and process
