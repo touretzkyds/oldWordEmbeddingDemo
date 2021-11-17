@@ -116,6 +116,7 @@ body {
 
 #plotly-magnify {
     flex: 0 0 60px; /* fixed width */
+    /* display: none; */
 }
 
 #plotly-vector {
@@ -193,3 +194,4 @@ output {
 #user-feature-message {
     margin-left: 10%;  /* good size? */
 }
+

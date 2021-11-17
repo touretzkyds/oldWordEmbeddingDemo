@@ -282,14 +282,17 @@ class Demo {
             const ptNum = data.points[0].pointNumber;
             const clickedWord = plotWords[ptNum];
 
+            let vectorplot = document.querySelector("#plotly-vector > div > div > svg:nth-child(3) > g.infolayer > g.g-ytitle > text")
             if (clickedWord === this.selectedWord) { // deselect
-                this.axis_color = "black" // reset axis colour for vector plot //pending test
+                this.axis_color = "black"; // reset axis colour for vector plot //pending test
                 this.selectedWord = "";
-                console.log("Deselected", clickedWord);
+                // console.log("Deselected", clickedWord);
+                console.log(vectorplot);
             } else { // select
-                this.axis_color = "red" // change axis colour for vector plot //pending test
+                this.axis_color = "red"; // change axis colour for vector plot //pending test
                 this.selectedWord = clickedWord;
-                console.log("Selected", this.selectedWord);
+                // console.log("Selected", this.selectedWord);
+                console.log(vectorplot);
             }
 
             // replot with new point color
@@ -297,7 +300,8 @@ class Demo {
             this.plotVector(newPlot=false);
         });
 
-    }
+    } 
+    
 
     // surround a feature word in brackets
     formatFeatureName(s) {
@@ -444,7 +448,7 @@ class Demo {
         ];
 
         const layout = {
-            title: {text: ""},
+            title: {text: "Magnitudes"},
             xaxis: {
                 title: "",
                 dtick: 1,
@@ -452,6 +456,7 @@ class Demo {
                 fixedrange: true
             },
             yaxis: {
+                title: "",
                 tickvals: d3.range(this.vectorWords.length),
                 ticktext: this.vectorWords.map(word => this.vecs.get(word).norm().toFixed(2)),
                 fixedrange: true,
@@ -502,6 +507,7 @@ class Demo {
     // notation from original paper: "Linguistic Regularities in Continuous Space Word Representations" (Mikolov 2013)
     // Analogy notation for words: a:b as c:d, with d unknown
     // vector y = x_b - x_a + x_c, find w* = argmax_w cossim(x_w, y)
+    // convert words to lowercase before processing (#39)
     processAnalogy() {
         const wordA = document.getElementById("analogy-word-a").value.toLowerCase();
         const wordB = document.getElementById("analogy-word-b").value.toLowerCase();
@@ -596,8 +602,10 @@ class Demo {
         let featureWordsPairsInput = [Array(2), Array(2)];
         for (let i=0; i<2; i++) {
             for (let j=0; j<2; j++) {
+                // split words across new lines
+                // convert to lowercase (#39)
                 featureWordsPairsInput[i][j] =
-                    document.querySelector(`.user-feature-words.${selectedNames[i]}.set${j}`).value.split('\n').toLowerCase();
+                    document.querySelector(`.user-feature-words.${selectedNames[i]}.set${j}`).value.toLowerCase().split('\n');
             }
         }
 
@@ -688,9 +696,17 @@ class Demo {
             if (!this.compareArrays(this.vectorWords, this.emptyVector)) {
                 this.vectorWords = ["queen", "king", "girl", "boy", "woman", "man"]; 
             }
+            // make magnitude ie. magnify plot visible when in vector arithmetic mode and hide it otherwise (#36)
+            // var magPlot = document.getElementById("plotly-magnify");
+            // if (magPlot.style.display === "none") {
+            //     magPlot.style.display = "block";
+            // } else {
+            //     magPlot.style.display = "none";
+            // }
             
             this.plotScatter();
             this.plotVector();
+            this.plotMagnify();
         }
     }
 
