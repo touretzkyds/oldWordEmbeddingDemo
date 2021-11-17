@@ -503,9 +503,9 @@ class Demo {
     // Analogy notation for words: a:b as c:d, with d unknown
     // vector y = x_b - x_a + x_c, find w* = argmax_w cossim(x_w, y)
     processAnalogy() {
-        const wordA = document.getElementById("analogy-word-a").value;
-        const wordB = document.getElementById("analogy-word-b").value;
-        const wordC = document.getElementById("analogy-word-c").value;
+        const wordA = document.getElementById("analogy-word-a").value.toLowerCase();
+        const wordB = document.getElementById("analogy-word-b").value.toLowerCase();
+        const wordC = document.getElementById("analogy-word-c").value.toLowerCase();
 
         const inputWords = [wordA, wordB, wordC];
 
@@ -597,7 +597,7 @@ class Demo {
         for (let i=0; i<2; i++) {
             for (let j=0; j<2; j++) {
                 featureWordsPairsInput[i][j] =
-                    document.querySelector(`.user-feature-words.${selectedNames[i]}.set${j}`).value.split('\n');
+                    document.querySelector(`.user-feature-words.${selectedNames[i]}.set${j}`).value.split('\n').toLowerCase();
             }
         }
 
