@@ -65,7 +65,12 @@ body {
 [id^="analogy-word"]{
     padding: 5px;
     font-size: 15px;
-    width: 80%
+    width: 80%;
+    color: blue;
+}
+
+[id^="analogy-word-wstar"]{
+    color: darkgreen;
 }
 
 #arith-symbol {
