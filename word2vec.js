@@ -56,7 +56,7 @@ class Demo {
                 ["boy","girl","prince","princess","son","daughter","nephew","niece"]
             ],
             [
-                ["man","woman","boy","girl"],
+                ["man","woman","boy","girl"], 
                 ["king","queen","prince","princess"]
             ],
             [
@@ -76,8 +76,6 @@ class Demo {
                 ["austin","sacramento", "cairo", "beijing",  "rome"]
             ]
         ];
-
-        this.axis_color = "black";
 
         // default feature names (#29)
         this.idx0 = 0;
@@ -281,18 +279,16 @@ class Demo {
         plotly_scatter.on("plotly_click", (data) => {
             const ptNum = data.points[0].pointNumber;
             const clickedWord = plotWords[ptNum];
-
-            let vectorplot = document.querySelector("#plotly-vector > div > div > svg:nth-child(3) > g.infolayer > g.g-ytitle > text")
+            
+            // actions if user clicks on (ie selects or deselects) a word in scatter plot
             if (clickedWord === this.selectedWord) { // deselect
-                this.axis_color = "black"; // reset axis colour for vector plot //pending test
+                this.blinkVectorAxis(false); // turn off blinking prompt for vector plot
                 this.selectedWord = "";
-                // console.log("Deselected", clickedWord);
-                console.log(vectorplot);
+                console.log("Deselected", clickedWord);
             } else { // select
-                this.axis_color = "red"; // change axis colour for vector plot //pending test
+                this.blinkVectorAxis(true); // turn on blinking prompt for vector plot
                 this.selectedWord = clickedWord;
-                // console.log("Selected", this.selectedWord);
-                console.log(vectorplot);
+                console.log("Selected", this.selectedWord);
             }
 
             // replot with new point color
@@ -319,6 +315,9 @@ class Demo {
         this.analogy = {};
 
         this.vectorWords = new Array(this.VECTOR_DISPLAY_SIZE).fill(this.EMPTY_FEATURE_NAME);
+
+        // stop blinking prompt for vector plot
+        this.blinkVectorAxis(false);
 
         this.plotScatter();
         this.plotVector();
@@ -357,7 +356,8 @@ class Demo {
                     // modify vector view to show selected word and then deselect
                     this.vectorWords[idx] = this.selectedWord;
                     this.selectedWord = "";
-
+                    // turn off blinking prompt for vector plot
+                    this.blinkVectorAxis(false);
                     // replot all
                     this.plotScatter();
                     this.plotVector();
@@ -685,29 +685,33 @@ class Demo {
     // switch "vector arithmetic mode" (#22)
     handleAnalogyToggle(element) {
         console.log("toggle", element);
-        if (!element.open) {
-            // on details close, erase analogy object and
-            this.analogy = {};
-            // this.vectorWords = new Array(this.VECTOR_DISPLAY_SIZE).fill(this.EMPTY_FEATURE_NAME);
-            // comment out above line to clear plot, instead replot default words (#35)
-            // if vectorwords is already empty, don't fill it 
-            console.log(this.vectorWords)
-            console.log(this.getEraseRequirement())
-            if (!this.compareArrays(this.vectorWords, this.emptyVector)) {
-                this.vectorWords = ["queen", "king", "girl", "boy", "woman", "man"]; 
+            // deselect word if user enters vector arithmetic mode (#37)
+            this.selectedWord = ""; 
+            // also stop blinking prompt for vector plot if user enters vector arithmetic mode
+            this.blinkVectorAxis(false);
+            if (!element.open) {
+                // on details close, erase analogy object and
+                this.analogy = {};
+                // this.vectorWords = new Array(this.VECTOR_DISPLAY_SIZE).fill(this.EMPTY_FEATURE_NAME);
+                // comment out above line to clear plot, instead replot default words (#35)
+                // if vectorwords is already empty, don't fill it 
+                console.log(this.vectorWords)
+                console.log(this.getEraseRequirement())
+                if (!this.compareArrays(this.vectorWords, this.emptyVector)) {
+                    this.vectorWords = ["queen", "king", "girl", "boy", "woman", "man"]; 
+                }
+                // make magnitude ie. magnify plot visible when in vector arithmetic mode and hide it otherwise (#36)
+                // var magPlot = document.getElementById("plotly-magnify");
+                // if (magPlot.style.display === "none") {
+                //     magPlot.style.display = "block";
+                // } else {
+                //     magPlot.style.display = "none";
+                // }
             }
-            // make magnitude ie. magnify plot visible when in vector arithmetic mode and hide it otherwise (#36)
-            // var magPlot = document.getElementById("plotly-magnify");
-            // if (magPlot.style.display === "none") {
-            //     magPlot.style.display = "block";
-            // } else {
-            //     magPlot.style.display = "none";
-            // }
-            
+            // replot so as to reset any active animations (#37)
             this.plotScatter();
             this.plotVector();
             this.plotMagnify();
-        }
     }
 
     // detect if erase is required for vectorplot on analogy toggle (#35)
@@ -734,6 +738,22 @@ class Demo {
         Array.isArray(b) &&
         a.length === b.length &&
         a.every((val, index) => val === b[index]);
+    }
+
+    // prompt user for copying word into vector plot (#31)
+    blinkVectorAxis(blink) { 
+        // select y ticks of vector plot to blink
+        const yTicks = document.querySelector("#plotly-vector > div > div > svg:nth-child(1) > g.cartesianlayer > g > g.yaxislayer-above");
+        if (blink) {
+            // change axis color for title and ticks, and start blinking ticks
+            this.axis_color = "red";
+            yTicks.style.animation = "blinker 1s linear infinite";
+        }
+        else {
+            // reset axis color and blinking
+            this.axis_color = "black";
+            yTicks.style.animation = "none";
+        }
     }
 
     // fetch wordvecs locally (no error handling) and process

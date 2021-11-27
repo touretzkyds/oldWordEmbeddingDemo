@@ -195,3 +195,15 @@ output {
     margin-left: 10%;  /* good size? */
 }
 
+@keyframes blinker {
+  0% {
+    fill: red;
+  }
+  50% {
+    opacity: 0;
+    fill: red;
+  }
+  100% {
+    fill: red;
+  }
+}
