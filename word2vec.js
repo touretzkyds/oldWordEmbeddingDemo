@@ -650,7 +650,7 @@ class Demo {
     populateOther(wordId, mirrorId) {
         var word = document.getElementById(wordId);
         var mirror = document.getElementById(mirrorId);
-        mirror.value = word.value
+        mirror.value = word.value;
     }
 
     // (#29) user dropdown selection actions for custom features 
@@ -659,11 +659,10 @@ class Demo {
         this.processFeatureInput();
     }
 
-    // set X, Z axes as features selected by user
+    // set X, Z axes as features selected by user (#29)
     setFeatureAxes(selectedId) {
-        var selectedValue = document.getElementById(selectedId).value
-        var allIds = ["dropdown0", "dropdown1", "dropdown2", "dropdown3"]
-        console.log(selectedValue)
+        var selectedValue = document.getElementById(selectedId).value;
+        var allIds = ["dropdown0", "dropdown1", "dropdown2", "dropdown3", "dropdown4", "dropdown5", "dropdown6"];
 
         if (selectedValue == "value1"){
             this.idx0 = parseInt(selectedId[(selectedId).length-1]);
@@ -695,18 +694,9 @@ class Demo {
                 // this.vectorWords = new Array(this.VECTOR_DISPLAY_SIZE).fill(this.EMPTY_FEATURE_NAME);
                 // comment out above line to clear plot, instead replot default words (#35)
                 // if vectorwords is already empty, don't fill it 
-                console.log(this.vectorWords)
-                console.log(this.getEraseRequirement())
                 if (!this.compareArrays(this.vectorWords, this.emptyVector)) {
                     this.vectorWords = ["queen", "king", "girl", "boy", "woman", "man"]; 
                 }
-                // make magnitude ie. magnify plot visible when in vector arithmetic mode and hide it otherwise (#36)
-                // var magPlot = document.getElementById("plotly-magnify");
-                // if (magPlot.style.display === "none") {
-                //     magPlot.style.display = "block";
-                // } else {
-                //     magPlot.style.display = "none";
-                // }
             }
             // replot so as to reset any active animations (#37)
             this.plotScatter();
@@ -718,17 +708,17 @@ class Demo {
     getEraseRequirement() {
         const defaultArray = ["queen", "king", "girl", "boy", "woman", "man"];
         if (defaultArray.length != this.vectorWords.length) {
-            return false
+            return false;
         }
         for (let i = 0; i < defaultArray.length; i++) {
             if (defaultArray[i] != this.vectorWords[i]) {
-                return false
+                return false;
             }
             if (defaultArray[i].split('-').length > 1) {
-                return false
+                return false;
             }
         }
-        return true
+        return true;
     }
     
 
@@ -792,8 +782,6 @@ class Demo {
         // analogy details event listener
         const analogyDetails = document.getElementById("analogy-details");
         analogyDetails.ontoggle = () => this.handleAnalogyToggle(analogyDetails);
-
-        // add feature toggle here 
 
         // plot new plots for the first time
         this.plotScatter(true);
