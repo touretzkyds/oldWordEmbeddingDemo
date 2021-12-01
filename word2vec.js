@@ -48,32 +48,32 @@ class Demo {
         // lists of word pairs to be used for creating features
         this.featureWordsPairs = [
             [
-                ["man","king","prince","husband","father","son","uncle","nephew","boy","male"],
-                ["woman","queen","princess","wife","mother","daughter","aunt","niece","girl","female"]
+                ["man",  "king",   "prince",  "husband", "father", "son",     "uncle", "nephew", "boy",  "male"],
+                ["woman", "queen", "princess", "wife",   "mother", "daughter", "aunt", "niece", "girl", "female"]
             ],
             [
-                ["man","woman","king","queen","father","mother","uncle","aunt"],
-                ["boy","girl","prince","princess","son","daughter","nephew","niece"]
+                ["man", "woman", "king",  "queen",   "father", "mother",  "uncle",   "aunt"],
+                ["boy", "girl", "prince", "princess", "son",   "daughter", "nephew", "niece"]
             ],
             [
-                ["man","woman","boy","girl"], 
-                ["king","queen","prince","princess"]
+                ["king", "queen", "prince", "princess"],
+                ["man",  "woman", "boy",    "girl"]
             ],
             [
-                ["men","women","boys","girls"],
-                ["man","woman","boy","girl"]
+                ["boys","girls","cats","puppies","computers","mice"],
+                ["boy", "girl", "cat", "puppy",  "computer", "mouse"]
             ],
             [
-                ["cake","whole","universe","ocean"],
-                ["slice","piece","planet","drop"]
+                ["sentence", "whole", "universe", "body", "country", "sentence"],
+                ["word",    "piece",  "planet",   "limb", "province", "word"]
             ],
             [
-                ["bought", "shone", "tried", "sold", "sought"],
-                ["buy",    "shine", "try",   "sell", "seek"]
+                ["bought", "shone", "tried", "sold", "sought", "walked", "moved"],
+                ["buy",    "shine", "try",   "sell", "seek",   "walk",   "move"]
             ],
             [
-                ["texas", "california", "egypt", "china", "italy"],
-                ["austin","sacramento", "cairo", "beijing",  "rome"]
+                ["texas",  "california", "egypt", "china", "italy"],
+                ["austin", "sacramento", "cairo", "beijing",  "rome"]
             ]
         ];
 
@@ -737,7 +737,7 @@ class Demo {
         if (blink) {
             // change axis color for title and ticks, and start blinking ticks
             this.axis_color = "red";
-            yTicks.style.animation = "blinker 1s linear infinite";
+            yTicks.style.animation = "blinker 0.8s linear infinite";
         }
         else {
             // reset axis color and blinking
