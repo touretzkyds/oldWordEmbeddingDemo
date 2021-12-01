@@ -43,7 +43,7 @@ class Demo {
         this.features = Array(3); // init Array length doesn't actually matter
 
         // user-supplied names of features 0 and 1
-        this.featureNames = ["[gender]", "[age]", "[royalty]", "[number]", "[part-of]", "[tense]", "[capital]"]; //"[tense]", "[part-of]"];
+        this.featureNames = ["[gender]", "[age]", "[royalty]", "[number]", "[part-of]", "[tense]", "[capital]", "[]", "[]"]; // leave room for two user-defined semantic dimensions (#29)
 
         // lists of word pairs to be used for creating features
         this.featureWordsPairs = [
@@ -74,6 +74,15 @@ class Demo {
             [
                 ["texas",  "california", "egypt", "china", "italy"],
                 ["austin", "sacramento", "cairo", "beijing",  "rome"]
+            ],
+            // leave room for two user-defined semantic dimensions (#29)
+            [
+                [],
+                []
+            ],
+            [
+                [],
+                []
             ]
         ];
 
@@ -662,7 +671,7 @@ class Demo {
     // set X, Z axes as features selected by user (#29)
     setFeatureAxes(selectedId) {
         var selectedValue = document.getElementById(selectedId).value;
-        var allIds = ["dropdown0", "dropdown1", "dropdown2", "dropdown3", "dropdown4", "dropdown5", "dropdown6"];
+        var allIds = ["dropdown0", "dropdown1", "dropdown2", "dropdown3", "dropdown4", "dropdown5", "dropdown6", "dropdown7", "dropdown8"];
 
         if (selectedValue == "value1"){
             this.idx0 = parseInt(selectedId[(selectedId).length-1]);
@@ -686,7 +695,7 @@ class Demo {
         console.log("toggle", element);
             // deselect word if user enters vector arithmetic mode (#37)
             this.selectedWord = ""; 
-            // also stop blinking prompt for vector plot if user enters vector arithmetic mode
+            // also stop blinking prompt for vector plot if user enters vector arithmetic mode (#37)
             this.blinkVectorAxis(false);
             if (!element.open) {
                 // on details close, erase analogy object and
