@@ -698,13 +698,13 @@ class Demo {
             // also stop blinking prompt for vector plot if user enters vector arithmetic mode (#37)
             this.blinkVectorAxis(false);
             if (!element.open) {
-                // on details close, erase analogy object and
+                // on details close, erase analogy object and modify vectorwords as follows -
                 this.analogy = {};
-                // this.vectorWords = new Array(this.VECTOR_DISPLAY_SIZE).fill(this.EMPTY_FEATURE_NAME);
-                // comment out above line to clear plot, instead replot default words (#35)
-                // if vectorwords is already empty, don't fill it 
-                if (!this.compareArrays(this.vectorWords, this.emptyVector)) {
-                    this.vectorWords = ["queen", "king", "girl", "boy", "woman", "man"]; 
+                // check 3rd and 5th entry of vectorwords, if they are hold arithmetic results, erase (#35)
+                for (const i of [1,3]) { // indices corresponding to 5th and 3rd entry
+                    if (this.getEraseRequirement(this.vectorWords[i])){
+                        this.vectorWords[i] = this.EMPTY_FEATURE_NAME;
+                    }
                 }
             }
             // replot so as to reset any active animations (#37)
@@ -713,30 +713,10 @@ class Demo {
             this.plotMagnify();
     }
 
-    // detect if erase is required for vectorplot on analogy toggle (#35)
-    getEraseRequirement() {
-        const defaultArray = ["queen", "king", "girl", "boy", "woman", "man"];
-        if (defaultArray.length != this.vectorWords.length) {
-            return false;
-        }
-        for (let i = 0; i < defaultArray.length; i++) {
-            if (defaultArray[i] != this.vectorWords[i]) {
-                return false;
-            }
-            if (defaultArray[i].split('-').length > 1) {
-                return false;
-            }
-        }
-        return true;
-    }
-    
-
-    // compare any two arrays (#35)
-    compareArrays(a, b) {
-        return Array.isArray(a) &&
-        Array.isArray(b) &&
-        a.length === b.length &&
-        a.every((val, index) => val === b[index]);
+    // detect if erase is required, ie. we have arithmetic results instead of pure words in vectorplot (#35)
+    getEraseRequirement(word) {
+        const numWords = word.split('-').length; // since '-' is always part of our analogy eg. king-man+woman
+        return numWords > 1;
     }
 
     // prompt user for copying word into vector plot (#31)
