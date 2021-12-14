@@ -90,6 +90,11 @@ class Demo {
         this.idx0 = 0;
         this.idx1 = 1;
         this.selectedFeatureNames = ["[gender]", "[age]"];
+
+        // default settings for magnify plot vector display numbers (#36)
+        this.plotMagnifyTitle = "Magnitudes";
+        this.plotMagnifyTicks = "";
+        this.plotMagnifyShowTicks = false;
     }
 
     // read raw model text and write vectors to vecs and vocab
@@ -293,10 +298,12 @@ class Demo {
             if (clickedWord === this.selectedWord) { // deselect
                 this.blinkVectorAxis(false); // turn off blinking prompt for vector plot
                 this.selectedWord = "";
+                this.formatMagnitudePlot("default");
                 console.log("Deselected", clickedWord);
             } else { // select
                 this.blinkVectorAxis(true); // turn on blinking prompt for vector plot
                 this.selectedWord = clickedWord;
+                this.formatMagnitudePlot("selection");
                 console.log("Selected", this.selectedWord);
             }
 
@@ -457,7 +464,7 @@ class Demo {
         ];
 
         const layout = {
-            title: {text: "Magnitudes"},
+            title: {text: this.plotMagnifyTitle},
             xaxis: {
                 title: "",
                 dtick: 1,
@@ -467,10 +474,11 @@ class Demo {
             yaxis: {
                 title: "",
                 tickvals: d3.range(this.vectorWords.length),
-                ticktext: this.vectorWords.map(word => this.vecs.get(word).norm().toFixed(2)),
+                ticktext: this.plotMagnifyTickText,
+                showticklabels: this.plotMagnifyShowTicks,
                 fixedrange: true,
             },
-            margin: {l: 40, r: 5, t: 30} // get close to main vector view
+            margin: {l: 50, r: 35, t: 30} // get close to main vector view, width increased to accomodate title
         };
 
         if (newPlot) {
@@ -697,9 +705,11 @@ class Demo {
             this.selectedWord = ""; 
             // also stop blinking prompt for vector plot if user enters vector arithmetic mode (#37)
             this.blinkVectorAxis(false);
+            this.formatMagnitudePlot("arithmetic")
             if (!element.open) {
                 // on details close, erase analogy object and modify vector plot words as follows -
                 this.analogy = {};
+                this.formatMagnitudePlot("default")
                 // check 3rd and 5th entry of vectorplot words, if they are hold arithmetic results, erase (#35)
                 for (const i of [1,3]) { // indices corresponding to 5th and 3rd entry
                     if (this.getEraseRequirement(this.vectorWords[i])){
@@ -732,6 +742,26 @@ class Demo {
             // reset axis color and blinking
             this.axis_color = "black";
             yTicks.style.animation = "none";
+        }
+    }
+
+    // hide or show magnitude numbers for vector magnitude plot depending on mode (#36) 
+    formatMagnitudePlot(mode="default") {
+        if (mode === "selection") {
+            const selectedVector = this.vecs.get(this.selectedWord);
+            this.plotMagnifyTitle = "Similarity";
+            this.plotMagnifyTickText = this.vectorWords.map(word => this.vecs.get(word).dot(selectedVector).toFixed(2));
+            this.plotMagnifyShowTicks = true;        
+        }
+        else if (mode === "arithmetic") {
+            this.plotMagnifyTitle = "Magnitude";
+            this.plotMagnifyTickText = this.vectorWords.map(word => this.vecs.get(word).norm().toFixed(2));
+            this.plotMagnifyShowTicks = true;        
+        }
+        else {
+            this.plotMagnifyTitle = "Magnitude";
+            this.plotMagnifyTickText = "";
+            this.plotMagnifyShowTicks = false;        
         }
     }
 
