@@ -1,13 +1,370 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Tutorial</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css">
+  <link rel="stylesheet" href="tutexp-styles.css">
+  <style type="text/css">
+    tr { padding: 0px; }
+  </style>
+  <meta charset="UTF-8">
+  <title>Word Embedding Demo: Tutorial</title>
 </head>
-<body>
-Google Research on word embeddings:
-https://research.google.com/semanticexperiences/for-developers.html <p/>
-https://tfhub.dev/google/universal-sentence-encoder/1 <p/>
+
+<body class="center-content" style="margin-right: 50px; margin-left: 50px; max-width: 992px;">
+
+<h2 style="text-align: center;">Word Embedding Demo: Tutorial</h2>
+
+<center>
+  Navigation: <a href="../index.html">Return to Demo</a> or <a href="experiments.html">View Experiments</a><p/>
+</center><p/>
+
+<h5> Semantic Feature Space </h5>
+
+<p>
+  Consider the words "man", "woman", "boy", and "girl".  Two of them
+  refer to males, and two to females.  Also, two of them refer to
+  adults, and two to children.  We can plot these worlds as points on
+  a graph where the <i>x</i> axis axis represents gender and
+  the <i>y</i> axis represents age:</p>
+
+  <img src="figures/fig1.png" width=600></p>
+
+<p>
+  Gender and age are called <i>semantic features</i>: they represent part of
+  the meaning of each word.  If we associate a numerical scale with each feature,
+  then we can assign coordinates to each word:</p>
+
+<table class="mytable">
+  <tbody>
+    <tr><td> man </td>   <td>[</td> <td> 1, </td> <td> 7 </td> <td>]</td></tr>
+    <tr><td> woman </td> <td>[</td> <td> 9, </td> <td> 7 </td> <td>]</td></tr>
+    <tr><td> boy </td>   <td>[</td> <td> 1, </td> <td> 2 </td> <td>]</td></tr>
+    <tr><td> girl </td>  <td>[</td> <td> 9, </td> <td> 2 </td> <td>]</td></tr>
+  </tbody>
+</table><p/>
+        
+We can add new words to the plot based on their meanings.  For
+example, where should the words "adult" and "child" go?  How about
+"infant"?  Or "grandfather"?<p/>
+
+  <img src="figures/fig2.png" width=600><p/>
+
+<table class="mytable">
+  <tbody>
+    <tr><td> man </td>         <td>[</td> <td> 1, </td> <td> 7 </td> <td>]</td></tr>
+    <tr><td> woman </td>       <td>[</td> <td> 9, </td> <td> 7 </td> <td>]</td></tr>
+    <tr><td> boy </td>         <td>[</td> <td> 1, </td> <td> 2 </td> <td>]</td></tr>
+    <tr><td> girl </td>        <td>[</td> <td> 9, </td> <td> 2 </td> <td>]</td></tr>
+    <tr><td> adult </td>       <td>[</td> <td> 5, </td> <td> 7 </td> <td>]</td></tr>
+    <tr><td> child </td>       <td>[</td> <td> 5, </td> <td> 2 </td> <td>]</td></tr>
+    <tr><td> infant </td>      <td>[</td> <td> 5, </td> <td> 1 </td> <td>]</td></tr>
+    <tr><td> grandfather </td> <td>[</td> <td> 1, </td> <td> 9 </td> <td>]</td></tr>
+  </tbody>
+</table><p/>
+
+<b>Exercise</b>: how would you represent the words "grandmother",
+"grandparent", "teenager", and "octogenarian"?<p/>
+
+Now let's consider the words "king", "queen", "prince", and "princess".  They
+have the same gender and age attibutes as "man", "woman", "boy', and "girl".  But
+they don't mean the same thing.  In order to distinguish "man" from "king",
+"woman" from "queen", and so on, we need to introduce a new semantic feature
+in which they differ.  Let's call it "royalty".  Now we have to plot the points
+in a 3-dimensional space:<p/>
+
+  <img src="figures/fig3.png" width=600><p/>
+
+Each word has three coordinate values: age, gender, and royalty.  We call
+these lists of numbers <i>vectors</i>.  Since they represent the values of
+semantic features, we can also call them <i>feature vectors</i>.<p/>
+
+<table class="mytable">
+    <tbody>
+      <tr><td> man </td>         <td>[</td> <td> 1, </td> <td> 7, </td> <td> 0 </td> <td>]</td></tr>
+      <tr><td> woman </td>       <td>[</td> <td> 9, </td> <td> 7, </td> <td> 0 </td> <td>]</td></tr>
+      <tr><td> boy </td>         <td>[</td> <td> 1, </td> <td> 2, </td> <td> 0 </td> <td>]</td></tr>
+      <tr><td> girl </td>        <td>[</td> <td> 9, </td> <td> 2, </td> <td> 0 </td> <td>]</td></tr>
+      <tr><td> king </td>        <td>[</td> <td> 1, </td> <td> 8, </td> <td> 8 </td> <td>]</td></tr>
+      <tr><td> queen </td>       <td>[</td> <td> 9, </td> <td> 7, </td> <td> 8 </td> <td>]</td></tr>
+      <tr><td> prince </td>      <td>[</td> <td> 1, </td> <td> 2, </td> <td> 8 </td> <td>]</td></tr>
+      <tr><td> princess </td>    <td>[</td> <td> 9, </td> <td> 2, </td> <td> 8 </td> <td>]</td></tr>
+    </tbody>
+</table></p>
+
+Notice that we've assigned "king" a slightly higher age value (8) than
+"queen" (7).  Perhaps it's because we've read lots of stories about
+very old kings (think King Lear), but not so many about very old
+queens.  Feature values don't have to be perfectly symmetrical.
+
+<h5> Uses of Semantic Feature Vectors </h5>
+
+What can we do with these numerical representations?  One thing we can
+use them for is judging similarity between words.  For example, "boy"
+is more similar to "girl" than to "queen" because the <i>distance</i>
+from "boy" to "girl" is less than the distance from "boy" to "queen".
+There are several ways to measure distance.  One is to count the
+number of features where the words differ.  "Boy" and "girl" differ on
+only one feature (gender), while "boy" and "queen" differ on all three
+features (gender, age, and royalty).  But this is a crude way to
+measure similarity.  A better way, since each word is represented by
+coordinate values, is to compute the Euclidean distance between those
+points, which can be done using the Pythagorean theorem.  We won't go
+into the details here, but if we take this approach, the distance
+between "boy" and "girl" is 8, while the distance between "boy" and
+"queen" comes out to 12.37.<p/>
+
+Google's <a href="https://research.google.com/semantris/">Semantris</a>
+game uses feature vector representations to determine which words are
+related to which other words.  But one of the most interesting things
+we can do with feature vectors is solve word analogy problems.
+
+<h5> Analogies By Vector Arithmetic </h5>
+
+Analogies are constructed based on the relationships between words.
+For example, "man is to king as woman is to _____".  To arrive at the
+answer we first find the relationship between man and king by
+caculating "king" - "man".  We do this by subtracting each coordinate
+separately, giving (1 - 1) , (8 - 7), and (8 - 0), or [0, 1, 8].  Then
+we add this to "woman", again treating each coordinate separately,
+meaning (0 + 9), (1 + 7), (8 + 0) or [9, 8, 8].  Finally we find the
+word closest to our result, which is "queen", or [9, 7, 8]. <p/>
+
+<table class="mytable">
+  <tbody>
+    <tr><td>king</td>                 <td>[</td> <td> 1, </td> <td> 8, </td> <td> 8 </td> <td>]</td>
+    <tr><td>man</td>                  <td>[</td> <td> 1, </td> <td> 7, </td> <td> 0 </td> <td>]</td>
+    <tr class="myred"><td>king - man</td>           <td>[</td> <td> 0, </td> <td> 1, </td> <td> 8 </td> <td>]</td>
+    <tr><td>woman</td>                <td>[</td> <td> 9, </td> <td> 7, </td> <td> 0 </td> <td>]</td>
+    <tr class="mygreen"><td>king - man + woman</td>   <td>[</td> <td> 9, </td> <td> 8, </td> <td> 8 </td> <td>]</td>
+    <tr><td>queen</td>                <td>[</td> <td> 9, </td> <td> 7, </td> <td> 8 </td> <td>]</td>
+  </tbody>
+</table><p/>
+
+We can also represent word analogies graphically.  For the relationship
+of "man" to "king" we draw an arrow from "man" to "king".  Next we
+copy this arrow, keeping the same direction and length, but now starting
+from "woman".  Then we see where the arrow points and look for the
+closest word:<p/>
+
+  <img src="figures/fig4.png" width=600><p/>
+
+<h5> Word Embeddings </h5>
+
+Going from two to three semantic features allowed us to represent more
+words, but are three enough?  How can we represent words such as
+"cucumber", "smiled", or "honesty"?  You could think up new semantic
+features and move to a four or five or six dimensional space, but that
+still wouldn't be enough.  To represent the complexity of a typical
+50,000 word English vocabulary requires hundreds of features.
+Designing all those features by hand, and assigning accurate
+coordinates to all those words, would be a lot of work!<p/>
+
+Instead we can let the computer create the feature space for us by
+supplying a machine learning algorithm with a large amount of text,
+such as all of Wikipedia, or a huge collection of news articles.  The
+algorithm discovers statistical relationships between words by looking
+at what other words they co-occur with.  It uses this information to
+create word representations in a semantic feature space of its own
+design.  These representations are called <i>word embeddings</i>.  A
+typical embedding might use a 300 dimensional space, so each word
+would be represented by 300 numbers.  The figure below shows the
+embedding vectors for six words in our demo, which uses a
+300-dimensional embedding. "Uncle", "boy", and "he" are male words,
+while "aunt", "girl", and "she" are female words.  Each word is
+represented by 300 numbers with values between -0.2 and +0.2.
+Component number 126 is shown magnified to the left.  As you can see,
+component 126 appears to correlate with gender: it has slightly
+positive values (tan/orange) for the male words and slightly negative
+values (blue/gray) for the female words.<p/>
+
+  <img class="indented" src="figures/gendered-vecs-arrows.png" width=600><p/>
+
+The most significant application of word embeddings is to encode words
+for use as input to complex neural networks that try to understand
+the meanings of entire sentences, or even paragraphs.  One such class
+of networks are called <i>transformer neural networks</i>.  Two famous
+transformer networks are BERT from Google, which now handles many
+Google searches, and GPT3 from OpenAI.<p/>
+
+<h5> Measuring Euclidean Distance </h5>
+
+Earlier we looked at ways to measure distance between two words.
+Counting the number of features where they differ is too crude a
+measure, because it doesn't distinguish between small value
+differences and large ones.  The alternative we settled on was
+Euclidean distance.  We will now explain the formula for calculating
+this.  But first we need to say a little more about vectors.<p/>
+
+We've been drawing words as points in a semantic space, and we've also
+referred to these points as <i>vectors</i>.  In mathematics, a vector
+is drawn as an arrow, and consists of a length and a direction.  Words
+can be drawn as arrows that begin at the origin and end at the point.
+So the word "child" can be drawn as an arrow from the origin [0, 0] to
+the point [5, 2].  Here are all the words in our 2D semantic space
+drawn as vectors:<p/>
+
+<img src="figures/fig5.png" width=600><p/>
+
+We can compare two words by drawing a vector from one to the other,
+and measuring its length.  The vector from "child" to "man" can be
+computed by starting with "man" [1,7] and subtracting "child" [5,2],
+giving the vector [-4, 5].  The length of a vector [x, y] is given by
+the formula sqrt(x<sup>2</sup> + y<sup>2</sup>), where sqrt is the
+square root function.  This is the Euclidean distance between the
+words.  Here are all the vectors from "child" to the other words:<p/>
+
+<img src="figures/fig6.png" width=600><p/>
+
+And here are the Euclidean distances from "child":
+
+<table class="mytable">
+  <thead>
+    <tr><td colspan=2>Distance from "child"</td></tr>
+  </thead>
+  <tbody>
+    <tr><td>man</td>     <td>6.4031</td></tr>
+    <tr><td>woman</td>   <td>6.4031</td></tr>
+    <tr><td>boy</td>     <td>4</td></tr>
+    <tr><td>girl</td>    <td>4</td></tr>
+    <tr><td>adult</td>   <td>5</td></tr>
+    <tr><td>child</td>   <td>0</td></tr>
+    <tr><td>infant</td>  <td>1</td></tr>
+    <tr><td>grandfather</td>     <td>8.0623</td></tr>
+  </tbody>
+</table><p/>
+
+The same Euclidean distance formula works in higher dimensions too.
+The length of a vector [x, y, z] is sqrt(x<sup>2</sup> + y<sup>2</sup>
++ z<sup>2</sup>).<p/>
+
+Euclidean distance is a perfectly reasonable distance measure, but
+it's not the preferred distance measure for word embeddings.  Instead
+we use something called the dot product.  It's actually a similarity
+measure rather than a distance measure.  Larger values mean words are
+more similar.
+
+<h5> Measuring Similarity With Dot Product </h5>
+
+Given two vectors [x<sub>1</sub>, y<sub>1</sub>] and [x<sub>2</sub>,
+y<sub>2</sub>], the Euclidean distance betwen them is
+sqrt((x<sub>2</sub>-x<sub>1</sub>)<sup>2</sup> +
+(y<sub>2</sub>-y<sub>1</sub>)<sup>2</sup>).  The dot product is
+simpler: it's x<sub>1</sub>&middot;x<sub>2</sub> +
+y<sub>1</sub>&middot;y<sub>2</sub>.
+
+The dot product is proportional to the cosine of the angle between the
+two vectors.  But in order for this to be a sensible measure of
+similarity, we have to make a slight adjustment to the vectors first.
+Consider the angles between the original vectors:<p/>
+
+<img src="figures/fig5.png" width=600><p/>
+
+In the above diagram, the angle between "infant" (green vector) and
+"girl" (orange vector) is almost zero, while the angle between
+"infant" and "child" is larger.  But clearly "infant" is closer to
+"child" than to "girl".  The problem is that all our vectors originate
+at the origin.  To correct the problem and make angle a useful measure
+of similarity, we need the vectors to originate at the center of all
+the points.  So let's move the points so that their center is at the
+origin.  We can do this by taking the mean (average) of all the points
+and subtracting that value from every point.  This means that for
+every feature, some words will have negative values while others have
+positive values, so that their average is zero. Shifting the
+coordinates this way has no effect on the Euclidean distance measure
+because all points are shifted by an equal amount.  But it
+dramatically affects the dot product.  The result looks like this:<p/>
+
+<img src="figures/fig7.png" width=600><p/>
+
+Now the angle between the "child" and "infant" vectors is nearly zero,
+as it should be.  But there is still an issue.  The dot product of two
+vectors is not exactly the cosine of the angle &theta; between them;
+it's <i>proportional</i> to the cosine.  Given two vectors u and v,
+the exact value of dot(u,v) is
+cos(&theta)&middot;length(u)&middot;length(v), where length(u) is the
+length of the vector u, i.e., its Euclidean distance from the origin.
+If we want the dot product to exactly equal the cosine, we need
+to <i>normalize</i> the vectors so they have length 1.  We do this by
+dividing the coordinates of each vector by the length of the vector,
+i.e., given a vector [x, y] with length r = sqrt(x<sup>2</sup> +
+y<sup>2</sup>), we can construct a <i>unit vector</i> pointing in the
+same direct but with length 1 as [x/r, y/r].<p/>
+
+Here is what the points look like when we convert them to unit vectors,
+so they all lie on a circle of radius 1:<p/>
+
+<img src="figures/fig8.png" width=600><p/>
+
+The dot product and Euclidean distance measures produce results that
+are similar but not identical.  For example, based on Euclidean
+distance, "boy" is slightly closer to "child" than to "infant", but
+looking at the unit vectors in the figure above, the angle between
+"boy" and "infant" is slightly less than the angle between "boy" and
+"child".<p/>
+
+The word embeddings used in this demo, and by real AI systems, are
+unit vectors with zero mean, just like the points above.  The same
+normalization technique applies to higher dimensional vectors, e.g.,
+for three-dimensional semantic vectors, the points lie on the surface
+of a unit sphere (a sphere with radius 1), as shown below:<p/>
+
+<img src="figures/fig9.png" width=600><p/>
+
+Dot product is preferred to Euclidean distance for two reasons.
+First, dot product requires fewer arithmetic operations.  For
+300-dimensional vectors, dot product requires 599 operations (300
+multiplications plus 299 additions), while Euclidean distance requires
+899 operations because it includes 300 subtractions.  Second, the dot
+product is exactly what a neuron in a neural net computes: it takes
+the dot product of its weight vector with its input vector.<p>
+
+<h5> How Word Embeddings Are Created </h5>
+By magic.
+
+<h5> Additional Resources </h5>
+
+<ul class="fixed">
+  <li> <a href="http://jalammar.github.io/illustrated-word2vec/">The Illustrated Word2Vec</a>, by Jay Alammar.
+
+  <li> <a href="xxx">Interactive Visualizations of Word Embeddings for
+      K-12 Students</a>, by Saptarashmi Bandyopadhyay, Jason Xu, Neel Pawar,
+      and David Touretzky.
+
+  <li> <a href="https://www.tensorflow.org/text/guide/word_embeddings">TensorFlow word embeddings</a>.
+
+</ul><p/>
+
+<center>
+  Navigation: <a href="../index.html">Return to Demo</a> or <a href="experiments.html">View Experiments</a><p/>
+</center><p/>
 
 </body>
 </html>
+
+<!--
+
+similarity:
+2D: draw arrow from boy to woman
+
+distance measures:
+
+show how to compute euclidean distance in 2D and 3D and 300-D.
+
+draw vectors from origin to words
+
+dot product is cheaper to compute and more like neural net
+
+dot product is proportional to cosine
+measuring angles in 2D gives bad results because angles are small
+
+show zero-normed data: results are better
+
+convert to unit vectors: words lie on a circle.  now dot product
+is exactly cosine.
+
+add a python section: math.pi, math.acos, converting to degrees
+advanced python: numpy
+
+effects of polysemy: man, lemon
+
+  -->

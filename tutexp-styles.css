@@ -1,0 +1,33 @@
+ul.fixed {
+  padding-left: 30px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+ul.fixed li {
+  list-style-type: initial;
+}
+
+
+h5 { text-align: left; }
+
+.mytable {
+  table-layout: fixed;
+  margin-left: 10em;
+  width: auto;
+  border-collapse: collapse;
+  border: 3px solid purple;
+}
+
+tr.myred { color: red; }
+
+tr.mygreen { color: green; }
+
+tr td:nth-child(1) { color: initial }
+
+td { padding: 0 10px 0 10px; margin: 0; }
+
+td :nth-child(1) { text-align: right; }
+
+img.indented { margin-left: 10em; }
+
