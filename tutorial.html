@@ -190,52 +190,55 @@ Google searches, and GPT3 from OpenAI.<p/>
 
 Earlier we looked at ways to measure distance between two words.
 Counting the number of features where they differ is too crude a
-measure, because it doesn't distinguish between small value
-differences and large ones.  The alternative we settled on was
-Euclidean distance.  We will now explain the formula for calculating
-this.  But first we need to say a little more about vectors.<p/>
+measure because it doesn't distinguish between small value differences
+and large ones.  The alternative we settled on was Euclidean distance.
+We will now explain the formula for calculating this.  But first we
+need to say a little more about vectors.<p/>
 
 We've been drawing words as points in a semantic space, and we've also
 referred to these points as <i>vectors</i>.  In mathematics, a vector
-is drawn as an arrow, and consists of a length and a direction.  Words
-can be drawn as arrows that begin at the origin and end at the point.
-So the word "child" can be drawn as an arrow from the origin [0, 0] to
-the point [5, 2].  Here are all the words in our 2D semantic space
-drawn as vectors:<p/>
+is drawn as an arrow, and it consists of a length and a direction.
+Words can be drawn as arrows that begin at the origin and end at the
+point.  So the word "child" can be drawn as an arrow from the origin
+[0, 0] to the point [5, 2].  Here are all the words in our 2D semantic
+space drawn as vectors:<p/>
 
 <img src="figures/fig5.png" width=600><p/>
 
-We can compare two words by drawing a vector from one to the other,
-and measuring its length.  The vector from "child" to "man" can be
+We can compare two words by drawing a vector from one to the other and
+measuring its length.  The vector from "child" to "man" can be
 computed by starting with "man" [1,7] and subtracting "child" [5,2],
 giving the vector [-4, 5].  The length of a vector [x, y] is given by
 the formula sqrt(x<sup>2</sup> + y<sup>2</sup>), where sqrt is the
 square root function.  This is the Euclidean distance between the
-words.  Here are all the vectors from "child" to the other words:<p/>
+words.  Here are all the vectors from "boy" to the other words:<p/>
 
 <img src="figures/fig6.png" width=600><p/>
 
-And here are the Euclidean distances from "child":
+And here are the Euclidean distances from "boy":
 
 <table class="mytable">
   <thead>
-    <tr><td colspan=2>Distance from "child"</td></tr>
+    <tr><td colspan=2>Distance from "boy"</td></tr>
   </thead>
   <tbody>
-    <tr><td>man</td>     <td>6.4031</td></tr>
-    <tr><td>woman</td>   <td>6.4031</td></tr>
-    <tr><td>boy</td>     <td>4</td></tr>
-    <tr><td>girl</td>    <td>4</td></tr>
-    <tr><td>adult</td>   <td>5</td></tr>
-    <tr><td>child</td>   <td>0</td></tr>
-    <tr><td>infant</td>  <td>1</td></tr>
-    <tr><td>grandfather</td>     <td>8.0623</td></tr>
+    <tr><td>man</td>     <td>5</td></tr>
+    <tr><td>woman</td>   <td>9.4340</td></tr>
+    <tr><td>boy</td>     <td>0</td></tr>
+    <tr><td>girl</td>    <td>8</td></tr>
+    <tr><td>adult</td>   <td>6.4031</td></tr>
+    <tr><td>child</td>   <td>4</td></tr>
+    <tr><td>infant</td>  <td>4.1231</td></tr>
+    <tr><td>grandfather</td>     <td>7</td></tr>
   </tbody>
 </table><p/>
 
+You can see that the closest word to "boy" is "child", but "infant" is
+only a little bit further away.<p/>
+
 The same Euclidean distance formula works in higher dimensions too.
-The length of a vector [x, y, z] is sqrt(x<sup>2</sup> + y<sup>2</sup>
-+ z<sup>2</sup>).<p/>
+The length of a 3D vector [x, y, z] is sqrt(x<sup>2</sup> +
+y<sup>2</sup> + z<sup>2</sup>).<p/>
 
 Euclidean distance is a perfectly reasonable distance measure, but
 it's not the preferred distance measure for word embeddings.  Instead
@@ -247,8 +250,8 @@ more similar.
 
 Given two vectors [x<sub>1</sub>, y<sub>1</sub>] and [x<sub>2</sub>,
 y<sub>2</sub>], the Euclidean distance betwen them is
-sqrt((x<sub>2</sub>-x<sub>1</sub>)<sup>2</sup> +
-(y<sub>2</sub>-y<sub>1</sub>)<sup>2</sup>).  The dot product is
+sqrt((x<sub>1</sub>-x<sub>2</sub>)<sup>2</sup> +
+(y<sub>1</sub>-y<sub>2</sub>)<sup>2</sup>).  The dot product is
 simpler: it's x<sub>1</sub>&middot;x<sub>2</sub> +
 y<sub>1</sub>&middot;y<sub>2</sub>.
 
@@ -259,36 +262,43 @@ Consider the angles between the original vectors:<p/>
 
 <img src="figures/fig5.png" width=600><p/>
 
-In the above diagram, the angle between "infant" (green vector) and
-"girl" (orange vector) is almost zero, while the angle between
-"infant" and "child" is larger.  But clearly "infant" is closer to
-"child" than to "girl".  The problem is that all our vectors originate
-at the origin.  To correct the problem and make angle a useful measure
-of similarity, we need the vectors to originate at the center of all
-the points.  So let's move the points so that their center is at the
-origin.  We can do this by taking the mean (average) of all the points
-and subtracting that value from every point.  This means that for
-every feature, some words will have negative values while others have
-positive values, so that their average is zero. Shifting the
-coordinates this way has no effect on the Euclidean distance measure
-because all points are shifted by an equal amount.  But it
-dramatically affects the dot product.  The result looks like this:<p/>
+In the above diagram, the angle between "boy" (yellow vector) and
+"adult" (purple vector) is small, while the angle between "boy" and
+"child" (blue vector) is larger.  But clearly "boy" is closer to
+"child" than to "adult", since "boy" differs only modestly from
+"child" in the gender coordinate, while it differs from "adult" in
+both the gender and age coordinates.  The problem is that all our
+vectors originate at the origin.  To correct the problem and make
+angle a useful measure of similarity, we need the vectors to originate
+at the center of all the points.  So let's move the points so that
+their center is at the origin.  We can do this by taking the mean
+(average) of all the points and subtracting that value from every
+point.  This means that for every feature, some words will have
+negative feature values while others will have positive feature
+values, so that their average is zero. Shifting the coordinates this
+way has no effect on the Euclidean distance measure because all points
+are shifted by the same amount.  But it dramatically affects the dot
+product.  The result looks like this:<p/>
 
 <img src="figures/fig7.png" width=600><p/>
 
-Now the angle between the "child" and "infant" vectors is nearly zero,
-as it should be.  But there is still an issue.  The dot product of two
-vectors is not exactly the cosine of the angle &theta; between them;
-it's <i>proportional</i> to the cosine.  Given two vectors u and v,
-the exact value of dot(u,v) is
-cos(&theta)&middot;length(u)&middot;length(v), where length(u) is the
-length of the vector u, i.e., its Euclidean distance from the origin.
-If we want the dot product to exactly equal the cosine, we need
-to <i>normalize</i> the vectors so they have length 1.  We do this by
-dividing the coordinates of each vector by the length of the vector,
-i.e., given a vector [x, y] with length r = sqrt(x<sup>2</sup> +
-y<sup>2</sup>), we can construct a <i>unit vector</i> pointing in the
-same direct but with length 1 as [x/r, y/r].<p/>
+Now the angle between the "boy" and "child" vectors is much smaller
+than the angle between "boy" and "adult", as it should be because
+"boy" and "child" only differ by 4 in their gender coordinates,
+whereas "boy" and "adult" differ both by 4 in their gender coordinates
+and by 5 in their age coordinates.  But there is still an issue.  The
+dot product of two vectors is not exactly the cosine of the angle
+&theta; between them; it's <i>proportional</i> to the cosine.  Given
+two vectors u and v, the exact value of u&middot;v is
+cos(&theta;)&middot;||u||&middot;||v||, where ||u|| is the length of
+the vector u, i.e., its Euclidean distance from the origin.  If we
+want the dot product to exactly equal the cosine, we need
+to <i>normalize</i> the vectors so that they have length 1.  We do
+this by dividing the coordinates of each vector by the length of the
+vector, i.e., given a vector u&nbsp=&nbsp;[x, y] with length ||u|| =
+sqrt(x<sup>2</sup> + y<sup>2</sup>), we can construct a <i>unit
+vector</i> pointing in the same direct but with a length of 1 as
+u/||u|| or [x/||u||, y/||u||].<p/>
 
 Here is what the points look like when we convert them to unit vectors,
 so they all lie on a circle of radius 1:<p/>
@@ -319,7 +329,101 @@ product is exactly what a neuron in a neural net computes: it takes
 the dot product of its weight vector with its input vector.<p>
 
 <h5> How Word Embeddings Are Created </h5>
-By magic.
+
+There are a variety of algorithms for constructing word embeddings.
+Here we describe one of the first ones, called Skip-gram with Negative
+Sampling (SGNS).<p/>
+
+<b>Step 1</b>: Assemble a text corpus.  We might choose Wikipedia
+articles, or a collection of news stories, or the complete works of
+Shakespeare.  The corpus determines the vocabulary we have to work
+with and the co-occurrence statistics of words, since different
+writing styles will use words differently.<p/>
+
+<b>Step 2</b>: Choose a vocabulary size M.  A large corpus could
+contain one million distinct words if we include person names and
+place names.  Many of those words will occur infrequently.  To keep
+the embedding task manageable we might decide to keep only the highest
+frequency words, e.g., we might choose the 50,000 words that occur
+most frequently in the corpus.  Filtering out the lowest-frequency
+words also eliminates typos, e.g., "graet" should probably have been
+"great", "grate", or "greet".  At this stage we also need to decide
+how to handle punctuation, contractions, subscripts and superscripts,
+special characters such as Greek letters or trademark symbols, and
+alternative capitalizations.<p/>
+
+<b>Step 3</b>: Choose a context window size C.  If we use a context
+window of size C=2 we will look at five-word chunks.  That is, for
+each word in the corpus we will treat the 2 words to the left of it
+and the 2 words to the right of it as its context.<p/>
+
+<b>Step 4</b>: Assemble a co-occurrence dictionary.  By proceeding one
+word at a time through the corpus and looking C words back and C words
+ahead, we can determine, for every target word, which words occur in
+its context.  For example, with C=2, given the text "Thou shalt not
+make a machine in the likeness of a human mind", the co-occurrence
+dictionary would look like this:<p/>
+
+<table class="my_embedding_dict">
+  <tbody>
+    <tr><td>thou</td> <td>shalt, not</td></tr>
+    <tr><td>shalt</td>      <td>thou, not, make</td></tr>
+    <tr><td>not</td>        <td>thou, shalt, make, a</td></tr>
+    <tr><td>make</td>       <td>shalt, not, a, machine</td></tr>
+    <tr><td>a</td>          <td>not, make, machine, in, image, of, human, mind</td></tr>
+    <tr><td>machine</td>    <td>make, a, in, the</td></tr>
+    <tr><td>in</td>         <td>a, machine, the, image</td></tr>
+    <tr><td>the</td>        <td>machine, in, image, of</td></tr>
+    <tr><td>image</td>      <td>in, the, of, a</td></tr>
+    <tr><td>of</td>         <td>the, image, a, human</td></tr>
+    <tr><td>human</td>      <td>of, a, mind</td></tr>
+    <tr><td>mind</td>       <td>a, human</td></tr>
+  </tbody>
+</table><p/>
+
+Notice that the word "a" occurs twice in the corpus.  Its contexts are
+combined in the dictionary.  In practice the corpus would be much
+larger than this, with every word would appearing multiple times,
+making for a much richer context.<p/>
+
+<b>Step 5</b>: Choose an embedding size N so that each word will be
+represented by a list of N numbers.  A typical value for N is 300,
+although small embeddings might use only 100 numbers per word, while
+large ones could use 700 or more.  Larger values of N can encode more
+information, but the embedding takes longer to compute and more memory
+to store.<p/>
+
+<b>Step 6</b>: Make two tables each containing M rows and N columns.
+Each row represents a word.  For example, if we have a 50,000 word
+vocabulary and are constructing 300-element embeddings, the table
+would be of size 50,000&nbsp;&times;&nbsp;300.  One table, E, is for
+the target words we're trying to embed.  The second table, U, is for
+words when they are used as context words.  Initialize both tables
+with small random numbers.<p/>
+
+<b>Step 7</b>: This is the training process.  Slide a window of size
+2C+1 over the entire training corpus, shifting it by one word each
+time.  For each target word t in the middle slot of the window, look
+up its vector <b>e</b> in the embedding table E.  For each context
+word u occurring in some other slot of the window, look up its
+vector <b>u</b> in the context table U.  Compute the dot
+product <b>e&middot;u</b> and run the result through a non-linear
+squashing function (called the "sigmoid" or "logistic" function) that
+produces an output value between 0 and 1.  If the output is less than
+1, make a tiny adjustment to the vectors <b>e</b> and <b>u</b> using a
+technique called <i>gradient descent learning</i>; this technique is
+also used to train neural networks.  Repeat the process for all the
+context words.  These are the positive examples.  We also need some
+negative examples.  Choose 5 to 10 vocabulary words at random that our
+dictionary indicates <i>never</i> appear in the context of the target
+word.  Apply the same procedure as above, except now we want the value
+of the squashed dot product to be 0 rather than 1.  Make tiny
+adjustments to the embedding and context vectors accordingly.  We
+repeat this process, making a pass through the entire{ corpus, between
+3 and 50 times.<p/>
+
+<b>Step 8</b>: The embedding table E now contains the desired
+embeddings.  The context table U can be discarded.<p/>
 
 <h5> Additional Resources </h5>
 

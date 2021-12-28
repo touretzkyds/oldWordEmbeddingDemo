@@ -1,10 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Experiments</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css">
+  <link rel="stylesheet" href="tutexp-styles.css">
+  <style type="text/css">
+    tr { padding: 0px; }
+  </style>
+  <meta charset="UTF-8">
+    <title>Word Embedding Demo: Experiments</title>
 </head>
-<body>
+
+<body class="center-content" style="margin-right: 50px; margin-left: 50px; max-width: 992px;">
+
+<h2 style="text-align: center;">Word Embedding Demo: Experiments</h2>
+
+<center>
+  Navigation: <a href="../index.html">Return to Demo</a> or <a href="tutorial.html">View Tutorial</a><p/>
+</center><p/>
+
+<h5> Basic Exploration </h5>
+
+The left half of the demo window is the 3D point plot.  The right half
+is the semantic feature vector display.  At the bottom of the window
+there are some expandable panels that can be opened to reveal more
+advanced features.<p/>
+
+<ul>
+  <li> <b>Explore the 3D point plot:</b> Click and drag in the point
+    plot to rotate the view.  Use the scroll wheel to zoom in or out.
+    Hold down the control key and click and drag to pan the view.<p/>
+
+  <li> <b>Find closest words:</b> Put the mouse pointer over a word in
+    the 3D plot.  A window will pop up showing the 10 closest words to
+    this one.<p/>
+
+  <li> <b>Explore the feature vector display:</b> The feature vector
+    display shows the embedding vectors for up to six selected words.
+    Drag the mouse over the colored bars in the display and you can
+    read out the exact value of each bar.  The current column the
+    mouse is over is magnified and shown to the left of the main
+    display.  Column 126 correlates with gender; it is tan/orange for
+    male words and gray/blue for female words.<p/>
+
+</ul>
+
+
+
+<center>
+  Navigation: <a href="../index.html">Return to Demo</a> or <a href="tutorial.html">View Tutorial</a><p/>
+</center><p/>
 
 </body>
 </html>

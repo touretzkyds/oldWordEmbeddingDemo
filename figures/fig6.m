@@ -4,7 +4,7 @@ xc = nan;
 yc = nan;
 
 for i = 1 : length(words)
-  if strcmp(words{i,3}, 'child')
+  if strcmp(words{i,3}, 'boy')
     xc = words{i,1};
     yc = words{i,2};
     break
@@ -23,6 +23,6 @@ end
 
 xlabel('Gender', 'Fontsize', 15)
 ylabel('Age', 'Fontsize', 15)
-title("Distance From 'child'", 'FontSize', 20)
+title("Distance From 'boy'", 'FontSize', 20)
 
 savefigure("fig6.png")
