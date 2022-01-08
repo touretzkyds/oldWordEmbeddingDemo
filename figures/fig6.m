@@ -23,6 +23,6 @@ end
 
 xlabel('Gender', 'Fontsize', 15)
 ylabel('Age', 'Fontsize', 15)
-title("Distance From 'boy'", 'FontSize', 20)
+title("Vectors From 'boy'", 'FontSize', 20)
 
 savefigure("fig6.png")

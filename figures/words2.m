@@ -11,3 +11,6 @@ w_grandfather = {1, 9, 'grandfather'};
 
 words = [w_man; w_woman; w_boy; w_girl; ...
 	      w_adult; w_child; w_infant; w_grandfather];
+
+words = [w_grandfather; w_man; w_adult; w_woman; ...
+         w_boy; w_child; w_girl; w_infant ];

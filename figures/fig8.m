@@ -36,6 +36,7 @@ for i = 1:length(centered_words)
     this_textoffset = -textoffset;
   end
   dot2({x/r, y/r, word}, this_textoffset)
+  printf('%12s  %8.4f  %8.4f\n', word, x/r, y/r)
   ro = 1 - unit2doffset;
   xo = ro * cos(theta);
   yo = ro * sin(theta);

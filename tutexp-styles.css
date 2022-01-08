@@ -8,7 +8,6 @@ ul.fixed li {
   list-style-type: initial;
 }
 
-
 h5 { text-align: left; }
 
 .mytable {
@@ -23,7 +22,26 @@ tr.myred { color: red; }
 tr.mygreen { color: green; }
 .mytable tr td:nth-child(1) { color: initial }
 .mytable td { padding: 0 10px 0 10px; margin: 0; }
-.mytable td:nth-child(1) { text-align: right; }
+.mytable td { text-align: right; }
+
+.mytable th { font-weight: bolder; text-align: center; }
+.mytable th[colspan]:not([colspan="1"]) { border: 0; padding: 0; }
+
+#distance td:nth-child(2) { text-align: left }
+
+.twofer {
+  table-layout: fixed;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  width: auto;
+}
+
+.twofer tr {
+  padding: 0 0 0 0;
+  margin: 0 0 0 0;
+  border: 0 0 0 0;
+}
 
 .my_embedding_dict {
   table-layout: fixed;

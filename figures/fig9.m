@@ -45,6 +45,7 @@ hs=surf(shrink*cos(theta).*sin(phi), shrink*sin(theta).*sin(phi), shrink*cos(phi
 for i = 1 : length(words)
   [y,z,x] = centered_words{i,1:3};
   word = centered_words{i,4};
+  printf('%12s  %8.4f  %8.4f  %8.4f\n', word, y, z, x)
   plot3(x, y, z, 'o', 'MarkerFaceColor', [0.2 0.2 1], 'MarkerEdgeColor', [0.2 0.2 1])
   text(x-0.05, y+0.0, z+0.1, word, 'FontSize', 12)
   quiver3(0, 0, 0, x, y, z, 1, 'MaxHeadSize', 0.1)

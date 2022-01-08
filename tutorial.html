@@ -15,7 +15,7 @@
 <h2 style="text-align: center;">Word Embedding Demo: Tutorial</h2>
 
 <center>
-  Navigation: <a href="../index.html">Return to Demo</a> or <a href="experiments.html">View Experiments</a><p/>
+  Navigation: <a href="./index.html">Return to Demo</a> or <a href="experiments.html">View Experiments</a><p/>
 </center><p/>
 
 <h5> Semantic Feature Space </h5>
@@ -35,6 +35,10 @@
   then we can assign coordinates to each word:</p>
 
 <table class="mytable">
+  <thead>
+    <tr><th colspan=5>Word Coordinates</th></tr>
+    <tr><th/><th colspan=2>Gender</th><th>Age</th><th/></tr>
+  </thead>
   <tbody>
     <tr><td> man </td>   <td>[</td> <td> 1, </td> <td> 7 </td> <td>]</td></tr>
     <tr><td> woman </td> <td>[</td> <td> 9, </td> <td> 7 </td> <td>]</td></tr>
@@ -47,19 +51,31 @@ We can add new words to the plot based on their meanings.  For
 example, where should the words "adult" and "child" go?  How about
 "infant"?  Or "grandfather"?<p/>
 
-  <img src="figures/fig2.png" width=600><p/>
+<table class="twofer">
+  <tr>
+    <td>
+      <img src="figures/fig2.png" width=600>
+    </td>
 
-<table class="mytable">
-  <tbody>
-    <tr><td> man </td>         <td>[</td> <td> 1, </td> <td> 7 </td> <td>]</td></tr>
-    <tr><td> woman </td>       <td>[</td> <td> 9, </td> <td> 7 </td> <td>]</td></tr>
-    <tr><td> boy </td>         <td>[</td> <td> 1, </td> <td> 2 </td> <td>]</td></tr>
-    <tr><td> girl </td>        <td>[</td> <td> 9, </td> <td> 2 </td> <td>]</td></tr>
-    <tr><td> adult </td>       <td>[</td> <td> 5, </td> <td> 7 </td> <td>]</td></tr>
-    <tr><td> child </td>       <td>[</td> <td> 5, </td> <td> 2 </td> <td>]</td></tr>
-    <tr><td> infant </td>      <td>[</td> <td> 5, </td> <td> 1 </td> <td>]</td></tr>
-    <tr><td> grandfather </td> <td>[</td> <td> 1, </td> <td> 9 </td> <td>]</td></tr>
-  </tbody>
+    <td>
+      <table class="mytable" style="margin: 0;">
+	<thead>
+	  <tr><th colspan=5>Word Coordinates</th></tr>
+	  <tr><th/><th colspan=2>Gender</th><th>Age</th><th/></tr>
+	</thead>
+	<tbody>
+	  <tr><td> grandfather </td> <td>[</td> <td> 1, </td> <td> 9 </td> <td>]</td></tr>
+	  <tr><td> man </td>         <td>[</td> <td> 1, </td> <td> 7 </td> <td>]</td></tr>
+	  <tr><td> adult </td>       <td>[</td> <td> 5, </td> <td> 7 </td> <td>]</td></tr>
+	  <tr><td> woman </td>       <td>[</td> <td> 9, </td> <td> 7 </td> <td>]</td></tr>
+	  <tr><td> boy </td>         <td>[</td> <td> 1, </td> <td> 2 </td> <td>]</td></tr>
+	  <tr><td> child </td>       <td>[</td> <td> 5, </td> <td> 2 </td> <td>]</td></tr>
+	  <tr><td> girl </td>        <td>[</td> <td> 9, </td> <td> 2 </td> <td>]</td></tr>
+	  <tr><td> infant </td>      <td>[</td> <td> 5, </td> <td> 1 </td> <td>]</td></tr>
+	</tbody>
+      </table>
+    </td>
+  </tr>
 </table><p/>
 
 <b>Exercise</b>: how would you represent the words "grandmother",
@@ -72,29 +88,41 @@ they don't mean the same thing.  In order to distinguish "man" from "king",
 in which they differ.  Let's call it "royalty".  Now we have to plot the points
 in a 3-dimensional space:<p/>
 
-  <img src="figures/fig3.png" width=600><p/>
+<table class="twofer">
+  <tr>
+    <td>
+      <img src="figures/fig3.png" width=600><p/>
+    </td>
 
-Each word has three coordinate values: age, gender, and royalty.  We call
-these lists of numbers <i>vectors</i>.  Since they represent the values of
-semantic features, we can also call them <i>feature vectors</i>.<p/>
-
-<table class="mytable">
-    <tbody>
-      <tr><td> man </td>         <td>[</td> <td> 1, </td> <td> 7, </td> <td> 0 </td> <td>]</td></tr>
-      <tr><td> woman </td>       <td>[</td> <td> 9, </td> <td> 7, </td> <td> 0 </td> <td>]</td></tr>
-      <tr><td> boy </td>         <td>[</td> <td> 1, </td> <td> 2, </td> <td> 0 </td> <td>]</td></tr>
-      <tr><td> girl </td>        <td>[</td> <td> 9, </td> <td> 2, </td> <td> 0 </td> <td>]</td></tr>
-      <tr><td> king </td>        <td>[</td> <td> 1, </td> <td> 8, </td> <td> 8 </td> <td>]</td></tr>
-      <tr><td> queen </td>       <td>[</td> <td> 9, </td> <td> 7, </td> <td> 8 </td> <td>]</td></tr>
-      <tr><td> prince </td>      <td>[</td> <td> 1, </td> <td> 2, </td> <td> 8 </td> <td>]</td></tr>
-      <tr><td> princess </td>    <td>[</td> <td> 9, </td> <td> 2, </td> <td> 8 </td> <td>]</td></tr>
-    </tbody>
+    <td>
+      <table class="mytable" style="margin: 0;">
+	<thead>
+	  <tr><th colspan=6>Word Coordinates</th></tr>
+	  <tr><th/><th colspan=2>Gender</th><th>Age</th><th colspan=2>Royalty</th></tr>
+	</thead>
+	<tbody>
+	  <tr><td> man </td>         <td>[</td> <td> 1, </td> <td> 7, </td> <td> 1 </td> <td>]</td></tr>
+	  <tr><td> woman </td>       <td>[</td> <td> 9, </td> <td> 7, </td> <td> 1 </td> <td>]</td></tr>
+	  <tr><td> boy </td>         <td>[</td> <td> 1, </td> <td> 2, </td> <td> 1 </td> <td>]</td></tr>
+	  <tr><td> girl </td>        <td>[</td> <td> 9, </td> <td> 2, </td> <td> 1 </td> <td>]</td></tr>
+	  <tr><td> king </td>        <td>[</td> <td> 1, </td> <td> 8, </td> <td> 8 </td> <td>]</td></tr>
+	  <tr><td> queen </td>       <td>[</td> <td> 9, </td> <td> 7, </td> <td> 8 </td> <td>]</td></tr>
+	  <tr><td> prince </td>      <td>[</td> <td> 1, </td> <td> 2, </td> <td> 8 </td> <td>]</td></tr>
+	  <tr><td> princess </td>    <td>[</td> <td> 9, </td> <td> 2, </td> <td> 8 </td> <td>]</td></tr>
+	</tbody>
+      </table>
+    </td>
+    </tr>
 </table></p>
 
-Notice that we've assigned "king" a slightly higher age value (8) than
-"queen" (7).  Perhaps it's because we've read lots of stories about
-very old kings (think King Lear), but not so many about very old
-queens.  Feature values don't have to be perfectly symmetrical.
+Each word has three coordinate values: age, gender, and royalty.  We
+call these lists of numbers <i>vectors</i>.  Since they represent the
+values of semantic features, we can also call them <i>feature
+vectors</i>.  Notice that we've assigned "king" a slightly higher age
+value (8) than "queen" (7).  Perhaps it's because we've read lots of
+stories about very old kings (think King Lear), but not so many about
+very old queens.  Feature values don't have to be perfectly
+symmetrical.
 
 <h5> Uses of Semantic Feature Vectors </h5>
 
@@ -109,25 +137,30 @@ features (gender, age, and royalty).  But this is a crude way to
 measure similarity.  A better way, since each word is represented by
 coordinate values, is to compute the Euclidean distance between those
 points, which can be done using the Pythagorean theorem.  We won't go
-into the details here, but if we take this approach, the distance
-between "boy" and "girl" is 8, while the distance between "boy" and
-"queen" comes out to 12.37.<p/>
+into the details until later in this document.  But if we do take this
+approach, the distance between "boy" and "girl" turns out to be 8.0,
+while the distance between "boy" and "queen" comes out to 12.37.<p/>
 
+Semantic distance is a way to measure relatedness of words.
 Google's <a href="https://research.google.com/semantris/">Semantris</a>
-game uses feature vector representations to determine which words are
-related to which other words.  But one of the most interesting things
-we can do with feature vectors is solve word analogy problems.
+is a game that uses feature vector representations to determine which
+words or phrases are related to which other words.  It's worth
+exploring.<p/>
+
+An even more interesting thing we can do with semantic feature vectors
+is solve word analogy problems.<p/>
 
 <h5> Analogies By Vector Arithmetic </h5>
 
-Analogies are constructed based on the relationships between words.
-For example, "man is to king as woman is to _____".  To arrive at the
-answer we first find the relationship between man and king by
-caculating "king" - "man".  We do this by subtracting each coordinate
-separately, giving (1 - 1) , (8 - 7), and (8 - 0), or [0, 1, 8].  Then
-we add this to "woman", again treating each coordinate separately,
-meaning (0 + 9), (1 + 7), (8 + 0) or [9, 8, 8].  Finally we find the
-word closest to our result, which is "queen", or [9, 7, 8]. <p/>
+Analogies express the relationships between concepts.  For example,
+"man is to king as woman is to _____".  To arrive at the answer we
+first find the relationship between man and king.  We can do this
+numerically by calculating "king" - "man".  We subtract each
+coordinate separately, giving (1 - 1) , (8 - 7), and (8 - 0), or [0,
+1, 8].  Then we add this to "woman", again treating each coordinate
+separately, meaning (0 + 9), (1 + 7), (8 + 0) or [9, 8, 8].  Finally
+we find the word closest to our result, which is "queen", or [9, 7,
+8]. <p/>
 
 <table class="mytable">
   <tbody>
@@ -152,7 +185,7 @@ closest word:<p/>
 
 Going from two to three semantic features allowed us to represent more
 words, but are three enough?  How can we represent words such as
-"cucumber", "smiled", or "honesty"?  You could think up new semantic
+"cucumber", "smiled", or "honesty"?  We could think up new semantic
 features and move to a four or five or six dimensional space, but that
 still wouldn't be enough.  To represent the complexity of a typical
 50,000 word English vocabulary requires hundreds of features.
@@ -177,21 +210,27 @@ component 126 appears to correlate with gender: it has slightly
 positive values (tan/orange) for the male words and slightly negative
 values (blue/gray) for the female words.<p/>
 
-  <img class="indented" src="figures/gendered-vecs-arrows.png" width=600><p/>
+<img class="indented" src="figures/gendered-vecs-arrows.png" width=600><p/>
+
+This rich semantic space supports many kinds of analogies, such as
+pluralization ("hand" is to "hands" as "foot" is to "feet"), past
+tense ("sing is to sang as eat is to ate"), comparisons ("big" is to
+"small" as "fast" is to "slow"), and even mapping countries to their
+capitals ("France" is to "Paris" as "England" is to "London").<p/>
 
 The most significant application of word embeddings is to encode words
-for use as input to complex neural networks that try to understand
-the meanings of entire sentences, or even paragraphs.  One such class
-of networks are called <i>transformer neural networks</i>.  Two famous
-transformer networks are BERT from Google, which now handles many
-Google searches, and GPT3 from OpenAI.<p/>
+for use as input to complex neural networks that try to understand the
+meanings of entire sentences, or even paragraphs.  One such class of
+networks are called <i>transformer neural networks</i>.  Two famous
+transformer networks are BERT from Google and GPT3 from OpenAI.  BERT
+now handles many Google searches.<p/>
 
 <h5> Measuring Euclidean Distance </h5>
 
 Earlier we looked at ways to measure distance between two words.
 Counting the number of features where they differ is too crude a
 measure because it doesn't distinguish between small value differences
-and large ones.  The alternative we settled on was Euclidean distance.
+and large ones.  The alternative we considered was Euclidean distance.
 We will now explain the formula for calculating this.  But first we
 need to say a little more about vectors.<p/>
 
@@ -206,31 +245,39 @@ space drawn as vectors:<p/>
 <img src="figures/fig5.png" width=600><p/>
 
 We can compare two words by drawing a vector from one to the other and
-measuring its length.  The vector from "child" to "man" can be
-computed by starting with "man" [1,7] and subtracting "child" [5,2],
-giving the vector [-4, 5].  The length of a vector [x, y] is given by
+measuring its length.  The vector from "boy" to "infant" can be
+computed by starting with "infant" [5,1] and subtracting "boy" [1,2],
+giving the vector [4, -1].  The length of a vector [x, y] is given by
 the formula sqrt(x<sup>2</sup> + y<sup>2</sup>), where sqrt is the
-square root function.  This is the Euclidean distance between the
-words.  Here are all the vectors from "boy" to the other words:<p/>
+square root function.  So the vector from "boy" to "infant" has a
+length of sqrt(17), or about 4.12.  This is the Euclidean distance
+between the two words.  Here are the vectors from "boy" to all the
+other words, and their lengths:<p/>
 
-<img src="figures/fig6.png" width=600><p/>
+<table class="twofer">
+  <tr>
+    <td>
+      <img src="figures/fig6.png" width=600><p/>
+    </td>
 
-And here are the Euclidean distances from "boy":
-
-<table class="mytable">
-  <thead>
-    <tr><td colspan=2>Distance from "boy"</td></tr>
-  </thead>
-  <tbody>
-    <tr><td>man</td>     <td>5</td></tr>
-    <tr><td>woman</td>   <td>9.4340</td></tr>
-    <tr><td>boy</td>     <td>0</td></tr>
-    <tr><td>girl</td>    <td>8</td></tr>
-    <tr><td>adult</td>   <td>6.4031</td></tr>
-    <tr><td>child</td>   <td>4</td></tr>
-    <tr><td>infant</td>  <td>4.1231</td></tr>
-    <tr><td>grandfather</td>     <td>7</td></tr>
-  </tbody>
+    <td>
+      <table class="mytable" style="margin: 0;">
+	<thead>
+	  <th colspan=2>Distance from "boy"</th>
+	</thead>
+	<tbody id="distance">
+	  <tr><td>grandfather</td>     <td>7</td></tr>
+	  <tr><td>man</td>     <td>5</td></tr>
+	  <tr><td>adult</td>   <td>6.4031</td></tr>
+	  <tr><td>woman</td>   <td>9.4340</td></tr>
+	  <tr><td>boy</td>     <td>0</td></tr>
+	  <tr><td>child</td>   <td>4</td></tr>
+	  <tr><td>girl</td>    <td>8</td></tr>
+	  <tr><td>infant</td>  <td>4.1231</td></tr>
+	</tbody>
+      </table>
+    </td>
+  </tr>
 </table><p/>
 
 You can see that the closest word to "boy" is "child", but "infant" is
@@ -260,10 +307,34 @@ two vectors.  But in order for this to be a sensible measure of
 similarity, we have to make a slight adjustment to the vectors first.
 Consider the angles between the original vectors:<p/>
 
-<img src="figures/fig5.png" width=600><p/>
+<table class="twofer">
+  <tr>
+    <td>	 
+      <img src="figures/fig5.png" width=600><p/>
+    </td>
 
-In the above diagram, the angle between "boy" (yellow vector) and
-"adult" (purple vector) is small, while the angle between "boy" and
+    <td>
+      <table class="mytable" style="margin: 0;">
+	<thead>
+	  <th colspan=5>Original Word Vectors</th>
+	</thead>
+	<tbody>
+	  <tr><td> grandfather </td> <td>[</td> <td> 1, </td> <td> 9 </td> <td>]</td></tr>
+	  <tr><td> man </td>         <td>[</td> <td> 1, </td> <td> 7 </td> <td>]</td></tr>
+	  <tr><td> adult </td>       <td>[</td> <td> 5, </td> <td> 7 </td> <td>]</td></tr>
+	  <tr><td> woman </td>       <td>[</td> <td> 9, </td> <td> 7 </td> <td>]</td></tr>
+	  <tr><td> boy </td>         <td>[</td> <td> 1, </td> <td> 2 </td> <td>]</td></tr>
+	  <tr><td> child </td>       <td>[</td> <td> 5, </td> <td> 2 </td> <td>]</td></tr>
+	  <tr><td> girl </td>        <td>[</td> <td> 9, </td> <td> 2 </td> <td>]</td></tr>
+	  <tr><td> infant </td>      <td>[</td> <td> 5, </td> <td> 1 </td> <td>]</td></tr>
+	</tbody>
+      </table>
+    </td>
+  </tr>
+</table><p/>
+
+In the above diagram, the angle between "boy" (maroon vector) and
+"adult" (yellow vector) is small, while the angle between "boy" and
 "child" (blue vector) is larger.  But clearly "boy" is closer to
 "child" than to "adult", since "boy" differs only modestly from
 "child" in the gender coordinate, while it differs from "adult" in
@@ -280,7 +351,31 @@ way has no effect on the Euclidean distance measure because all points
 are shifted by the same amount.  But it dramatically affects the dot
 product.  The result looks like this:<p/>
 
-<img src="figures/fig7.png" width=600><p/>
+<table class="twofer">
+  <tr>
+    <td>	 
+      <img src="figures/fig7.png" width=600><p/>
+    </td>
+
+    <td>
+      <table class="mytable" style="margin: 0;">
+	<thead>
+	  <th colspan=5>Zero-Mean 2D Vectors</th>
+	</thead>
+	<tbody>
+	  <tr><td> grandfather </td> <td>[</td> <td> -3.500, </td> <td> 4.375 </td> <td>]</td></tr>
+	  <tr><td> man </td>         <td>[</td> <td> -3.500, </td> <td> 2.375 </td> <td>]</td></tr>
+	  <tr><td> adult </td>       <td>[</td> <td>  0.500, </td> <td> 2.375 </td> <td>]</td></tr>
+	  <tr><td> woman </td>       <td>[</td> <td>  4.500, </td> <td> 2.375 </td> <td>]</td></tr>
+	  <tr><td> boy </td>         <td>[</td> <td> -3.500, </td> <td> -2.625 </td> <td>]</td></tr>
+	  <tr><td> child </td>       <td>[</td> <td>  0.500, </td> <td> -2.625 </td> <td>]</td></tr>
+	  <tr><td> girl </td>        <td>[</td> <td>  4.500, </td> <td> -2.625 </td> <td>]</td></tr>
+	  <tr><td> infant </td>      <td>[</td> <td>  0.500, </td> <td> -3.625 </td> <td>]</td></tr>
+	</tbody>
+      </table>
+    </td>
+  </tr>
+</table><p/>
 
 Now the angle between the "boy" and "child" vectors is much smaller
 than the angle between "boy" and "adult", as it should be because
@@ -303,7 +398,31 @@ u/||u|| or [x/||u||, y/||u||].<p/>
 Here is what the points look like when we convert them to unit vectors,
 so they all lie on a circle of radius 1:<p/>
 
-<img src="figures/fig8.png" width=600><p/>
+<table class="twofer">
+  <tr>
+    <td>
+      <img src="figures/fig8.png" width=600><p/>
+    </td>
+
+    <td>
+      <table class="mytable" style="margin: 0;">
+	<thead>
+	  <th colspan=5>Zero-Mean 2D Unit Vectors</th>
+	</thead>
+	<tbody>
+	  <tr><td> grandfather </td> <td>[</td> <td> -0.6247, </td> <td>  0.7809 </td> <td>]</td></tr>
+	  <tr><td> man </td>         <td>[</td> <td> -0.8275, </td> <td>  0.5615 </td> <td>]</td></tr>
+	  <tr><td> adult </td>       <td>[</td> <td>  0.2060, </td> <td>  0.9785 </td> <td>]</td></tr>
+	  <tr><td> woman </td>       <td>[</td> <td>  0.8844, </td> <td>  0.4668 </td> <td>]</td></tr>
+	  <tr><td> boy </td>         <td>[</td> <td> -0.8000, </td> <td> -0.6000 </td> <td>]</td></tr>
+	  <tr><td> child </td>       <td>[</td> <td>  0.1871, </td> <td> -0.9823 </td> <td>]</td></tr>
+	  <tr><td> girl </td>        <td>[</td> <td>  0.8638, </td> <td> -0.5039 </td> <td>]</td></tr>
+	  <tr><td> infant </td>      <td>[</td> <td>  0.1366, </td> <td> -0.9906 </td> <td>]</td></tr>
+	</tbody>
+      </table>
+    </td>
+  </tr>
+</table><p/>
 
 The dot product and Euclidean distance measures produce results that
 are similar but not identical.  For example, based on Euclidean
@@ -318,7 +437,37 @@ normalization technique applies to higher dimensional vectors, e.g.,
 for three-dimensional semantic vectors, the points lie on the surface
 of a unit sphere (a sphere with radius 1), as shown below:<p/>
 
-<img src="figures/fig9.png" width=600><p/>
+<table class="twofer">
+  <tr>
+    <td>	 
+      <img src="figures/fig9.png" style="width:500px; height:500px; object-fit:cover; object-position: 30% 0;"><p/>
+    </td>
+
+    <td>
+      <table class="mytable" style="margin: 0;">
+	<thead>
+	  <tr><th colspan=6>Zero-Mean 3D Unit Vectors</th></tr>
+	  <tr><th/><th/><th>Gender</th><th style="text-align:center">Age</th><th>Royalty</th><th/></tr>
+	</thead>
+	<tbody>
+	  <tr><td> grandfather </td> <td>[</td> <td> -0.5426, </td> <td>  0.6412, </td> <td> -0.5426 </td> <td>]</td></tr>
+	  <tr><td> man </td>         <td>[</td> <td> -0.7191, </td> <td>  0.4576, </td> <td> -0.5230 </td> <td>]</td></tr>
+	  <tr><td> woman </td>       <td>[</td> <td>  0.7741, </td> <td>  0.4168, </td> <td> -0.4764 </td> <td>]</td></tr>
+	  <tr><td> boy </td>         <td>[</td> <td> -0.6971, </td> <td> -0.5070, </td> <td> -0.5070 </td> <td>]</td></tr>
+	  <tr><td> girl </td>        <td>[</td> <td>  0.7543, </td> <td> -0.4642, </td> <td> -0.4642 </td> <td>]</td></tr>
+	  <tr><td> king </td>        <td>[</td> <td> -0.5570, </td> <td>  0.5064, </td> <td>  0.6583 </td> <td>]</td></tr>
+	  <tr><td> monarch </td>     <td>[</td> <td>  0.0676, </td> <td>  0.4730, </td> <td>  0.8785 </td> <td>]</td></tr>
+	  <tr><td> queen </td>       <td>[</td> <td>  0.6608, </td> <td>  0.3558, </td> <td>  0.6608 </td> <td>]</td></tr>
+	  <tr><td> prince </td>      <td>[</td> <td> -0.5846, </td> <td> -0.4252, </td> <td>  0.6909 </td> <td>]</td></tr>
+	  <tr><td> princess </td>    <td>[</td> <td>  0.6484, </td> <td> -0.3990, </td> <td>  0.6484 </td> <td>]</td></tr>
+	  <tr><td> child </td>       <td>[</td> <td>  0.0733, </td> <td> -0.5866, </td> <td> -0.8066 </td> <td>]</td></tr>
+	  <tr><td> infant </td>      <td>[</td> <td>  0.0642, </td> <td> -0.7057, </td> <td> -0.7057 </td> <td>]</td></tr>
+	</tbody>
+      </table>
+&nbsp;<p/>
+    </td>
+    </tr>
+</table></p>
 
 Dot product is preferred to Euclidean distance for two reasons.
 First, dot product requires fewer arithmetic operations.  For
@@ -383,8 +532,8 @@ dictionary would look like this:<p/>
 
 Notice that the word "a" occurs twice in the corpus.  Its contexts are
 combined in the dictionary.  In practice the corpus would be much
-larger than this, with every word would appearing multiple times,
-making for a much richer context.<p/>
+larger than this, with every word appearing multiple times, making for
+a much richer context.<p/>
 
 <b>Step 5</b>: Choose an embedding size N so that each word will be
 represented by a list of N numbers.  A typical value for N is 300,
@@ -415,11 +564,11 @@ technique called <i>gradient descent learning</i>; this technique is
 also used to train neural networks.  Repeat the process for all the
 context words.  These are the positive examples.  We also need some
 negative examples.  Choose 5 to 10 vocabulary words at random that our
-dictionary indicates <i>never</i> appear in the context of the target
-word.  Apply the same procedure as above, except now we want the value
-of the squashed dot product to be 0 rather than 1.  Make tiny
-adjustments to the embedding and context vectors accordingly.  We
-repeat this process, making a pass through the entire{ corpus, between
+context dictionary indicates <i>never</i> appear in the context of the
+target word.  Apply the same procedure as above, except now we want
+the value of the squashed dot product to be 0 rather than 1.  Make
+tiny adjustments to the embedding and context vectors accordingly.  We
+repeat this process, making a pass through the entire corpus, between
 3 and 50 times.<p/>
 
 <b>Step 8</b>: The embedding table E now contains the desired
@@ -439,7 +588,7 @@ embeddings.  The context table U can be discarded.<p/>
 </ul><p/>
 
 <center>
-  Navigation: <a href="../index.html">Return to Demo</a> or <a href="experiments.html">View Experiments</a><p/>
+  Navigation: <a href="./index.html">Return to Demo</a> or <a href="experiments.html">View Experiments</a><p/>
 </center><p/>
 
 </body>
