@@ -592,6 +592,8 @@ class Demo {
         // write arithmetic vectors to vector view (#14)
         this.vectorWords = [wordB, wordA, wordBMinusA, wordC, wordY, wordWstar].reverse();
         this.plotVector();
+        this.formatMagnitudePlot("arithmetic"); // update the values of tick labels of magnitude plot
+        this.plotMagnify(false);
     }
 
 
