@@ -92,7 +92,7 @@ class Demo {
         this.selectedFeatureNames = ["[gender]", "[age]"];
 
         // default settings for magnify plot vector display numbers (#36)
-        this.plotMagnifyTitle = "Magnitudes";
+        this.plotMagnifyTitle = "";
         this.plotMagnifyTicks = "";
         this.plotMagnifyShowTicks = false;
     }
@@ -480,8 +480,10 @@ class Demo {
             },
             yaxis: {
                 title: "",
+                side: "right",
                 tickvals: d3.range(this.vectorWords.length),
                 ticktext: this.plotMagnifyTickText,
+                ticks: this.plotMagnifyShowTicks ? this.plotMagnifyShowTicks : "",
                 showticklabels: this.plotMagnifyShowTicks,
                 fixedrange: true,
             },
@@ -766,7 +768,7 @@ class Demo {
             this.plotMagnifyShowTicks = true;        
         }
         else {
-            this.plotMagnifyTitle = "Magnitude";
+            this.plotMagnifyTitle = "";
             this.plotMagnifyTickText = "";
             this.plotMagnifyShowTicks = false;        
         }
