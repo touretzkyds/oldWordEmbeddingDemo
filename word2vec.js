@@ -407,7 +407,7 @@ class Demo {
         const layout = {
             title: {text: "Vector visualization"},
             xaxis: {
-                title: "Vector dimension",
+                title: "Feature index",
                 dtick: 10,
                 zeroline: false,
                 fixedrange: true
