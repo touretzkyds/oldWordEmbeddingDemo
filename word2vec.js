@@ -387,8 +387,8 @@ class Demo {
         const z = this.vectorWords.map(word => this.vecs.get(word));
 
         // improve hover output format of vector display (#41)
-        const hovertemplate = 'item: %{y}' +
-                '<br>dim: %{x}' +
+        const hovertemplate = 'word: %{y}' +
+                '<br>index: %{x}' +
                 '<br>value: %{z}' +
                 '<extra></extra>'; // removes trace name tag from second box of hovertemplate
         
