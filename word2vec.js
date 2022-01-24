@@ -92,7 +92,7 @@ class Demo {
         this.selectedFeatureNames = ["[gender]", "[age]"];
 
         // default settings for magnify plot vector display numbers (#36)
-        this.plotMagnifyTitle = "Magnitudes";
+        this.plotMagnifyTitle = "";
         this.plotMagnifyTicks = "";
         this.plotMagnifyShowTicks = false;
     }
@@ -386,6 +386,12 @@ class Demo {
         // heatmap plots matrix of values in z
         const z = this.vectorWords.map(word => this.vecs.get(word));
 
+        // improve hover output format of vector display (#41)
+        const hovertemplate = 'item: %{y}' +
+                '<br>dim: %{x}' +
+                '<br>value: %{z}' +
+                '<extra></extra>'; // removes trace name tag from second box of hovertemplate
+        
         const data = [
             {
                 // can't use y: this.vectorWords since the heatmap won't display duplicate words
@@ -393,7 +399,8 @@ class Demo {
                 zmin: this.HEATMAP_MIN,
                 zmax: this.HEATMAP_MAX,
                 type: "heatmap",
-                ygap: 5
+                ygap: 5,
+                hovertemplate: hovertemplate
             }
         ];
 
@@ -473,8 +480,10 @@ class Demo {
             },
             yaxis: {
                 title: "",
+                side: "right",
                 tickvals: d3.range(this.vectorWords.length),
                 ticktext: this.plotMagnifyTickText,
+                ticks: this.plotMagnifyShowTicks ? this.plotMagnifyShowTicks : "",
                 showticklabels: this.plotMagnifyShowTicks,
                 fixedrange: true,
             },
@@ -583,6 +592,10 @@ class Demo {
         // write arithmetic vectors to vector view (#14)
         this.vectorWords = [wordB, wordA, wordBMinusA, wordC, wordY, wordWstar].reverse();
         this.plotVector();
+        
+        // update the values of tick labels of magnitude plot (#36)
+        this.formatMagnitudePlot("arithmetic"); 
+        this.plotMagnify(false);
     }
 
 
@@ -759,7 +772,7 @@ class Demo {
             this.plotMagnifyShowTicks = true;        
         }
         else {
-            this.plotMagnifyTitle = "Magnitude";
+            this.plotMagnifyTitle = "";
             this.plotMagnifyTickText = "";
             this.plotMagnifyShowTicks = false;        
         }
@@ -805,6 +818,7 @@ class Demo {
         // plot new plots for the first time
         this.plotScatter(true);
         this.plotVector(true);
+        this.processFeatureInput(); // processes words from selected semantic dimensions when the page loads (#45)
     }
 }
 
