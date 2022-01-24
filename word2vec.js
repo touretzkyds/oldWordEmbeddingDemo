@@ -48,8 +48,8 @@ class Demo {
         // lists of word pairs to be used for creating features
         this.featureWordsPairs = [
             [
-                ["man",  "king",   "prince",  "husband", "father", "son",     "uncle", "nephew", "boy",  "male"],
-                ["woman", "queen", "princess", "wife",   "mother", "daughter", "aunt", "niece", "girl", "female"]
+                ["his",   "prince",  "husband", "father", "son",     "uncle", "nephew", "boy",  "male"],
+                ["her", "princess", "wife",   "mother", "daughter", "aunt", "niece", "girl", "female"]
             ],
             [
                 ["man", "woman", "king",  "queen",   "father", "mother",  "uncle",   "aunt"],
@@ -592,7 +592,9 @@ class Demo {
         // write arithmetic vectors to vector view (#14)
         this.vectorWords = [wordB, wordA, wordBMinusA, wordC, wordY, wordWstar].reverse();
         this.plotVector();
-        this.formatMagnitudePlot("arithmetic"); // update the values of tick labels of magnitude plot
+        
+        // update the values of tick labels of magnitude plot (#36)
+        this.formatMagnitudePlot("arithmetic"); 
         this.plotMagnify(false);
     }
 
@@ -816,6 +818,7 @@ class Demo {
         // plot new plots for the first time
         this.plotScatter(true);
         this.plotVector(true);
+        this.processFeatureInput(); // processes words from selected semantic dimensions when the page loads (#45)
     }
 }
 
