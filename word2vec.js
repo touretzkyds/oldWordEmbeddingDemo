@@ -296,12 +296,12 @@ class Demo {
             
             // actions if user clicks on (ie selects or deselects) a word in scatter plot
             if (clickedWord === this.selectedWord) { // deselect
-                this.highlightVectorAxis(false); // turn off highlight prompt for vector plot
+                this.blinkVectorAxis(false); // turn off blinking prompt for vector plot
                 this.selectedWord = "";
                 this.formatMagnitudePlot("default");
                 console.log("Deselected", clickedWord);
             } else { // select
-                this.highlightVectorAxis(true); // turn on highlight prompt for vector plot
+                this.blinkVectorAxis(true); // turn on blinking prompt for vector plot
                 this.selectedWord = clickedWord;
                 this.formatMagnitudePlot("selection");
                 console.log("Selected", this.selectedWord);
@@ -309,8 +309,7 @@ class Demo {
 
             // replot with new point color
             this.plotScatter();
-            // replot with similarity values
-            this.plotMagnify();
+            this.plotVector(newPlot=false);
         });
 
     } 
@@ -333,8 +332,8 @@ class Demo {
 
         this.vectorWords = new Array(this.VECTOR_DISPLAY_SIZE).fill(this.EMPTY_FEATURE_NAME);
 
-        // stop highlight prompt for vector plot
-        this.highlightVectorAxis(false);
+        // stop blinking prompt for vector plot
+        this.blinkVectorAxis(false);
 
         this.plotScatter();
         this.plotVector();
@@ -373,10 +372,8 @@ class Demo {
                     // modify vector view to show selected word and then deselect
                     this.vectorWords[idx] = this.selectedWord;
                     this.selectedWord = "";
-                    // turn off highlight prompt for vector plot
-                    this.highlightVectorAxis(false);
-                    // blank out magnitude plot labels
-                    this.formatMagnitudePlot("default");
+                    // turn off blinking prompt for vector plot
+                    this.blinkVectorAxis(false);
                     // replot all
                     this.plotScatter();
                     this.plotVector();
@@ -421,7 +418,7 @@ class Demo {
                 ticktext: this.vectorWords,
                 fixedrange: true,
                 tickangle: 60,
-                color: "black"
+                color: this.axis_color
             },
             margin: {t: 30},
         };
@@ -478,8 +475,6 @@ class Demo {
             xaxis: {
                 title: "",
                 dtick: 1,
-                ticks: this.plotMagnifyShowTicks ? this.plotMagnifyShowTicks : "",
-                showticklabels: this.plotMagnifyShowTicks,
                 zeroline: false,
                 fixedrange: true
             },
@@ -721,8 +716,8 @@ class Demo {
         console.log("toggle", element);
             // deselect word if user enters vector arithmetic mode (#37)
             this.selectedWord = ""; 
-            // also turn off highlight prompt for vector plot if user enters vector arithmetic mode (#37)
-            this.highlightVectorAxis(false);
+            // also stop blinking prompt for vector plot if user enters vector arithmetic mode (#37)
+            this.blinkVectorAxis(false);
             this.formatMagnitudePlot("arithmetic")
             if (!element.open) {
                 // on details close, erase analogy object and modify vector plot words as follows -
@@ -748,20 +743,18 @@ class Demo {
     }
 
     // prompt user for copying word into vector plot (#31)
-    highlightVectorAxis(active) { 
-        // select y ticks of vector plot to highlight
-        const yTicks = document.querySelectorAll("#plotly-vector > div > div > svg:nth-child(1) > g.cartesianlayer > g > g.yaxislayer-above > g");
-        if (active) {
-            // draw red rectangles around text as prompt
-            yTicks.forEach((elem) => {
-                elem.style.setProperty("outline", "2px solid red")
-            });
+    blinkVectorAxis(blink) { 
+        // select y ticks of vector plot to blink
+        const yTicks = document.querySelector("#plotly-vector > div > div > svg:nth-child(1) > g.cartesianlayer > g > g.yaxislayer-above");
+        if (blink) {
+            // change axis color for title and ticks, and start blinking ticks
+            this.axis_color = "red";
+            yTicks.style.animation = "blinker 0.8s linear infinite";
         }
         else {
-            // turn off prompt
-            yTicks.forEach((elem) => {
-                elem.style.setProperty("outline", "none")
-            });
+            // reset axis color and blinking
+            this.axis_color = "black";
+            yTicks.style.animation = "none";
         }
     }
 
