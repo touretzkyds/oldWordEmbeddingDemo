@@ -92,9 +92,7 @@ class Demo {
         this.selectedFeatureNames = ["[gender]", "[age]"];
 
         // default settings for magnify plot vector display numbers (#36)
-        this.plotMagnifyTitle = "";
-        this.plotMagnifyTicks = "";
-        this.plotMagnifyShowTicks = false;
+        this.formatMagnitudePlot("default")
     }
 
     // read raw model text and write vectors to vecs and vocab
@@ -461,6 +459,15 @@ class Demo {
         const z = this.vectorWords.map(word =>
             this.vecs.get(word).slice(lo, hi + 1));
 
+        // set axis labels as z if it is null
+        this.plotMagnifyTickText = this.plotMagnifyTickText || z
+        
+        // set hover output format (#48)
+        const hovertemplate = 'word number: %{y:.0f}' +
+                '<br>index: %{x}' +
+                '<br>value: %{z:.2f}' +
+                '<extra></extra>';
+        
         const data = [
             {
                 x: d3.range(lo, hi + 1),
@@ -469,17 +476,19 @@ class Demo {
                 zmax: this.HEATMAP_MAX,
                 type: "heatmap",
                 ygap: 5,
-                showscale: false
+                showscale: false,
+                hovertemplate: hovertemplate,
             }
         ];
 
         const layout = {
-            title: {text: this.plotMagnifyTitle},
+            title: {
+                text: this.plotMagnifyTitle,
+                xanchor: "left",
+            },
             xaxis: {
                 title: "",
                 dtick: 1,
-                ticks: this.plotMagnifyShowTicks ? this.plotMagnifyShowTicks : "",
-                showticklabels: this.plotMagnifyShowTicks,
                 zeroline: false,
                 fixedrange: true
             },
@@ -488,8 +497,6 @@ class Demo {
                 side: "right",
                 tickvals: d3.range(this.vectorWords.length),
                 ticktext: this.plotMagnifyTickText,
-                ticks: this.plotMagnifyShowTicks ? this.plotMagnifyShowTicks : "",
-                showticklabels: this.plotMagnifyShowTicks,
                 fixedrange: true,
             },
             margin: {l: 50, r: 35, t: 30} // get close to main vector view, width increased to accomodate title
@@ -779,8 +786,8 @@ class Demo {
             this.plotMagnifyShowTicks = true;        
         }
         else {
-            this.plotMagnifyTitle = "";
-            this.plotMagnifyTickText = "";
+            this.plotMagnifyTitle = "Value";
+            this.plotMagnifyTickText = null;
             this.plotMagnifyShowTicks = false;        
         }
     }
