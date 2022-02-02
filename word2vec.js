@@ -497,6 +497,7 @@ class Demo {
                 side: "right",
                 tickvals: d3.range(this.vectorWords.length),
                 ticktext: this.plotMagnifyTickText,
+                ticks: "", // hide ticks (#49)
                 fixedrange: true,
             },
             margin: {l: 50, r: 35, t: 30} // get close to main vector view, width increased to accomodate title
