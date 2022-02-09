@@ -401,7 +401,7 @@ class Demo {
                 zmax: this.HEATMAP_MAX,
                 type: "heatmap",
                 ygap: 5,
-                hovertemplate: hovertemplate
+                hovertemplate: hovertemplate,
             }
         ];
 
@@ -460,13 +460,35 @@ class Demo {
             this.vecs.get(word).slice(lo, hi + 1));
 
         // set axis labels as z if it is null
-        this.plotMagnifyTickText = this.plotMagnifyTickText || z
+        this.plotMagnifyTickText = this.plotMagnifyTickText || z.map(row => 
+            row.map(value => 
+                ' ' + String(value.toFixed(2)))); // round off and prefix blank to distance from heatmap 
         
         // set hover output format (#48)
-        const hovertemplate = 'word number: %{y:.0f}' +
-                '<br>index: %{x}' +
-                '<br>value: %{z:.2f}' +
-                '<extra></extra>';
+        // var text = this.vectorWords.map(
+        //     (word, idx) => `word: ${word}` +
+        //     `<br>index: ${idx}` +
+        //     `<br>value: ${z[idx]}`);
+
+        function fill(N, func) {
+            var empty = Array.apply(null, Array(N));
+            return empty.map(func);
+          }
+
+        var x = fill(5, (_, i) => i);
+        var y = fill(10, (_, j) => j);
+        var w = fill(10, () => fill(5, () => Math.random()));
+        var text = this.vectorWords.map((word, i) => {
+                return `
+              word: ${word}<br>
+              index: ${i}<br>
+              value: ${i}
+              `
+              });
+        const round = d3.format(".2f");
+            
+
+        console.log(text);
         
         const data = [
             {
@@ -477,7 +499,8 @@ class Demo {
                 type: "heatmap",
                 ygap: 5,
                 showscale: false,
-                hovertemplate: hovertemplate,
+                text: text,
+                hoverinfo: "text",
             }
         ];
 
