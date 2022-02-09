@@ -522,6 +522,7 @@ class Demo {
                 ticktext: this.plotMagnifyTickText,
                 ticks: "", // hide ticks (#49)
                 fixedrange: true,
+                color: this.plotMagnifyColor,
             },
             margin: {l: 50, r: 35, t: 30} // get close to main vector view, width increased to accomodate title
         };
@@ -802,17 +803,20 @@ class Demo {
             const selectedVector = this.vecs.get(this.selectedWord);
             this.plotMagnifyTitle = "Similarity";
             this.plotMagnifyTickText = this.vectorWords.map(word => this.vecs.get(word).dot(selectedVector).toFixed(2));
-            this.plotMagnifyShowTicks = true;        
+            this.plotMagnifyShowTicks = true; 
+            this.plotMagnifyColor = "red";       
         }
         else if (mode === "arithmetic") {
             this.plotMagnifyTitle = "Magnitude";
             this.plotMagnifyTickText = this.vectorWords.map(word => this.vecs.get(word).norm().toFixed(2));
             this.plotMagnifyShowTicks = true;        
+            this.plotMagnifyColor = "blue";       
         }
         else {
             this.plotMagnifyTitle = "Value";
             this.plotMagnifyTickText = null;
             this.plotMagnifyShowTicks = false;        
+            this.plotMagnifyColor = "black";       
         }
     }
 
