@@ -360,13 +360,13 @@ class Demo {
     updateHeatmapsOnWordClick() {
         // affects all heatmaps since they all have .yaxislayer-above!
         // https://stackoverflow.com/a/47400462
-        console.log("Binding heatmap click event");
+        // console.log("Binding heatmap click event");
 
         d3.selectAll(".yaxislayer-above").selectAll("text")
             .on("click", (d) => {
                 const idx = d.target.__data__.x;
-                console.log("Clicked on", idx);
-                console.log("Using this", this); // should be demo `this`, not d3
+                // console.log("Clicked on", idx);
+                // console.log("Using this", this); // should be demo `this`, not d3
                 if (this.selectedWord) {
                     // modify vector view to show selected word and then deselect
                     this.vectorWords[idx] = this.selectedWord;
@@ -434,7 +434,7 @@ class Demo {
 
             plotly_vector.on("plotly_hover", data => {
                 this.hoverX = data.points[0].x;
-                console.log("Hover " + this.hoverX);
+                // console.log("Hover " + this.hoverX);
                 this.plotMagnify();
             });
 
@@ -473,22 +473,7 @@ class Demo {
         function fill(N, func) {
             var empty = Array.apply(null, Array(N));
             return empty.map(func);
-          }
-
-        var x = fill(5, (_, i) => i);
-        var y = fill(10, (_, j) => j);
-        var w = fill(10, () => fill(5, () => Math.random()));
-        var text = this.vectorWords.map((word, i) => {
-                return `
-              word: ${word}<br>
-              index: ${i}<br>
-              value: ${i}
-              `
-              });
-        const round = d3.format(".2f");
-            
-
-        console.log(text);
+          } 
         
         const data = [
             {
@@ -499,8 +484,6 @@ class Demo {
                 type: "heatmap",
                 ygap: 5,
                 showscale: false,
-                text: text,
-                hoverinfo: "text",
             }
         ];
 
@@ -663,7 +646,7 @@ class Demo {
 
     // handle user submitting feature words into form
     processFeatureInput() {
-        console.log(`this.idx0 = ${this.idx0}, this.idx1 = ${this.idx1}`)
+        // console.log(`this.idx0 = ${this.idx0}, this.idx1 = ${this.idx1}`)
         let selectedNames = [`feature${this.idx0}`, `feature${this.idx1}`] //.user-feature-words.
         // temporary input to be validated
         let featureWordsPairsInput = [Array(2), Array(2)];
@@ -750,23 +733,23 @@ class Demo {
 
     // switch "vector arithmetic mode" (#22)
     handleAnalogyToggle(element) {
-        console.log("toggle", element);
-            // deselect word if user enters vector arithmetic mode (#37)
-            this.selectedWord = ""; 
-            // also turn off highlight prompt for vector plot if user enters vector arithmetic mode (#37)
-            this.highlightVectorAxis(false);
-            this.formatMagnitudePlot("arithmetic")
-            if (!element.open) {
-                // on details close, erase analogy object and modify vector plot words as follows -
-                this.analogy = {};
-                this.formatMagnitudePlot("default")
-                // check 3rd and 5th entry of vectorplot words, if they are hold arithmetic results, erase (#35)
-                for (const i of [1,3]) { // indices corresponding to 5th and 3rd entry
-                    if (this.getEraseRequirement(this.vectorWords[i])){
-                        this.vectorWords[i] = this.EMPTY_FEATURE_NAME;
-                    }
+        // console.log("toggle", element);
+        // deselect word if user enters vector arithmetic mode (#37)
+        this.selectedWord = ""; 
+        // also turn off highlight prompt for vector plot if user enters vector arithmetic mode (#37)
+        this.highlightVectorAxis(false);
+        this.formatMagnitudePlot("arithmetic")
+        if (!element.open) {
+            // on details close, erase analogy object and modify vector plot words as follows -
+            this.analogy = {};
+            this.formatMagnitudePlot("default")
+            // check 3rd and 5th entry of vectorplot words, if they are hold arithmetic results, erase (#35)
+            for (const i of [1,3]) { // indices corresponding to 5th and 3rd entry
+                if (this.getEraseRequirement(this.vectorWords[i])){
+                    this.vectorWords[i] = this.EMPTY_FEATURE_NAME;
                 }
             }
+        }
             // replot so as to reset any active animations (#37)
             this.plotScatter();
             this.plotVector();
