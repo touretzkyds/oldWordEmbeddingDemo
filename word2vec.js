@@ -472,8 +472,14 @@ class Demo {
             `<br>index: ${this.hoverX}` + 
             `<br>value: ${item.toFixed(4)}`
           }));
+          
+        // set right hand side axis tick labels
+        const y2val = z.map((row, i) => row.map((item, j) => {
+            return item.toFixed(2)
+        }));
         
         const data = [
+            // trace for left y-axis
             {
                 x: d3.range(lo, hi + 1),
                 z: z,
@@ -484,30 +490,56 @@ class Demo {
                 showscale: false,
                 text: text,
                 hoverinfo: "text",
+            },
+            // trace for right y-axis (#53)
+            {
+                x: d3.range(lo, hi + 1),
+                z: y2val,
+                zmin: this.HEATMAP_MIN,
+                zmax: this.HEATMAP_MAX,
+                type: "heatmap",
+                yaxis: 'y2',
+                ygap: 5,
+                showscale: false,
+                text: text,
+                hoverinfo: "text",
             }
         ];
 
         const layout = {
-            title: {
-                text: this.plotMagnifyTitle,
-                xanchor: "left",
-            },
+            title: "",
             xaxis: {
                 title: "",
                 dtick: 1,
                 zeroline: false,
                 fixedrange: true
             },
+            // shift magnitude, similarity to left (#53)
             yaxis: {
-                title: "",
-                side: "right",
+                title: {
+                    text: this.plotMagnifyTitle,
+                    standoff: 40},
+                side: "left",
                 tickvals: d3.range(this.vectorWords.length),
                 ticktext: this.plotMagnifyTickText,
                 ticks: "", // hide ticks (#49)
+                showticklabels: this.plotMagnifyShowTicks,
                 fixedrange: true,
                 color: this.plotMagnifyColor,
+                automargin: true,
             },
-            margin: {l: 35, r: 50, t: 30} // get close to main vector view, width increased to accomodate title
+
+            // display vector components on right side (#53)
+            yaxis2: {
+                title: "",
+                side: "right",
+                tickvals: d3.range(this.vectorWords.length),
+                ticktext: y2val,
+                ticks: "",
+                fixedrange: true,
+                automargin: true,
+            },
+            margin: {l: 25, r: 60, t: 30} // get close to main vector view, width increased to accomodate title
         };
 
         if (newPlot) {
@@ -796,8 +828,8 @@ class Demo {
             this.plotMagnifyColor = "blue";       
         }
         else {
-            this.plotMagnifyTitle = "Value";
-            this.plotMagnifyTickText = null;
+            this.plotMagnifyTitle = "";
+            this.plotMagnifyTickText = "";
             this.plotMagnifyShowTicks = false;        
             this.plotMagnifyColor = "black";       
         }
