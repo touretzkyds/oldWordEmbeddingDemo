@@ -387,12 +387,13 @@ class Demo {
         // heatmap plots matrix of values in z
         const z = this.vectorWords.map(word => this.vecs.get(word));
 
-        // improve hover output format of vector display (#41)
-        const hovertemplate = 'word: %{y}' +
-                '<br>index: %{x}' +
-                '<br>value: %{z}' +
-                '<extra></extra>'; // removes trace name tag from second box of hovertemplate
-        
+        // improve hover output format of vector display (#41)        
+        const text = z.map((row, i) => row.map((item, j) => {
+            return `word: ${this.vectorWords[i]}`+
+            `<br>index: ${j}` +
+            `<br>value: ${item.toFixed(4)}`
+            }));
+
         const data = [
             {
                 // can't use y: this.vectorWords since the heatmap won't display duplicate words
@@ -401,7 +402,8 @@ class Demo {
                 zmax: this.HEATMAP_MAX,
                 type: "heatmap",
                 ygap: 5,
-                hovertemplate: hovertemplate,
+                text: text,
+                hoverinfo: "text",
             }
         ];
 
@@ -465,15 +467,11 @@ class Demo {
                 ' ' + String(value.toFixed(2)))); // round off and prefix blank to distance from heatmap 
         
         // set hover output format (#48)
-        // var text = this.vectorWords.map(
-        //     (word, idx) => `word: ${word}` +
-        //     `<br>index: ${idx}` +
-        //     `<br>value: ${z[idx]}`);
-
-        function fill(N, func) {
-            var empty = Array.apply(null, Array(N));
-            return empty.map(func);
-          } 
+        const text = z.map((row, i) => row.map((item, j) => {
+            return `word: ${this.vectorWords[i]}`+
+            `<br>index: ${this.hoverX}` + 
+            `<br>value: ${item.toFixed(4)}`
+          }));
         
         const data = [
             {
@@ -484,6 +482,8 @@ class Demo {
                 type: "heatmap",
                 ygap: 5,
                 showscale: false,
+                text: text,
+                hoverinfo: "text",
             }
         ];
 
@@ -507,7 +507,7 @@ class Demo {
                 fixedrange: true,
                 color: this.plotMagnifyColor,
             },
-            margin: {l: 50, r: 35, t: 30} // get close to main vector view, width increased to accomodate title
+            margin: {l: 35, r: 50, t: 30} // get close to main vector view, width increased to accomodate title
         };
 
         if (newPlot) {
