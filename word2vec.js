@@ -729,10 +729,21 @@ class Demo {
     }
 
     // populate other box if one box is filled (#28)
-    populateOther(wordId, mirrorId) {
+    populateOther(event, wordId, mirrorId) {
         var word = document.getElementById(wordId);
         var mirror = document.getElementById(mirrorId);
         mirror.value = word.value;
+        this.resetAnalogyWord(event.key);
+    }
+    
+    // clear analogy result as soon as user starts typing (#46)
+    resetAnalogyWord(key){
+        if (key != "Enter") { // do not reset if enter is pressed
+            var result = document.getElementById("analogy-word-wstar");
+            result.value = "----";
+            var resultMirror = document.getElementById("analogy-word-wstar-mirror");
+            resultMirror.value = "----";
+        }
     }
 
     // (#29) user dropdown selection actions for custom features 
