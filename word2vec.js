@@ -92,9 +92,7 @@ class Demo {
         this.selectedFeatureNames = ["[gender]", "[age]"];
 
         // default settings for magnify plot vector display numbers (#36)
-        this.plotMagnifyTitle = "";
-        this.plotMagnifyTicks = "";
-        this.plotMagnifyShowTicks = false;
+        this.formatMagnitudePlot("default")
     }
 
     // read raw model text and write vectors to vecs and vocab
@@ -296,12 +294,12 @@ class Demo {
             
             // actions if user clicks on (ie selects or deselects) a word in scatter plot
             if (clickedWord === this.selectedWord) { // deselect
-                this.blinkVectorAxis(false); // turn off blinking prompt for vector plot
+                this.highlightVectorAxis(false); // turn off highlight prompt for vector plot
                 this.selectedWord = "";
                 this.formatMagnitudePlot("default");
                 console.log("Deselected", clickedWord);
             } else { // select
-                this.blinkVectorAxis(true); // turn on blinking prompt for vector plot
+                this.highlightVectorAxis(true); // turn on highlight prompt for vector plot
                 this.selectedWord = clickedWord;
                 this.formatMagnitudePlot("selection");
                 console.log("Selected", this.selectedWord);
@@ -309,7 +307,8 @@ class Demo {
 
             // replot with new point color
             this.plotScatter();
-            this.plotVector(newPlot=false);
+            // replot with similarity values
+            this.plotMagnify();
         });
 
     } 
@@ -332,8 +331,8 @@ class Demo {
 
         this.vectorWords = new Array(this.VECTOR_DISPLAY_SIZE).fill(this.EMPTY_FEATURE_NAME);
 
-        // stop blinking prompt for vector plot
-        this.blinkVectorAxis(false);
+        // stop highlight prompt for vector plot
+        this.highlightVectorAxis(false);
 
         this.plotScatter();
         this.plotVector();
@@ -361,19 +360,21 @@ class Demo {
     updateHeatmapsOnWordClick() {
         // affects all heatmaps since they all have .yaxislayer-above!
         // https://stackoverflow.com/a/47400462
-        console.log("Binding heatmap click event");
+        // console.log("Binding heatmap click event");
 
         d3.selectAll(".yaxislayer-above").selectAll("text")
             .on("click", (d) => {
                 const idx = d.target.__data__.x;
-                console.log("Clicked on", idx);
-                console.log("Using this", this); // should be demo `this`, not d3
+                // console.log("Clicked on", idx);
+                // console.log("Using this", this); // should be demo `this`, not d3
                 if (this.selectedWord) {
                     // modify vector view to show selected word and then deselect
                     this.vectorWords[idx] = this.selectedWord;
                     this.selectedWord = "";
-                    // turn off blinking prompt for vector plot
-                    this.blinkVectorAxis(false);
+                    // turn off highlight prompt for vector plot
+                    this.highlightVectorAxis(false);
+                    // blank out magnitude plot labels
+                    this.formatMagnitudePlot("default");
                     // replot all
                     this.plotScatter();
                     this.plotVector();
@@ -386,12 +387,13 @@ class Demo {
         // heatmap plots matrix of values in z
         const z = this.vectorWords.map(word => this.vecs.get(word));
 
-        // improve hover output format of vector display (#41)
-        const hovertemplate = 'word: %{y}' +
-                '<br>index: %{x}' +
-                '<br>value: %{z}' +
-                '<extra></extra>'; // removes trace name tag from second box of hovertemplate
-        
+        // improve hover output format of vector display (#41)        
+        const text = z.map((row, i) => row.map((item, j) => {
+            return `word: ${this.vectorWords[i]}`+
+            `<br>index: ${j}` +
+            `<br>value: ${item.toFixed(4)}`
+            }));
+
         const data = [
             {
                 // can't use y: this.vectorWords since the heatmap won't display duplicate words
@@ -400,7 +402,8 @@ class Demo {
                 zmax: this.HEATMAP_MAX,
                 type: "heatmap",
                 ygap: 5,
-                hovertemplate: hovertemplate
+                text: text,
+                hoverinfo: "text",
             }
         ];
 
@@ -418,7 +421,7 @@ class Demo {
                 ticktext: this.vectorWords,
                 fixedrange: true,
                 tickangle: 60,
-                color: this.axis_color
+                color: "black"
             },
             margin: {t: 30},
         };
@@ -433,7 +436,7 @@ class Demo {
 
             plotly_vector.on("plotly_hover", data => {
                 this.hoverX = data.points[0].x;
-                console.log("Hover " + this.hoverX);
+                // console.log("Hover " + this.hoverX);
                 this.plotMagnify();
             });
 
@@ -458,7 +461,25 @@ class Demo {
         const z = this.vectorWords.map(word =>
             this.vecs.get(word).slice(lo, hi + 1));
 
+        // set axis labels as z if it is null
+        this.plotMagnifyTickText = this.plotMagnifyTickText || z.map(row => 
+            row.map(value => 
+                ' ' + String(value.toFixed(2)))); // round off and prefix blank to distance from heatmap 
+        
+        // set hover output format (#48)
+        const text = z.map((row, i) => row.map((item, j) => {
+            return `word: ${this.vectorWords[i]}`+
+            `<br>index: ${this.hoverX}` + 
+            `<br>value: ${item.toFixed(4)}`
+          }));
+          
+        // set right hand side axis tick labels
+        const y2val = z.map((row, i) => row.map((item, j) => {
+            return item.toFixed(2)
+        }));
+        
         const data = [
+            // trace for left y-axis
             {
                 x: d3.range(lo, hi + 1),
                 z: z,
@@ -466,28 +487,59 @@ class Demo {
                 zmax: this.HEATMAP_MAX,
                 type: "heatmap",
                 ygap: 5,
-                showscale: false
+                showscale: false,
+                text: text,
+                hoverinfo: "text",
+            },
+            // trace for right y-axis (#53)
+            {
+                x: d3.range(lo, hi + 1),
+                z: y2val,
+                zmin: this.HEATMAP_MIN,
+                zmax: this.HEATMAP_MAX,
+                type: "heatmap",
+                yaxis: 'y2',
+                ygap: 5,
+                showscale: false,
+                text: text,
+                hoverinfo: "text",
             }
         ];
 
         const layout = {
-            title: {text: this.plotMagnifyTitle},
+            title: "",
             xaxis: {
                 title: "",
                 dtick: 1,
                 zeroline: false,
                 fixedrange: true
             },
+            // shift magnitude, similarity to left (#53)
             yaxis: {
+                title: {
+                    text: this.plotMagnifyTitle,
+                    standoff: 40},
+                side: "left",
+                tickvals: d3.range(this.vectorWords.length),
+                ticktext: this.plotMagnifyTickText,
+                ticks: "", // hide ticks (#49)
+                showticklabels: this.plotMagnifyShowTicks,
+                fixedrange: true,
+                color: this.plotMagnifyColor,
+                automargin: true,
+            },
+
+            // display vector components on right side (#53)
+            yaxis2: {
                 title: "",
                 side: "right",
                 tickvals: d3.range(this.vectorWords.length),
-                ticktext: this.plotMagnifyTickText,
-                ticks: this.plotMagnifyShowTicks ? this.plotMagnifyShowTicks : "",
-                showticklabels: this.plotMagnifyShowTicks,
+                ticktext: y2val,
+                ticks: "",
                 fixedrange: true,
+                automargin: true,
             },
-            margin: {l: 50, r: 35, t: 30} // get close to main vector view, width increased to accomodate title
+            margin: {l: 25, r: 60, t: 30} // get close to main vector view, width increased to accomodate title
         };
 
         if (newPlot) {
@@ -626,7 +678,7 @@ class Demo {
 
     // handle user submitting feature words into form
     processFeatureInput() {
-        console.log(`this.idx0 = ${this.idx0}, this.idx1 = ${this.idx1}`)
+        // console.log(`this.idx0 = ${this.idx0}, this.idx1 = ${this.idx1}`)
         let selectedNames = [`feature${this.idx0}`, `feature${this.idx1}`] //.user-feature-words.
         // temporary input to be validated
         let featureWordsPairsInput = [Array(2), Array(2)];
@@ -677,10 +729,21 @@ class Demo {
     }
 
     // populate other box if one box is filled (#28)
-    populateOther(wordId, mirrorId) {
+    populateOther(event, wordId, mirrorId) {
         var word = document.getElementById(wordId);
         var mirror = document.getElementById(mirrorId);
         mirror.value = word.value;
+        this.resetAnalogyWord(event.key);
+    }
+    
+    // clear analogy result as soon as user starts typing (#46)
+    resetAnalogyWord(key){
+        if (key != "Enter") { // do not reset if enter is pressed
+            var result = document.getElementById("analogy-word-wstar");
+            result.value = "----";
+            var resultMirror = document.getElementById("analogy-word-wstar-mirror");
+            resultMirror.value = "----";
+        }
     }
 
     // (#29) user dropdown selection actions for custom features 
@@ -713,23 +776,23 @@ class Demo {
 
     // switch "vector arithmetic mode" (#22)
     handleAnalogyToggle(element) {
-        console.log("toggle", element);
-            // deselect word if user enters vector arithmetic mode (#37)
-            this.selectedWord = ""; 
-            // also stop blinking prompt for vector plot if user enters vector arithmetic mode (#37)
-            this.blinkVectorAxis(false);
-            this.formatMagnitudePlot("arithmetic")
-            if (!element.open) {
-                // on details close, erase analogy object and modify vector plot words as follows -
-                this.analogy = {};
-                this.formatMagnitudePlot("default")
-                // check 3rd and 5th entry of vectorplot words, if they are hold arithmetic results, erase (#35)
-                for (const i of [1,3]) { // indices corresponding to 5th and 3rd entry
-                    if (this.getEraseRequirement(this.vectorWords[i])){
-                        this.vectorWords[i] = this.EMPTY_FEATURE_NAME;
-                    }
+        // console.log("toggle", element);
+        // deselect word if user enters vector arithmetic mode (#37)
+        this.selectedWord = ""; 
+        // also turn off highlight prompt for vector plot if user enters vector arithmetic mode (#37)
+        this.highlightVectorAxis(false);
+        this.formatMagnitudePlot("arithmetic")
+        if (!element.open) {
+            // on details close, erase analogy object and modify vector plot words as follows -
+            this.analogy = {};
+            this.formatMagnitudePlot("default")
+            // check 3rd and 5th entry of vectorplot words, if they are hold arithmetic results, erase (#35)
+            for (const i of [1,3]) { // indices corresponding to 5th and 3rd entry
+                if (this.getEraseRequirement(this.vectorWords[i])){
+                    this.vectorWords[i] = this.EMPTY_FEATURE_NAME;
                 }
             }
+        }
             // replot so as to reset any active animations (#37)
             this.plotScatter();
             this.plotVector();
@@ -743,18 +806,20 @@ class Demo {
     }
 
     // prompt user for copying word into vector plot (#31)
-    blinkVectorAxis(blink) { 
-        // select y ticks of vector plot to blink
-        const yTicks = document.querySelector("#plotly-vector > div > div > svg:nth-child(1) > g.cartesianlayer > g > g.yaxislayer-above");
-        if (blink) {
-            // change axis color for title and ticks, and start blinking ticks
-            this.axis_color = "red";
-            yTicks.style.animation = "blinker 0.8s linear infinite";
+    highlightVectorAxis(active) { 
+        // select y ticks of vector plot to highlight
+        const yTicks = document.querySelectorAll("#plotly-vector > div > div > svg:nth-child(1) > g.cartesianlayer > g > g.yaxislayer-above > g");
+        if (active) {
+            // draw red rectangles around text as prompt
+            yTicks.forEach((elem) => {
+                elem.style.setProperty("outline", "2px solid red")
+            });
         }
         else {
-            // reset axis color and blinking
-            this.axis_color = "black";
-            yTicks.style.animation = "none";
+            // turn off prompt
+            yTicks.forEach((elem) => {
+                elem.style.setProperty("outline", "none")
+            });
         }
     }
 
@@ -764,17 +829,20 @@ class Demo {
             const selectedVector = this.vecs.get(this.selectedWord);
             this.plotMagnifyTitle = "Similarity";
             this.plotMagnifyTickText = this.vectorWords.map(word => this.vecs.get(word).dot(selectedVector).toFixed(2));
-            this.plotMagnifyShowTicks = true;        
+            this.plotMagnifyShowTicks = true; 
+            this.plotMagnifyColor = "red";       
         }
         else if (mode === "arithmetic") {
             this.plotMagnifyTitle = "Magnitude";
             this.plotMagnifyTickText = this.vectorWords.map(word => this.vecs.get(word).norm().toFixed(2));
             this.plotMagnifyShowTicks = true;        
+            this.plotMagnifyColor = "blue";       
         }
         else {
             this.plotMagnifyTitle = "";
             this.plotMagnifyTickText = "";
             this.plotMagnifyShowTicks = false;        
+            this.plotMagnifyColor = "black";       
         }
     }
 
