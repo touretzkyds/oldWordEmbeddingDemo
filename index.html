@@ -51,6 +51,7 @@
 
     <!-- autocomplete off to disable Firefox from saving form entries -->
     <form id="analogy-form" action="javascript:demo.processAnalogy()" autocomplete="off">
+        <!-- TODO: add proper spacing for equation -->
         <table id="analogy-table">
 			<tr>
             	<th colspan = 6>English notation</th>
@@ -58,15 +59,15 @@
                 <th></th>
             </tr>
             <tr>
-                <td><input id="analogy-word-a" type="text" onkeyup="demo.populateOther(event, 'analogy-word-a', 'analogy-word-a-mirror')" placeholder="man"></td>
+                <td><input id="analogy-word-a" type="text" onkeyup="demo.populateOther('analogy-word-a', 'analogy-word-a-mirror')" placeholder="man"></td>
                 <td>is to</td>
-                <td><input id="analogy-word-b" type="text" onkeyup="demo.populateOther(event, 'analogy-word-b', 'analogy-word-b-mirror')" placeholder="king"></td>
+                <td><input id="analogy-word-b" type="text" onkeyup="demo.populateOther('analogy-word-b', 'analogy-word-b-mirror')" placeholder="king"></td>
                 <td>as</td>
-                <td><input id="analogy-word-c" type="text" onkeyup="demo.populateOther(event, 'analogy-word-c', 'analogy-word-c-mirror')" placeholder="woman"></td>
+                <td><input id="analogy-word-c" type="text" onkeyup="demo.populateOther('analogy-word-c', 'analogy-word-c-mirror')" placeholder="woman"></td>
                 <td>is to</td>
                 
                 <td><span id="analogy-message" type="text"></span>
-                    <output id="analogy-word-wstar" type="text" for="analogy-word-b analogy-word-a analogy-word-c">----</output>
+                    <output id="analogy-word-wstar" type="text" for="analogy-word-b analogy-word-a analogy-word-c"></output>
                     
                 </td>
                 <td><button id="analogy-button" type="submit">Submit</button></td>
@@ -80,15 +81,15 @@
                 <th></th>
             </tr>
             <tr>
-                <td><input id="analogy-word-b-mirror" onkeyup="demo.populateOther(event, 'analogy-word-b-mirror', 'analogy-word-b')" type="text" placeholder="king"></td>
+                <td><input id="analogy-word-b-mirror" onkeyup="demo.populateOther('analogy-word-b-mirror', 'analogy-word-b')" type="text" placeholder="king"></td>
                 <td id="arith-symbol"> – </td>
-                <td><input id="analogy-word-a-mirror" onkeyup="demo.populateOther(event, 'analogy-word-a-mirror', 'analogy-word-a')" type="text" placeholder="man"></td>
+                <td><input id="analogy-word-a-mirror" onkeyup="demo.populateOther('analogy-word-a-mirror', 'analogy-word-a')" type="text" placeholder="man"></td>
                 <td id="arith-symbol"> + </td>
-                <td><input id="analogy-word-c-mirror" onkeyup="demo.populateOther(event, 'analogy-word-c-mirror', 'analogy-word-c')" type="text" placeholder="woman"></td>
+                <td><input id="analogy-word-c-mirror" onkeyup="demo.populateOther('analogy-word-c-mirror', 'analogy-word-c')" type="text" placeholder="woman"></td>
                 <td id="arith-symbol"> = </td>
                 
                 <td><span id="analogy-message" type="text"></span>
-                    <output id="analogy-word-wstar-mirror" for="analogy-word-b analogy-word-a analogy-word-c">----</output>
+                    <output id="analogy-word-wstar-mirror" for="analogy-word-b analogy-word-a analogy-word-c"></output>
                     
                 </td>
                 <td><button id="analogy-button" type="submit">Submit</button></td>
