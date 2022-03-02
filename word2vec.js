@@ -895,3 +895,16 @@ const demo = new Demo();
 document.addEventListener("DOMContentLoaded", () => {
     demo.main().catch(e => console.error(e));
 });
+
+// resize all plots on window resize (#52)
+window.addEventListener('resize', function() {
+    const plotsToResize = ["plotly-scatter", "plotly-vector", "plotly-magnify"];
+    plotsToResize.forEach(id => {
+        const container = document.getElementById(id);
+        const updatedDims = {
+            width: parseInt(0.99 * container.offsetWidth),
+            height: parseInt(0.99 * container.offsetHeight)
+        };
+        Plotly.relayout(id, updatedDims);
+    });
+});
