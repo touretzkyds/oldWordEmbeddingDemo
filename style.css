@@ -96,13 +96,8 @@ body {
 
 #plots-container {
     height: 70vh;
+    width: 98vw;
     display: flex;
-}
-
-#scatter-container {
-    flex: 50;
-    display: flex;
-    flex-direction: column;
 }
 
 #scatter-buttons {
@@ -110,15 +105,16 @@ body {
 }
 
 #plotly-magnify {
-    flex: 0 0 100px;
+    width: 10%;
+    max-width: 100px;
 }
 
 #plotly-vector {
-    flex: 40;
+    width: 50%;
 }
 
 #plotly-scatter {
-    flex-grow: 1;
+    width: 45%;
 }
 
 #plots-status-bar {
