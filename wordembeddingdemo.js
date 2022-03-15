@@ -187,7 +187,7 @@ class Demo {
                 mode: "markers+text",
                 type: "scatter3d",
                 marker: {
-                    size: 4,
+                    size: size,
                     opacity: 0.8,
                     color: color
                 },
@@ -552,9 +552,15 @@ class Demo {
         }
     }
 
+    // remove all non alphanumeric characters from words (#56)
+    cleanWordInput(word) {
+        word = word.replace(/\W/g, '');
+        return word;
+    }
+
     // handle user adding/removing word in form
     modifyWord() {
-        const word = document.getElementById("modify-word-input").value;
+        const word = this.cleanWordInput(document.getElementById("modify-word-input").value);
         let wordModified = false;
 
         if (this.scatterWords.includes(word)) {  // remove word
@@ -587,9 +593,9 @@ class Demo {
     // vector y = x_b - x_a + x_c, find w* = argmax_w cossim(x_w, y)
     // convert words to lowercase before processing (#39)
     processAnalogy() {
-        const wordA = document.getElementById("analogy-word-a").value.toLowerCase();
-        const wordB = document.getElementById("analogy-word-b").value.toLowerCase();
-        const wordC = document.getElementById("analogy-word-c").value.toLowerCase();
+        const wordA = this.cleanWordInput(document.getElementById("analogy-word-a").value.toLowerCase());
+        const wordB = this.cleanWordInput(document.getElementById("analogy-word-b").value.toLowerCase());
+        const wordC = this.cleanWordInput(document.getElementById("analogy-word-c").value.toLowerCase());
 
         const inputWords = [wordA, wordB, wordC];
 
