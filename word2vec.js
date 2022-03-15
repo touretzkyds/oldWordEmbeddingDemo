@@ -679,7 +679,7 @@ class Demo {
     // handle user submitting feature words into form
     processFeatureInput() {
         // console.log(`this.idx0 = ${this.idx0}, this.idx1 = ${this.idx1}`)
-        let selectedNames = [`feature${this.idx0}`, `feature${this.idx1}`] //.user-feature-words.
+        let selectedNames = [`feature${this.idx0}`, `feature${this.idx1}`]; //.user-feature-words.
         // temporary input to be validated
         let featureWordsPairsInput = [Array(2), Array(2)];
         for (let i=0; i<2; i++) {
@@ -812,13 +812,13 @@ class Demo {
         if (active) {
             // draw red rectangles around text as prompt
             yTicks.forEach((elem) => {
-                elem.style.setProperty("outline", "2px solid red")
+                elem.style.setProperty("outline", "2px solid red");
             });
         }
         else {
             // turn off prompt
             yTicks.forEach((elem) => {
-                elem.style.setProperty("outline", "none")
+                elem.style.setProperty("outline", "none");
             });
         }
     }
