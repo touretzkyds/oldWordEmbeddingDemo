@@ -187,7 +187,7 @@ class Demo {
                 mode: "markers+text",
                 type: "scatter3d",
                 marker: {
-                    size: size,
+                    size: 4,
                     opacity: 0.8,
                     color: color
                 },
