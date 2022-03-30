@@ -179,6 +179,41 @@ class Demo {
                 .join("<br>")
         );
 
+        const ZOOM = 0.8;
+        // save previous camera code (workaround for #9)
+        let camera;
+        if (newPlot) {
+            camera = {eye: {x: -2.5 * ZOOM, y: -0.75 * ZOOM, z: 0.5 * ZOOM}};
+        } else { // save camera
+            const plotly_scatter = document.getElementById("plotly-scatter");
+            camera = plotly_scatter.layout.scene.camera;
+        }
+        console.log("Using camera", camera);
+
+        // scale points in 3D space (#43)
+        const sizes = x.map((val, idx) => (
+            1 /
+            (
+                (camera.eye.x - x[idx])**2 + 
+                (camera.eye.y - y[idx])**2 + 
+                (camera.eye.z - z[idx])**2
+            )**0.5
+        ));
+
+        // find range of sizes and set desired range
+        const oldMin = Math.min(...sizes);
+        const oldMax = Math.max(...sizes);
+        const oldRange = oldMax - oldMin;
+        
+        
+        // scale all points between new limits of rmin and rmax
+        const newMin = 10;
+        const newMax = 20;
+        const newRange = newMax - newMin;
+        
+        const scaledSizes = sizes.map(oldValue => 
+            (((oldValue - oldMin) * newRange) / oldRange) + newMin);
+        
         let data = [
             {
                 x: x,
@@ -187,11 +222,14 @@ class Demo {
                 mode: "markers+text",
                 type: "scatter3d",
                 marker: {
-                    size: 4,
+                    size: scaledSizes,
                     opacity: 0.8,
                     color: color
                 },
                 text: plotWords,
+                textfont: {
+                    size: scaledSizes,
+                },
                 hoverinfo: "text",
                 hovertext: hovertext
             }
@@ -237,20 +275,6 @@ class Demo {
 
 
         }
-
-        const ZOOM = 0.8;
-
-        // save previous camera code (workaround for #9)
-        let camera;
-        if (newPlot) {
-            camera = {eye: {x: -2.5 * ZOOM, y: -0.75 * ZOOM, z: 0.5 * ZOOM}};
-        } else { // save camera
-            const plotly_scatter = document.getElementById("plotly-scatter");
-            camera = plotly_scatter.layout.scene.camera;
-        }
-
-        console.log("Using camera", camera);
-
 
         const layout = {
             title: {text: "Word vector projection"},
@@ -310,7 +334,6 @@ class Demo {
             // replot with similarity values
             this.plotMagnify();
         });
-
     } 
     
 
@@ -852,6 +875,11 @@ class Demo {
         }
     }
 
+    // async blinkText(text){ //TODO: blink text while loading 
+    //     console.log('blinkText called');
+    //     text.style.animation = "blinker 1s linear infinite"
+    // }
+
     // fetch wordvecs locally (no error handling) and process
     async main() {
         // fill default feature for scatterplot
@@ -859,6 +887,7 @@ class Demo {
 
         // lo-tech progress indication
         const loadingText = document.getElementById("loading-text");
+        // this.blinkText(loadingText);
         loadingText.innerText = "Downloading model...";
 
         // note python's http.server does not support response compression Content-Encoding
@@ -893,6 +922,14 @@ class Demo {
         this.plotScatter(true);
         this.plotVector(true);
         this.processFeatureInput(); // processes words from selected semantic dimensions when the page loads (#45)
+        
+        // add event listener to rescale points in 3D with drag (#43)
+        //TODO: scale while drag is on
+        const plotly_scatter = document.getElementById("plotly-scatter");
+        plotly_scatter.addEventListener("mouseup", () => {
+            console.log("click");
+            this.plotScatter();
+        });
     }
 }
 
