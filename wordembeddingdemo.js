@@ -190,7 +190,7 @@ class Demo {
         }
         console.log("Using camera", camera);
 
-        // scale points in 3D space (#??)
+        // scale points in 3D space (#43)
         const sizes = x.map((val, idx) => (
             1 /
             (
@@ -213,8 +213,6 @@ class Demo {
         
         const scaledSizes = sizes.map(oldValue => 
             (((oldValue - oldMin) * newRange) / oldRange) + newMin);
-
-        // @ can add opacities too (done using an alpha channel in marker color)
         
         let data = [
             {
@@ -336,15 +334,6 @@ class Demo {
             // replot with similarity values
             this.plotMagnify();
         });
-
-        plotly_scatter.on("plotly_relayout", (data) => {
-            // console.log("relayout triggered")
-            this.plotScatter(newPlot=false);
-        });
-        plotly_scatter.addEventListener("onmousedown", function( event ) {
-            console.log('drag triggered');
-        });
-
     } 
     
 
@@ -886,6 +875,11 @@ class Demo {
         }
     }
 
+    // async blinkText(text){ //TODO: blink text while loading 
+    //     console.log('blinkText called');
+    //     text.style.animation = "blinker 1s linear infinite"
+    // }
+
     // fetch wordvecs locally (no error handling) and process
     async main() {
         // fill default feature for scatterplot
@@ -893,6 +887,7 @@ class Demo {
 
         // lo-tech progress indication
         const loadingText = document.getElementById("loading-text");
+        // this.blinkText(loadingText);
         loadingText.innerText = "Downloading model...";
 
         // note python's http.server does not support response compression Content-Encoding
@@ -927,6 +922,14 @@ class Demo {
         this.plotScatter(true);
         this.plotVector(true);
         this.processFeatureInput(); // processes words from selected semantic dimensions when the page loads (#45)
+        
+        // add event listener to rescale points in 3D with drag (#43)
+        //TODO: scale while drag is on
+        const plotly_scatter = document.getElementById("plotly-scatter");
+        plotly_scatter.addEventListener("mouseup", () => {
+            console.log("click");
+            this.plotScatter();
+        });
     }
 }
 
