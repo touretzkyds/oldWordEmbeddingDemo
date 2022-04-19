@@ -881,8 +881,11 @@ class Demo {
 
         // lo-tech progress indication
         const loadingText = document.getElementById("loading-text");
+        const loadingIcon = document.getElementById("loading-icon");
         // this.blinkText(loadingText);
         loadingText.innerText = "Downloading model...";
+        // show loading icon (#54)
+        loadingIcon.style.display = "flex";
 
         // note python's http.server does not support response compression Content-Encoding
         // browsers and servers support content-encoding, but manually compress to fit on github (#1)
@@ -903,6 +906,8 @@ class Demo {
 
         this.processNearestWords(nearestWordsText);
         loadingText.innerText = "Model processing done";
+        // hide loading icon after processing completes
+        loadingIcon.style.display = "none";
 
         // make empty feature available to all
         const zeroArray = new Array(this.vecsDim).fill(0);

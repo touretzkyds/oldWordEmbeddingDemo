@@ -94,6 +94,13 @@ body {
     margin-bottom: 10px;
 }
 
+#loading-icon {
+    display: flex;
+    justify-content: center;
+    overflow: auto;
+    height: 100px;
+}
+
 #plots-container {
     height: 70vh;
     width: 98vw;
