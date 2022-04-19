@@ -188,7 +188,7 @@ class Demo {
             const plotly_scatter = document.getElementById("plotly-scatter");
             camera = plotly_scatter.layout.scene.camera;
         }
-        console.log("Using camera", camera);
+        // console.log("Using camera", camera);
 
         // scale points in 3D space (#43)
         const sizes = x.map((val, idx) => (
@@ -321,12 +321,12 @@ class Demo {
                 this.highlightVectorAxis(false); // turn off highlight prompt for vector plot
                 this.selectedWord = "";
                 this.formatMagnitudePlot("default");
-                console.log("Deselected", clickedWord);
+                // console.log("Deselected", clickedWord);
             } else { // select
                 this.highlightVectorAxis(true); // turn on highlight prompt for vector plot
                 this.selectedWord = clickedWord;
                 this.formatMagnitudePlot("selection");
-                console.log("Selected", this.selectedWord);
+                // console.log("Selected", this.selectedWord);
             }
 
             // replot with new point color
@@ -805,7 +805,6 @@ class Demo {
 
     // switch "vector arithmetic mode" (#22)
     handleAnalogyToggle(element) {
-        // console.log("toggle", element);
         // deselect word if user enters vector arithmetic mode (#37)
         this.selectedWord = ""; 
         // also turn off highlight prompt for vector plot if user enters vector arithmetic mode (#37)
@@ -875,11 +874,6 @@ class Demo {
         }
     }
 
-    // async blinkText(text){ //TODO: blink text while loading 
-    //     console.log('blinkText called');
-    //     text.style.animation = "blinker 1s linear infinite"
-    // }
-
     // fetch wordvecs locally (no error handling) and process
     async main() {
         // fill default feature for scatterplot
@@ -927,7 +921,6 @@ class Demo {
         //TODO: scale while drag is on
         const plotly_scatter = document.getElementById("plotly-scatter");
         plotly_scatter.addEventListener("mouseup", () => {
-            console.log("click");
             this.plotScatter();
         });
     }

@@ -5,3 +5,5 @@ model.txt
 *.json
 .DS_Store
 test.js
+test.html
+test.css
