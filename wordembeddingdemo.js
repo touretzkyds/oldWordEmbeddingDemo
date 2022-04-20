@@ -311,28 +311,21 @@ class Demo {
 
         // bind scatter click event
         let plotly_scatter = document.getElementById("plotly-scatter");
+        this.plotWords = plotWords;
+        plotly_scatter.on("plotly_click", () => {
+            this.respondToScatterClick();
+        });
 
-        plotly_scatter.on("plotly_click", (data) => {
-            const ptNum = data.points[0].pointNumber;
-            const clickedWord = plotWords[ptNum];
-            
-            // actions if user clicks on (ie selects or deselects) a word in scatter plot
-            if (clickedWord === this.selectedWord) { // deselect
-                this.highlightVectorAxis(false); // turn off highlight prompt for vector plot
-                this.selectedWord = "";
-                this.formatMagnitudePlot("default");
-                // console.log("Deselected", clickedWord);
-            } else { // select
-                this.highlightVectorAxis(true); // turn on highlight prompt for vector plot
-                this.selectedWord = clickedWord;
-                this.formatMagnitudePlot("selection");
-                // console.log("Selected", this.selectedWord);
-            }
-
-            // replot with new point color
-            this.plotScatter();
-            // replot with similarity values
-            this.plotMagnify();
+        // expand and reposition hover overlay 
+        plotly_scatter.on("plotly_hover", (dataPlotly) => {
+            this.moveAndResizeOverlay(true);
+            this.data = dataPlotly;
+        });
+        
+        // shrink hover overlay back
+        plotly_scatter.on("plotly_unhover", () => {
+            console.log('unhovering');
+            this.moveAndResizeOverlay(false);
         });
     } 
     
@@ -827,6 +820,58 @@ class Demo {
             this.plotMagnify();
     }
 
+    // manipulate overlay to bring above hover text (#50)
+    moveAndResizeOverlay(hover){
+        const overlay = document.getElementById("scatter-overlay");
+        if (hover) {
+            const hoverContainer = document.querySelector("#scene > svg > g");
+            const hovertextStyle = window.getComputedStyle(hoverContainer);
+            // move
+            overlay.style.transform = hovertextStyle.transform; 
+            // increase size
+            overlay.style.minWidth = "35px";
+            overlay.style.minHeight = "35px"; 
+            overlay.style.zIndex = hovertextStyle.zIndex-1; 
+        }
+        else {
+            // decrease size to reduce clickability
+            overlay.style.minWidth = "0px";
+            overlay.style.minHeight = "0px";
+        }
+    }
+
+    // bind click on scatter hover overlay (#50)
+    makeOverlayClickable(){
+        const overlay = document.getElementById("scatter-overlay");
+        overlay.addEventListener("click", event => {
+            this.respondToScatterClick();
+        });
+    }
+
+    // highlight vector axis on scatter click
+    respondToScatterClick(){
+        const ptNum = this.data.points[0].pointNumber;
+        const clickedWord = this.plotWords[ptNum];
+        
+        // actions if user clicks on (ie selects or deselects) a word in scatter plot
+        if (clickedWord === this.selectedWord) { // deselect
+            this.highlightVectorAxis(false); // turn off highlight prompt for vector plot
+            this.selectedWord = "";
+            this.formatMagnitudePlot("default");
+            console.log("Deselected", clickedWord);
+        } else { // select
+            this.highlightVectorAxis(true); // turn on highlight prompt for vector plot
+            this.selectedWord = clickedWord;
+            this.formatMagnitudePlot("selection");
+            console.log("Selected", this.selectedWord);
+        }
+
+        // replot with new point color
+        this.plotScatter();
+        // replot with similarity values
+        this.plotMagnify();
+    }
+
     // detect if erase is required, ie. we have arithmetic results instead of pure words in vector plot (#35)
     getEraseRequirement(word) {
         const numWords = word.split('-').length; // since '-' is always part of our analogy eg. king-man+woman
@@ -928,6 +973,9 @@ class Demo {
         plotly_scatter.addEventListener("mouseup", () => {
             this.plotScatter();
         });
+
+        // make overlay clickable for hovertext (#50)
+        this.makeOverlayClickable();
     }
 }
 

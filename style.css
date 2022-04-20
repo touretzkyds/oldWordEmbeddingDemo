@@ -122,6 +122,14 @@ body {
 
 #plotly-scatter {
     width: 45%;
+    position: relative;
+}
+
+#scatter-overlay {
+    position: absolute;
+    top: 2%;
+    left: -3%;
+    z-index: 10000; /* bring to front to make it clickable*/
 }
 
 #plots-status-bar {
@@ -203,4 +211,15 @@ output {
   100% {
     fill: red;
   }
+}
+
+#analogy-loading-icon {
+    display: flex;
+    justify-content: center;
+    height: 20px;
+    border: 2px solid green;
+}
+
+#scatter-overlay{
+    position: absolute;
 }
