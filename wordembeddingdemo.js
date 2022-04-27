@@ -208,7 +208,7 @@ class Demo {
         
         // scale all points between new limits of rmin and rmax
         const newMin = 10;
-        const newMax = 20;
+        const newMax = 16;
         const newRange = newMax - newMin;
         
         const scaledSizes = sizes.map(oldValue => 
