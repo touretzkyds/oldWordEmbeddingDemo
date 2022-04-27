@@ -312,19 +312,18 @@ class Demo {
         // bind scatter click event
         let plotly_scatter = document.getElementById("plotly-scatter");
         this.plotWords = plotWords;
-        plotly_scatter.on("plotly_click", () => {
+        plotly_scatter.on("plotly_click", (data) => {
             this.respondToScatterClick();
         });
 
-        // expand and reposition hover overlay 
-        plotly_scatter.on("plotly_hover", (dataPlotly) => {
+        // expand and re-position hover overlay on hover
+        plotly_scatter.on("plotly_hover", (dataScatter) => {
             this.moveAndResizeOverlay(true);
-            this.data = dataPlotly;
+            this.dataScatter = dataScatter;
         });
         
-        // shrink hover overlay back
+        // shrink hover overlay back on unhover
         plotly_scatter.on("plotly_unhover", () => {
-            console.log('unhovering');
             this.moveAndResizeOverlay(false);
         });
     } 
@@ -820,37 +819,46 @@ class Demo {
             this.plotMagnify();
     }
 
-    // manipulate overlay to bring above hover text (#50)
-    moveAndResizeOverlay(hover){
+    // manipulate clickable overlay to bring above hover text (#50)
+    moveAndResizeOverlay(hovering){
         const overlay = document.getElementById("scatter-overlay");
-        if (hover) {
-            const hoverContainer = document.querySelector("#scene > svg > g");
-            const hovertextStyle = window.getComputedStyle(hoverContainer);
-            // move
-            overlay.style.transform = hovertextStyle.transform; 
-            // increase size
-            overlay.style.minWidth = "35px";
-            overlay.style.minHeight = "35px"; 
-            overlay.style.zIndex = hovertextStyle.zIndex-1; 
+        if (hovering) {
+            // get bounding region to overlay on
+            const rectTop = document.querySelector("#scene > svg > g > text > tspan:nth-child(5)").getBoundingClientRect();
+            // const rectBottom = document.querySelector("#scene > svg > g > text > tspan:nth-child(7)").getBoundingClientRect();
+            const rectParent = document.getElementById("plotly-scatter").getBoundingClientRect();
+            // move overlay to hovertext
+            overlay.style.left = rectTop.left - rectParent.left - 5 + "px"; // 5px margin on left
+            overlay.style.top = rectTop.top - rectParent.top + "px";
+            // increase size of overlay
+            overlay.style.width = 1.15*(rectTop.width) + "px"; // 15% margin on right
+            overlay.style.height = 3.5*(rectTop.height) + "px"; // empirical height based on limits of hovertext popping up
+            // enable clicks
+            overlay.style.pointerEvents = "auto";
         }
         else {
-            // decrease size to reduce clickability
-            overlay.style.minWidth = "0px";
-            overlay.style.minHeight = "0px";
+            // move back
+            overlay.style.width = "0px";
+            overlay.style.height = "0px";
+            // shrink size back
+            overlay.style.left = "0px";
+            overlay.style.top = "0px";
+            // disable clicks
+            overlay.style.pointerEvents = "none";
         }
     }
 
     // bind click on scatter hover overlay (#50)
-    makeOverlayClickable(){
+    addOverlayListener(){
         const overlay = document.getElementById("scatter-overlay");
-        overlay.addEventListener("click", event => {
+        overlay.addEventListener("click", () => {
             this.respondToScatterClick();
         });
     }
 
     // highlight vector axis on scatter click
     respondToScatterClick(){
-        const ptNum = this.data.points[0].pointNumber;
+        const ptNum = this.dataScatter.points[0].pointNumber;
         const clickedWord = this.plotWords[ptNum];
         
         // actions if user clicks on (ie selects or deselects) a word in scatter plot
@@ -975,7 +983,7 @@ class Demo {
         });
 
         // make overlay clickable for hovertext (#50)
-        this.makeOverlayClickable();
+        this.addOverlayListener();
     }
 }
 

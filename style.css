@@ -127,10 +127,7 @@ body {
 
 #scatter-overlay {
     position: absolute;
-    top: 2%;
-    left: -3%;
-    z-index: 10000; /* bring to front to make it clickable*/
-    border: solid 2px;
+    z-index: 1000; /* bring to front */
 }
 
 #plots-status-bar {
