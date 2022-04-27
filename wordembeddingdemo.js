@@ -573,32 +573,69 @@ class Demo {
         return word;
     }
 
-    // handle user adding/removing word in form
+    // handle user adding/removing words in form
+    // refactored to accept and handle multiple separated words at a time (#51)
     modifyWord() {
-        const word = this.cleanWordInput(document.getElementById("modify-word-input").value);
+        let addedWords = [];
+        let removedWords = [];
+        let absentWords = [];
+        // split user input across periods, spaces, commas or semicolons
+        const words = document.getElementById("modify-word-input").value
+                              .split(/[;,.]+/); 
+
+        // flag to detect if replotting is required
         let wordModified = false;
 
-        if (this.scatterWords.includes(word)) {  // remove word
-            this.scatterWords = this.scatterWords.filter(item => item !== word);
-            document.getElementById("modify-word-message").innerText = `"${word}" removed`;
-            this.selectedWord = ""; // remove selected word
-            wordModified = true;
-        } else { // add word if in vocab
-            if (this.vocab.has(word)) {
-                this.scatterWords.push(word);
-                document.getElementById("modify-word-message").innerText = `"${word}" added`;
-                this.selectedWord = word; // make added word selected word
+        words.forEach(rawWord => {
+            // remove all invalid characters
+            const word = this.cleanWordInput(rawWord);
+            
+            // ignore empty string
+            if (word==="") return;
+            
+            if (this.scatterWords.includes(word)) {  // remove word
+                this.scatterWords = this.scatterWords.filter(item => item !== word);
+                removedWords.push(word);
                 wordModified = true;
-            } else { // word not found
-                document.getElementById("modify-word-message").innerText = `"${word}" not found`;
-                // no replot or change to selected word
+            } else { // add word if in vocab
+                if (this.vocab.has(word)) {
+                    this.scatterWords.push(word);
+                    addedWords.push(word);
+                    wordModified = true;
+                } else { // word not found
+                    absentWords.push(word);
+                    // no need to replot if all words entered are invalid
+                }
             }
+        });
+
+        // make first added word active
+        // if no words have been added, deactivate any currently active word
+        if (addedWords.length > 0){
+            this.selectedWord = addedWords[0];
+        }
+        else {
+            this.selectedWord = "";
         }
 
+        // generate message as per changes to words
+        let message = "";
+        if (addedWords.length > 0){
+            message += `added: "${addedWords.join('", "')}"\n`; // add punctuation
+        }
+        if (removedWords.length > 0){
+            message += `removed: "${removedWords.join('", "')}"\n`;
+        }
+        if (absentWords.length > 0){
+            message += `not found: "${absentWords.join('", "')}"`;
+        }
+        // display the message
+        document.getElementById("modify-word-message").innerText = message;
+
+        // replot if required
         if (wordModified) {
             this.plotScatter();  // replot to update scatter view
             document.getElementById("modify-word-input").value = ""; // clear word
-
         }
     }
 
