@@ -581,7 +581,7 @@ class Demo {
         let absentWords = [];
         // split user input across periods, spaces, commas or semicolons
         const words = document.getElementById("modify-word-input").value
-                              .split(/[;,.]+/); 
+                              .split(/[ ;,.]+/); 
 
         // flag to detect if replotting is required
         let wordModified = false;
