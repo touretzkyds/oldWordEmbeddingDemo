@@ -613,9 +613,13 @@ class Demo {
         // if no words have been added, deactivate any currently active word
         if (addedWords.length > 0){
             this.selectedWord = addedWords[0];
+            this.formatMagnitudePlot("selection");
+            this.highlightVectorAxis(true);
         }
         else {
             this.selectedWord = "";
+            this.formatMagnitudePlot("default");
+            this.highlightVectorAxis(false);
         }
 
         // generate message as per changes to words
@@ -632,11 +636,14 @@ class Demo {
         // display the message
         document.getElementById("modify-word-message").innerText = message;
 
-        // replot if required
+        // replot scatter plot if required
         if (wordModified) {
             this.plotScatter();  // replot to update scatter view
             document.getElementById("modify-word-input").value = ""; // clear word
         }
+
+        // reformat magnify plot with set mode
+        this.plotMagnify(false);
     }
 
     // process 3COSADD word analogy input, write arithmetic vectors to vector view and add nearest neighbors to result (#14)
