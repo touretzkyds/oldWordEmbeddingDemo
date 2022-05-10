@@ -955,7 +955,7 @@ class Demo {
     formatMagnitudePlot(mode="default") {
         if (mode === "selection") {
             const selectedVector = this.vecs.get(this.selectedWord);
-            this.plotMagnifyTitle = "Similarity";
+            this.plotMagnifyTitle = "Similarity to "+`'${this.selectedWord}'`;
             this.plotMagnifyTickText = this.vectorWords.map(word => this.vecs.get(word).dot(selectedVector).toFixed(2));
             this.plotMagnifyShowTicks = true; 
             this.plotMagnifyColor = "red";       
