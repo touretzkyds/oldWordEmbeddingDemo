@@ -579,6 +579,7 @@ class Demo {
         let addedWords = [];
         let removedWords = [];
         let absentWords = [];
+        let finalWordsToAdd = new Set(); // handle duplicate additions for word selection / display at the end of this function
         // split user input across periods, spaces, commas or semicolons
         const words = document.getElementById("modify-word-input").value
                               .split(/[ ;,.]+/); 
@@ -596,11 +597,13 @@ class Demo {
             if (this.scatterWords.includes(word)) {  // remove word
                 this.scatterWords = this.scatterWords.filter(item => item !== word);
                 removedWords.push(word);
+                if (finalWordsToAdd.has(word)) finalWordsToAdd.delete(word);
                 wordModified = true;
             } else { // add word if in vocab
                 if (this.vocab.has(word)) {
                     this.scatterWords.push(word);
                     addedWords.push(word);
+                    finalWordsToAdd.add(word);
                     wordModified = true;
                 } else { // word not found
                     absentWords.push(word);
@@ -611,7 +614,7 @@ class Demo {
 
         // make first added word active
         // if no words have been added, deactivate any currently active word
-        if (addedWords.length > 0){
+        if (finalWordsToAdd.size > 0){
             this.selectedWord = addedWords[0];
             this.formatMagnitudePlot("selection");
             this.highlightVectorAxis(true);
