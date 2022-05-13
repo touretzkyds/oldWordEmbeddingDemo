@@ -188,7 +188,7 @@ class Demo {
             const plotly_scatter = document.getElementById("plotly-scatter");
             camera = plotly_scatter.layout.scene.camera;
         }
-        console.log("Using camera", camera);
+        // console.log("Using camera", camera);
 
         // scale points in 3D space (#43)
         const sizes = x.map((val, idx) => (
@@ -208,7 +208,7 @@ class Demo {
         
         // scale all points between new limits of rmin and rmax
         const newMin = 10;
-        const newMax = 20;
+        const newMax = 16;
         const newRange = newMax - newMin;
         
         const scaledSizes = sizes.map(oldValue => 
@@ -311,28 +311,20 @@ class Demo {
 
         // bind scatter click event
         let plotly_scatter = document.getElementById("plotly-scatter");
-
+        this.plotWords = plotWords;
         plotly_scatter.on("plotly_click", (data) => {
-            const ptNum = data.points[0].pointNumber;
-            const clickedWord = plotWords[ptNum];
-            
-            // actions if user clicks on (ie selects or deselects) a word in scatter plot
-            if (clickedWord === this.selectedWord) { // deselect
-                this.highlightVectorAxis(false); // turn off highlight prompt for vector plot
-                this.selectedWord = "";
-                this.formatMagnitudePlot("default");
-                console.log("Deselected", clickedWord);
-            } else { // select
-                this.highlightVectorAxis(true); // turn on highlight prompt for vector plot
-                this.selectedWord = clickedWord;
-                this.formatMagnitudePlot("selection");
-                console.log("Selected", this.selectedWord);
-            }
+            this.respondToScatterClick();
+        });
 
-            // replot with new point color
-            this.plotScatter();
-            // replot with similarity values
-            this.plotMagnify();
+        // expand and re-position hover overlay on hover
+        plotly_scatter.on("plotly_hover", (dataScatter) => {
+            this.moveAndResizeOverlay(true);
+            this.dataScatter = dataScatter;
+        });
+        
+        // shrink hover overlay back on unhover
+        plotly_scatter.on("plotly_unhover", () => {
+            this.moveAndResizeOverlay(false);
         });
     } 
     
@@ -581,33 +573,80 @@ class Demo {
         return word;
     }
 
-    // handle user adding/removing word in form
+    // handle user adding/removing words in form
+    // refactored to accept and handle multiple separated words at a time (#51)
     modifyWord() {
-        const word = this.cleanWordInput(document.getElementById("modify-word-input").value);
+        let addedWords = [];
+        let removedWords = [];
+        let absentWords = [];
+        let finalWordsToAdd = new Set(); // handle duplicate additions for word selection / display at the end of this function
+        // split user input across periods, spaces, commas or semicolons
+        const words = document.getElementById("modify-word-input").value
+                              .split(/[ ;,.]+/); 
+
+        // flag to detect if replotting is required
         let wordModified = false;
 
-        if (this.scatterWords.includes(word)) {  // remove word
-            this.scatterWords = this.scatterWords.filter(item => item !== word);
-            document.getElementById("modify-word-message").innerText = `"${word}" removed`;
-            this.selectedWord = ""; // remove selected word
-            wordModified = true;
-        } else { // add word if in vocab
-            if (this.vocab.has(word)) {
-                this.scatterWords.push(word);
-                document.getElementById("modify-word-message").innerText = `"${word}" added`;
-                this.selectedWord = word; // make added word selected word
+        words.forEach(rawWord => {
+            // remove all invalid characters
+            const word = this.cleanWordInput(rawWord);
+            
+            // ignore empty string
+            if (word==="") return;
+            
+            if (this.scatterWords.includes(word)) {  // remove word
+                this.scatterWords = this.scatterWords.filter(item => item !== word);
+                removedWords.push(word);
+                if (finalWordsToAdd.has(word)) finalWordsToAdd.delete(word);
                 wordModified = true;
-            } else { // word not found
-                document.getElementById("modify-word-message").innerText = `"${word}" not found`;
-                // no replot or change to selected word
+            } else { // add word if in vocab
+                if (this.vocab.has(word)) {
+                    this.scatterWords.push(word);
+                    addedWords.push(word);
+                    finalWordsToAdd.add(word);
+                    wordModified = true;
+                } else { // word not found
+                    absentWords.push(word);
+                    // no need to replot if all words entered are invalid
+                }
             }
+        });
+
+        // make first added word active
+        // if no words have been added, deactivate any currently active word
+        if (finalWordsToAdd.size > 0){
+            this.selectedWord = addedWords[0];
+            this.formatMagnitudePlot("selection");
+            this.highlightVectorAxis(true);
+        }
+        else {
+            this.selectedWord = "";
+            this.formatMagnitudePlot("default");
+            this.highlightVectorAxis(false);
         }
 
+        // generate message as per changes to words
+        let message = "";
+        if (addedWords.length > 0){
+            message += `added: "${addedWords.join('", "')}"\n`; // add punctuation
+        }
+        if (removedWords.length > 0){
+            message += `removed: "${removedWords.join('", "')}"\n`;
+        }
+        if (absentWords.length > 0){
+            message += `not found: "${absentWords.join('", "')}"`;
+        }
+        // display the message
+        document.getElementById("modify-word-message").innerText = message;
+
+        // replot scatter plot if required
         if (wordModified) {
             this.plotScatter();  // replot to update scatter view
             document.getElementById("modify-word-input").value = ""; // clear word
-
         }
+
+        // reformat magnify plot with set mode
+        this.plotMagnify(false);
     }
 
     // process 3COSADD word analogy input, write arithmetic vectors to vector view and add nearest neighbors to result (#14)
@@ -805,7 +844,6 @@ class Demo {
 
     // switch "vector arithmetic mode" (#22)
     handleAnalogyToggle(element) {
-        // console.log("toggle", element);
         // deselect word if user enters vector arithmetic mode (#37)
         this.selectedWord = ""; 
         // also turn off highlight prompt for vector plot if user enters vector arithmetic mode (#37)
@@ -826,6 +864,67 @@ class Demo {
             this.plotScatter();
             this.plotVector();
             this.plotMagnify();
+    }
+
+    // manipulate clickable overlay to bring above hover text (#50)
+    moveAndResizeOverlay(hovering){
+        const overlay = document.getElementById("scatter-overlay");
+        if (hovering) {
+            // get bounding region to overlay on
+            const rectTop = document.querySelector("#scene > svg > g > text > tspan:nth-child(5)").getBoundingClientRect();
+            // const rectBottom = document.querySelector("#scene > svg > g > text > tspan:nth-child(7)").getBoundingClientRect();
+            const rectParent = document.getElementById("plotly-scatter").getBoundingClientRect();
+            // move overlay to hovertext
+            overlay.style.left = rectTop.left - rectParent.left - 5 + "px"; // 5px margin on left
+            overlay.style.top = rectTop.top - rectParent.top + "px";
+            // increase size of overlay
+            overlay.style.width = 1.15*(rectTop.width) + "px"; // 15% margin on right
+            overlay.style.height = 3.5*(rectTop.height) + "px"; // empirical height based on limits of hovertext popping up
+            // enable clicks
+            overlay.style.pointerEvents = "auto";
+        }
+        else {
+            // move back
+            overlay.style.width = "0px";
+            overlay.style.height = "0px";
+            // shrink size back
+            overlay.style.left = "0px";
+            overlay.style.top = "0px";
+            // disable clicks
+            overlay.style.pointerEvents = "none";
+        }
+    }
+
+    // bind click on scatter hover overlay (#50)
+    addOverlayListener(){
+        const overlay = document.getElementById("scatter-overlay");
+        overlay.addEventListener("click", () => {
+            this.respondToScatterClick();
+        });
+    }
+
+    // highlight vector axis on scatter click
+    respondToScatterClick(){
+        const ptNum = this.dataScatter.points[0].pointNumber;
+        const clickedWord = this.plotWords[ptNum];
+        
+        // actions if user clicks on (ie selects or deselects) a word in scatter plot
+        if (clickedWord === this.selectedWord) { // deselect
+            this.highlightVectorAxis(false); // turn off highlight prompt for vector plot
+            this.selectedWord = "";
+            this.formatMagnitudePlot("default");
+            console.log("Deselected", clickedWord);
+        } else { // select
+            this.highlightVectorAxis(true); // turn on highlight prompt for vector plot
+            this.selectedWord = clickedWord;
+            this.formatMagnitudePlot("selection");
+            console.log("Selected", this.selectedWord);
+        }
+
+        // replot with new point color
+        this.plotScatter();
+        // replot with similarity values
+        this.plotMagnify();
     }
 
     // detect if erase is required, ie. we have arithmetic results instead of pure words in vector plot (#35)
@@ -856,7 +955,7 @@ class Demo {
     formatMagnitudePlot(mode="default") {
         if (mode === "selection") {
             const selectedVector = this.vecs.get(this.selectedWord);
-            this.plotMagnifyTitle = "Similarity";
+            this.plotMagnifyTitle = "Similarity to "+`'${this.selectedWord}'`;
             this.plotMagnifyTickText = this.vectorWords.map(word => this.vecs.get(word).dot(selectedVector).toFixed(2));
             this.plotMagnifyShowTicks = true; 
             this.plotMagnifyColor = "red";       
@@ -875,11 +974,6 @@ class Demo {
         }
     }
 
-    // async blinkText(text){ //TODO: blink text while loading 
-    //     console.log('blinkText called');
-    //     text.style.animation = "blinker 1s linear infinite"
-    // }
-
     // fetch wordvecs locally (no error handling) and process
     async main() {
         // fill default feature for scatterplot
@@ -887,8 +981,11 @@ class Demo {
 
         // lo-tech progress indication
         const loadingText = document.getElementById("loading-text");
+        const loadingIcon = document.getElementById("loading-icon");
         // this.blinkText(loadingText);
         loadingText.innerText = "Downloading model...";
+        // show loading icon (#54)
+        loadingIcon.style.display = "flex";
 
         // note python's http.server does not support response compression Content-Encoding
         // browsers and servers support content-encoding, but manually compress to fit on github (#1)
@@ -909,6 +1006,8 @@ class Demo {
 
         this.processNearestWords(nearestWordsText);
         loadingText.innerText = "Model processing done";
+        // hide loading icon after processing completes
+        loadingIcon.style.display = "none";
 
         // make empty feature available to all
         const zeroArray = new Array(this.vecsDim).fill(0);
@@ -927,9 +1026,11 @@ class Demo {
         //TODO: scale while drag is on
         const plotly_scatter = document.getElementById("plotly-scatter");
         plotly_scatter.addEventListener("mouseup", () => {
-            console.log("click");
             this.plotScatter();
         });
+
+        // make overlay clickable for hovertext (#50)
+        this.addOverlayListener();
     }
 }
 

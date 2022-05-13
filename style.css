@@ -94,6 +94,13 @@ body {
     margin-bottom: 10px;
 }
 
+#loading-icon {
+    display: flex;
+    justify-content: center;
+    overflow: auto;
+    height: 100px;
+}
+
 #plots-container {
     height: 70vh;
     width: 98vw;
@@ -115,6 +122,12 @@ body {
 
 #plotly-scatter {
     width: 45%;
+    position: relative;
+}
+
+#scatter-overlay {
+    position: absolute;
+    z-index: 1000; /* bring to front */
 }
 
 #plots-status-bar {
@@ -196,4 +209,15 @@ output {
   100% {
     fill: red;
   }
+}
+
+#analogy-loading-icon {
+    display: flex;
+    justify-content: center;
+    height: 20px;
+    border: 2px solid green;
+}
+
+#scatter-overlay{
+    position: absolute;
 }
