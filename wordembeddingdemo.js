@@ -615,7 +615,8 @@ class Demo {
         // make first added word active
         // if no words have been added, deactivate any currently active word
         if (finalWordsToAdd.size > 0){
-            this.selectedWord = addedWords[0];
+            for (var word of finalWordsToAdd) // go up to last word of set
+            this.selectedWord = word; // select last word
             this.formatMagnitudePlot("selection");
             this.highlightVectorAxis(true);
         }
