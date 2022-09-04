@@ -167,6 +167,7 @@ class Demo {
             : (word === this.analogy.y) ? "pink"
             : (word === this.analogy.Wstar) ? "lime"
             : (Object.values(this.analogy).includes(word)) ? "blue"
+            : (Object.values(this.vectorWords).includes(word)) ? "gray" // color default vector words gray (#34)
             : "black"
         );
 
@@ -229,6 +230,7 @@ class Demo {
                 text: plotWords,
                 textfont: {
                     size: scaledSizes,
+                    color: color,
                 },
                 hoverinfo: "text",
                 hovertext: hovertext
