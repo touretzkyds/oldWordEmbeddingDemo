@@ -228,6 +228,7 @@ class Demo {
                     color: color
                 },
                 text: plotWords,
+                ids: plotWords.map((word, idx) => `sc-word-${idx}`),
                 textfont: {
                     size: scaledSizes,
                     color: color,
@@ -687,7 +688,7 @@ class Demo {
 
         // find most similar words for analogy
         let wordAnalogyPairs = [...this.vocab]
-            .filter(word => !inputWords.includes(word))  // don't match words used in arithmetic (#12)
+            .filter(word => !inputWords.includes(word))  //  don't match words used in arithmetic (#12)
             .map(word => [word, vecY.dot(this.vecs.get(word))]);
 
         wordAnalogyPairs.sort((a, b) => b[1] - a[1]);
@@ -852,6 +853,8 @@ class Demo {
         // also turn off highlight prompt for vector plot if user enters vector arithmetic mode (#37)
         this.highlightVectorAxis(false);
         this.formatMagnitudePlot("arithmetic")
+        // also turn off similarity lines (#55)
+        this.updateSimilarityLines(false, false);
         if (!element.open) {
             // on details close, erase analogy object and modify vector plot words as follows -
             this.analogy = {};
@@ -869,30 +872,40 @@ class Demo {
             this.plotMagnify();
     }
 
+    // move element to a target position using left and top coordinates
+    moveElem(elem, targetLeft, targetTop){ 
+        elem.style.left = targetLeft  + "px"
+        elem.style.top = targetTop + "px"
+    }
+
+    // resize element to given width, height
+    resizeElem(elem, targetWidth, targetHeight) {
+        elem.style.width = targetWidth + "px"
+        elem.style.height = targetHeight + "px"
+    }
+
     // manipulate clickable overlay to bring above hover text (#50)
     moveAndResizeOverlay(hovering){
         const overlay = document.getElementById("scatter-overlay");
         if (hovering) {
+            // move overlay to hovertext
             // get bounding region to overlay on
             const rectTop = document.querySelector("#scene > svg > g > text > tspan:nth-child(5)").getBoundingClientRect();
-            // const rectBottom = document.querySelector("#scene > svg > g > text > tspan:nth-child(7)").getBoundingClientRect();
             const rectParent = document.getElementById("plotly-scatter").getBoundingClientRect();
-            // move overlay to hovertext
-            overlay.style.left = rectTop.left - rectParent.left - 5 + "px"; // 5px margin on left
-            overlay.style.top = rectTop.top - rectParent.top + "px";
+            this.moveElem(overlay, 
+                rectTop.left - rectParent.left - 5, // 5px margin on left
+                rectTop.top - rectParent.top,
+                );
             // increase size of overlay
-            overlay.style.width = 1.15*(rectTop.width) + "px"; // 15% margin on right
-            overlay.style.height = 3.5*(rectTop.height) + "px"; // empirical height based on limits of hovertext popping up
+            this.resizeElem(overlay,
+                1.15*(rectTop.width), // 15% margin on right
+                3.5*(rectTop.height) // empirical height based on limits of hovertext popping up
+                );
             // enable clicks
             overlay.style.pointerEvents = "auto";
-        }
-        else {
-            // move back
-            overlay.style.width = "0px";
-            overlay.style.height = "0px";
+        } else {
             // shrink size back
-            overlay.style.left = "0px";
-            overlay.style.top = "0px";
+            this.resizeElem(overlay, 0, 0);
             // disable clicks
             overlay.style.pointerEvents = "none";
         }
@@ -914,11 +927,13 @@ class Demo {
         // actions if user clicks on (ie selects or deselects) a word in scatter plot
         if (clickedWord === this.selectedWord) { // deselect
             this.highlightVectorAxis(false); // turn off highlight prompt for vector plot
+            this.updateSimilarityLines(true, false); // move and hide lines
             this.selectedWord = "";
             this.formatMagnitudePlot("default");
             console.log("Deselected", clickedWord);
         } else { // select
             this.highlightVectorAxis(true); // turn on highlight prompt for vector plot
+            this.updateSimilarityLines(true, true); // move and show lines
             this.selectedWord = clickedWord;
             this.formatMagnitudePlot("selection");
             console.log("Selected", this.selectedWord);
@@ -928,6 +943,47 @@ class Demo {
         this.plotScatter();
         // replot with similarity values
         this.plotMagnify();
+    }
+
+    // draw lines between selected word in scatter plot and highlighted similarity words in vector plot (#55)
+    initSimilarityLines() {
+        this.similarityLines = [];
+        // select vectorwords 
+        const yTicks = document.querySelectorAll("#plotly-vector > div > div > svg:nth-child(1) > g.cartesianlayer > g > g.yaxislayer-above > g");
+        const pointAnchor = document.getElementById("scatter-overlay")
+        yTicks.forEach((elem) => {
+            this.similarityLines.push(
+                new LeaderLine(
+                    LeaderLine.pointAnchor(pointAnchor, {x: '50%', y: '71.43%'}), // height % based on fact that scatter overlay is asymmetric
+                    elem,
+                    {
+                        path: 'magnet',
+                        color: 'red',
+                        dash: true,
+                        size: 0.5,
+                        hide: true   
+                    }
+                )
+            );
+        });
+    }
+
+    // toggle visibility of similarity lines on click (#55)
+    updateSimilarityLines(reposition, visible) {
+        console.log(this.dataScatter);
+        if (reposition) {
+            // move lines to updated position
+            this.similarityLines.forEach((line) => line.position());
+        }
+        // show or hide lines
+        if (visible) {
+            this.similarityLines.forEach((line) => {
+                // TODO: add if clause for [empty] slots
+                line.show();
+            });
+        } else {
+            this.similarityLines.forEach((line) => line.hide());
+        }
     }
 
     // detect if erase is required, ie. we have arithmetic results instead of pure words in vector plot (#35)
@@ -1025,12 +1081,18 @@ class Demo {
         this.plotVector(true);
         this.processFeatureInput(); // processes words from selected semantic dimensions when the page loads (#45)
         
+        // add thin similarity lines that are later moved when user clicks (#55)
+        this.initSimilarityLines();
+
         // add event listener to rescale points in 3D with drag (#43)
         //TODO: scale while drag is on
         const plotly_scatter = document.getElementById("plotly-scatter");
         plotly_scatter.addEventListener("mouseup", () => {
             this.plotScatter();
         });
+
+        // TODO: manually hide all lines on mouse down and show individual lines
+        // on mouse up if initially visible (if not handled by leader line)
 
         // make overlay clickable for hovertext (#50)
         this.addOverlayListener();
