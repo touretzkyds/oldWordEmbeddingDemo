@@ -954,7 +954,7 @@ class Demo {
         yTicks.forEach((elem) => {
             this.similarityLines.push(
                 new LeaderLine(
-                    LeaderLine.pointAnchor(pointAnchor, {x: '50%', y: '71.43%'}), // height % based on fact that scatter overlay is asymmetric
+                    LeaderLine.pointAnchor(pointAnchor, {x: '0%', y: '80%'}), // height % based on fact that scatter overlay is asymmetric
                     elem,
                     {
                         path: 'magnet',
@@ -970,7 +970,6 @@ class Demo {
 
     // toggle visibility of similarity lines on click (#55)
     updateSimilarityLines(reposition, visible) {
-        console.log(this.dataScatter);
         if (reposition) {
             // move lines to updated position
             this.similarityLines.forEach((line) => line.position());
@@ -1091,8 +1090,11 @@ class Demo {
             this.plotScatter();
         });
 
-        // TODO: manually hide all lines on mouse down and show individual lines
-        // on mouse up if initially visible (if not handled by leader line)
+        // hide all lines on mouse down (#53)
+        // TODO: hide when zooming
+        plotly_scatter.addEventListener("mousedown", () => {
+            this.updateSimilarityLines(false, false);
+        });
 
         // make overlay clickable for hovertext (#50)
         this.addOverlayListener();
