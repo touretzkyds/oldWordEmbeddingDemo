@@ -568,6 +568,9 @@ class Demo {
         } else {
             Plotly.react("plotly-magnify", data, layout);
         }
+
+        // hide plotly magnify in selection mode
+        document.querySelector("#plotly-magnify > div > div > svg:nth-child(1) > g.cartesianlayer").style.visibility = this.hideMagnitudePlot ? 'hidden' : '';     
     }
 
     // remove all non alphanumeric characters from words (#56)
@@ -848,13 +851,12 @@ class Demo {
 
     // switch "vector arithmetic mode" (#22)
     handleAnalogyToggle(element) {
+        this.updateSimilarityLines(true, false); // move and hide lines
         // deselect word if user enters vector arithmetic mode (#37)
         this.selectedWord = ""; 
         // also turn off highlight prompt for vector plot if user enters vector arithmetic mode (#37)
         this.highlightVectorAxis(false);
         this.formatMagnitudePlot("arithmetic")
-        // also turn off similarity lines (#55)
-        this.updateSimilarityLines(false, false);
         if (!element.open) {
             // on details close, erase analogy object and modify vector plot words as follows -
             this.analogy = {};
@@ -870,6 +872,8 @@ class Demo {
             this.plotScatter();
             this.plotVector();
             this.plotMagnify();
+            // also turn off similarity lines (#55)
+            this.initSimilarityLines();
     }
 
     // move element to a target position using left and top coordinates
@@ -927,16 +931,14 @@ class Demo {
         // actions if user clicks on (ie selects or deselects) a word in scatter plot
         if (clickedWord === this.selectedWord) { // deselect
             this.highlightVectorAxis(false); // turn off highlight prompt for vector plot
-            this.updateSimilarityLines(true, false); // move and hide lines
             this.selectedWord = "";
             this.formatMagnitudePlot("default");
-            console.log("Deselected", clickedWord);
+            this.updateSimilarityLines(true, false); // move and hide lines
         } else { // select
             this.highlightVectorAxis(true); // turn on highlight prompt for vector plot
-            this.updateSimilarityLines(true, true); // move and show lines
             this.selectedWord = clickedWord;
             this.formatMagnitudePlot("selection");
-            console.log("Selected", this.selectedWord);
+            this.updateSimilarityLines(true, true); // move and show lines
         }
 
         // replot with new point color
@@ -951,7 +953,9 @@ class Demo {
         // select vectorwords 
         const yTicks = document.querySelectorAll("#plotly-vector > div > div > svg:nth-child(1) > g.cartesianlayer > g > g.yaxislayer-above > g");
         const pointAnchor = document.getElementById("scatter-overlay")
-        yTicks.forEach((elem) => {
+        const similarityValues = this.plotMagnifyTickText;
+        const selectedWord = this.selectedWord;
+        yTicks.forEach((elem, idx) => {
             this.similarityLines.push(
                 new LeaderLine(
                     LeaderLine.pointAnchor(pointAnchor, {x: '0%', y: '80%'}), // height % based on fact that scatter overlay is asymmetric
@@ -970,18 +974,31 @@ class Demo {
 
     // toggle visibility of similarity lines on click (#55)
     updateSimilarityLines(reposition, visible) {
+        const similarityValues = this.plotMagnifyTickText;
+        const selectedWord = this.selectedWord;
+        // update line captions
+        this.similarityLines.forEach((line, idx) => {
+            const options = {
+                middleLabel: LeaderLine.pathLabel(`${similarityValues[idx]}`),
+            };
+            line.setOptions(options);
+        });
         if (reposition) {
             // move lines to updated position
-            this.similarityLines.forEach((line) => line.position());
+            this.similarityLines.forEach((line, idx) => {
+                line.position();
+            });
         }
         // show or hide lines
         if (visible) {
-            this.similarityLines.forEach((line) => {
+            this.similarityLines.forEach((line, idx) => {
                 // TODO: add if clause for [empty] slots
                 line.show();
             });
         } else {
-            this.similarityLines.forEach((line) => line.hide());
+            this.similarityLines.forEach((line, idx) => {
+                line.hide();
+            });
         }
     }
 
@@ -1016,19 +1033,25 @@ class Demo {
             this.plotMagnifyTitle = "Similarity to "+`'${this.selectedWord}'`;
             this.plotMagnifyTickText = this.vectorWords.map(word => this.vecs.get(word).dot(selectedVector).toFixed(2));
             this.plotMagnifyShowTicks = true; 
-            this.plotMagnifyColor = "red";       
+            this.plotMagnifyColor = "red";    
+            // hide magnitude plot when similarity mode active
+            this.hideMagnitudePlot = true;
         }
         else if (mode === "arithmetic") {
             this.plotMagnifyTitle = "Magnitude";
             this.plotMagnifyTickText = this.vectorWords.map(word => this.vecs.get(word).norm().toFixed(2));
             this.plotMagnifyShowTicks = true;        
-            this.plotMagnifyColor = "blue";       
+            this.plotMagnifyColor = "blue";  
+            // show magnitude plot
+            this.hideMagnitudePlot = false;
         }
         else {
             this.plotMagnifyTitle = "";
             this.plotMagnifyTickText = "";
             this.plotMagnifyShowTicks = false;        
             this.plotMagnifyColor = "black";       
+            // show magnitude plot
+            this.hideMagnitudePlot = false;
         }
     }
 
@@ -1109,6 +1132,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // resize all plots on window resize (#52)
 window.addEventListener('resize', function() {
+    // prevents error in leaderlines on window resize
+    demo.updateSimilarityLines(false, false); 
     const plotsToResize = ["plotly-scatter", "plotly-vector", "plotly-magnify"];
     plotsToResize.forEach(id => {
         const container = document.getElementById(id);
@@ -1118,4 +1143,5 @@ window.addEventListener('resize', function() {
         };
         Plotly.relayout(id, updatedDims);
     });
+    demo.initSimilarityLines(); // reset leader lines
 });
